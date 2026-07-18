@@ -20,3 +20,8 @@ Core functionality:
  - handle cases i.e. multiple matches, one match, no match, user cancels intended actions, filtering matches by price, date etc.
 
 I will first start off by deciding e.g. what fields each product will hold, enums, and also creating the dataset....
+
+### <u> 18/07/2026 </u>
+Just considering what I really want for product fields, i.e. category, brand, price, etc..
+Initialising some key components i will need within the program, i.e. class for cart, product....
+
