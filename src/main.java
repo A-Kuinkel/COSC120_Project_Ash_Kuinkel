@@ -1,7 +1,9 @@
-
+import enums.Category;
 
 public static void main(String[] args){
-    System.out.println("Hello World!");
+    Category desktop = Category.DESKTOP;
+
+    System.out.println(desktop);
 }
 
 
