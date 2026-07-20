@@ -25,3 +25,11 @@ I will first start off by deciding e.g. what fields each product will hold, enum
 Just considering what I really want for product fields, i.e. category, brand, price, etc..
 Initialising some key components i will need within the program, i.e. class for cart, product....
 
+### <u> 20/07/2026 </u>
+Initialise Product class with some fields i know i will need, more to be added later (if i find is needed ofc)
+Initialise enums for category & brand
+
+Lol, attempting to not use the internet for the syntax and having to search through the beggining java 17 fundamentals
+book makes it take a little more time than things should, but hey, call it a learning experience i guess...
+
+
