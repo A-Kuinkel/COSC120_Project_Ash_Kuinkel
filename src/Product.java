@@ -11,10 +11,11 @@ public class Product {
     private int quantity;
     Category category;
     Brand brand;
+    String displayImage;
 
     // constructor
     Product(int id, String name, float Price, String description,
-            int quantity, Category category, Brand brand){
+            int quantity, Category category, Brand brand,String displayImage){
         this.id = id;
         this.name = name;
         this.price = price;
@@ -22,6 +23,7 @@ public class Product {
         this.quantity = quantity;
         this.category = category;
         this.brand = brand;
+        this.displayImage = displayImage;
     }
 
     // getters/setters:
