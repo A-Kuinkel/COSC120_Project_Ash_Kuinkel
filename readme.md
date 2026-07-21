@@ -1,1 +1,0 @@
-# <h1 style="text-align: center;">ByteBazaar</h1>
