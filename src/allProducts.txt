@@ -1,0 +1,46 @@
+ProductID,Name,Category,Brand,Price,Quantity,Rating,Wireless,OnSale,WarrantyYears,Colour,Tags,Description,DisplayImage
+P1001,ROG Strix G16 Laptop,Laptops,ASUS,1899.99,12,4.6,no,yes,2,Black,[Gaming, RGB, 16-inch],[A powerful gaming laptop with a 16-inch display, featuring RGB keyboard lighting and a high refresh rate panel.],rog_strix_g16.jpg
+P1002,MacBook Air 15,Laptops,APPLE,1699.00,8,4.8,no,no,1,Silver,[Ultrabook, Lightweight],[Apple's thin and light laptop, ideal for everyday tasks, students, and professionals on the go.],macbook_air_15.jpg
+P1003,XPS 13 Plus,Laptops,DELL,1549.50,5,4.4,no,yes,1,NA,[Ultrabook, Business],[A sleek business ultrabook with an edge-to-edge keyboard and a minimalist design, perfect for professionals.],xps_13_plus.jpg
+P1004,Pavilion 15,Laptops,HP,799.99,20,4.0,no,no,1,Blue,[Budget, Everyday Use],[An affordable everyday laptop, suitable for browsing, study, and light office work.],pavilion_15.jpg
+P1005,ThinkPad X1 Carbon,Laptops,LENOVO,1899.99,7,4.7,no,no,3,Black,[Business, Durable],[A rugged, business-grade laptop known for its durability, comfortable keyboard, and long battery life.],thinkpad_x1.jpg
+P1006,Stealth 16 Studio,Laptops,MSI,2199.00,4,4.5,no,yes,2,Black,[Creator, High Performance],[Designed for content creators, this laptop offers a colour-accurate display and powerful internals.],stealth_16.jpg
+P1007,Galaxy Book4 Pro,Laptops,SAMSUNG,1399.99,10,4.3,no,no,2,Grey,[AMOLED, Lightweight],[Featuring a vivid AMOLED display, this laptop is well suited to media consumption and creative work.],galaxy_book4.jpg
+P1008,MX Master 3S,Mouse,LOGITECH,109.99,35,4.9,yes,no,1,Grey,[Wireless, Ergonomic, Rechargeable],[A premium ergonomic mouse designed for productivity, featuring a quiet click and a precise scroll wheel.],mx_master_3s.jpg
+P1009,ROG Chakram X,Mouse,ASUS,169.00,15,4.5,yes,yes,2,Black,[Wireless, Gaming, Programmable],[A high-performance gaming mouse with a customizable joystick and swappable connection modes.],rog_chakram_x.jpg
+P1010,Magic Mouse,Mouse,APPLE,99.00,22,3.9,yes,no,1,White,[Wireless, Minimalist],[A sleek, rechargeable mouse with multi-touch gestures, designed to pair seamlessly with Apple devices.],magic_mouse.jpg
+P1011,Clutch GM41,Mouse,MSI,39.99,40,4.1,no,yes,1,Black,[Wired, Lightweight, Gaming],[A lightweight wired gaming mouse featuring a honeycomb shell design and adjustable DPI settings.],clutch_gm41.jpg
+P1012,MX Keys,Keyboard,LOGITECH,119.99,18,4.7,yes,no,1,Grey,[Wireless, Backlit, Multi-device],[A slim, backlit keyboard that can switch between multiple connected devices at the touch of a button.],mx_keys.jpg
+P1013,ROG Azoth,Keyboard,ASUS,249.00,9,4.8,yes,yes,2,Black,[Wireless, Mechanical, Hot-swappable],[A premium mechanical keyboard with hot-swappable switches, a gasket mount design, and an OLED display.],rog_azoth.jpg
+P1014,Magic Keyboard,Keyboard,APPLE,179.00,14,4.2,yes,no,1,White,[Wireless, Scissor-switch],[A compact, rechargeable keyboard with Touch ID, designed to match Apple's minimalist aesthetic.],magic_keyboard.jpg
+P1015,Vigor GK71,Keyboard,MSI,89.99,25,4.0,no,no,1,Black,[Wired, Mechanical, RGB],[A full-size mechanical keyboard with per-key RGB lighting and durable double-shot keycaps.],vigor_gk71.jpg
+P1016,ProArt PA279CV,Monitor,ASUS,449.00,6,4.6,no,no,3,Black,[4K, Colour Accurate, IPS],[A professional-grade monitor calibrated for colour accuracy, ideal for photo and video editing.],proart_pa279cv.jpg
+P1017,UltraSharp U2723QE,Monitor,DELL,589.99,5,4.5,no,yes,3,Black,[4K, IPS, USB-C],[A high resolution monitor with USB-C connectivity, well suited to hybrid office setups.],ultrasharp_u2723.jpg
+P1018,OMEN 27qs,Monitor,HP,429.99,8,4.4,no,no,2,Black,[QHD, 240Hz, Gaming],[A fast refresh rate gaming monitor with QHD resolution, delivering smooth motion clarity in fast-paced games.],omen_27qs.jpg
+P1019,UltraGear 27GP950,Monitor,LG,799.00,3,4.7,no,yes,3,Black,[4K, Nano IPS, 144Hz],[A high refresh rate 4K monitor, combining sharp detail with fast response times for competitive gaming.],ultragear_27gp950.jpg
+P1020,Optix MAG274QRF,Monitor,MSI,299.99,11,4.2,no,no,2,Black,[QHD, 165Hz, Curved],[A curved gaming monitor offering an immersive field of view and a smooth 165Hz refresh rate.],optix_mag274.jpg
+P1021,Odyssey G7,Monitor,SAMSUNG,649.00,4,4.5,no,no,2,White,[QHD, 240Hz, Curved],[A curved gaming monitor with an aggressive curvature, designed to fill the player's peripheral vision.],odyssey_g7.jpg
+P1022,OptiPlex Tower,Desktop,DELL,999.99,6,4.1,no,no,2,Black,[Office, Compact],[A compact prebuilt desktop designed for office and everyday productivity tasks.],optiplex_tower.jpg
+P1023,OMEN 45L,Desktop,HP,2499.00,2,4.6,no,yes,2,Black,[Gaming, Liquid Cooled],[A high-end prebuilt gaming desktop, featuring liquid cooling and tool-less chassis access.],omen_45l.jpg
+P1024,Legion Tower 5i,Desktop,LENOVO,1799.99,4,4.4,no,no,2,Black,[Gaming, RGB],[A prebuilt gaming desktop offering strong performance for both gaming and streaming.],legion_tower_5i.jpg
+P1025,Aegis RS,Desktop,MSI,2199.00,3,4.3,no,no,2,Black,[Gaming, Compact],[A compact prebuilt desktop designed to fit into small spaces without sacrificing performance.],aegis_rs.jpg
+P1026,Radeon RX 7900 XTX,GPU,AMD,999.00,7,4.6,no,no,3,Black,[High-End, Ray Tracing],[A flagship graphics card capable of driving 4K gaming with ray tracing enabled, at a competitive price point.],rx_7900xtx.jpg
+P1027,ROG Strix RTX 4080,GPU,ASUS,1399.99,3,4.7,no,yes,3,Black,[High-End, RGB, Overclocked],[A factory overclocked graphics card with a robust triple-fan cooling solution, built for enthusiasts.],rog_strix_4080.jpg
+P1028,Ventus 3X RTX 4070,GPU,MSI,649.00,10,4.3,no,no,2,Grey,[Mid-Range, Triple Fan],[A well-rounded graphics card offering strong 1440p performance, suited to most modern titles.],ventus_3x_4070.jpg
+P1029,GeForce RTX 4090 Founders Edition,GPU,NVIDIA,1999.00,2,4.9,no,no,3,Black,[Flagship, Ray Tracing, DLSS],[The current flagship consumer graphics card, offering unmatched performance for 4K gaming and beyond.],rtx_4090_fe.jpg
+P1030,Ryzen 9 7950X,CPU,AMD,699.00,9,4.8,no,no,3,NA,[16-Core, Unlocked],[A high core-count processor well suited to heavy multitasking, streaming, and content creation.],ryzen_9_7950x.jpg
+P1031,Ryzen 5 7600X,CPU,AMD,299.00,18,4.5,no,yes,3,NA,[6-Core, Unlocked],[A mid-range processor offering excellent gaming performance at a more accessible price point.],ryzen_5_7600x.jpg
+P1032,Core i9-14900K,CPU,INTEL,589.00,6,4.6,no,no,3,NA,[24-Core, Unlocked],[A high performance processor combining performance and efficiency cores for demanding workloads.],core_i9_14900k.jpg
+P1033,Core i5-14600K,CPU,INTEL,329.00,15,4.4,no,no,3,NA,[14-Core, Unlocked],[A capable mid-range processor, offering strong value for gaming and everyday productivity tasks.],core_i5_14600k.jpg
+P1034,Samsung DDR5 32GB Kit,RAM,SAMSUNG,129.99,25,4.5,no,no,NA,Black,[DDR5, 32GB, Dual Channel],[A dual-channel memory kit offering reliable performance for both gaming and productivity workloads.],samsung_ddr5_32gb.jpg
+P1035,ROG Strix DDR5 32GB,RAM,ASUS,159.99,14,4.6,no,yes,NA,White,[DDR5, RGB, 32GB],[A high speed memory kit with customizable RGB lighting, designed for enthusiast builds.],rog_strix_ddr5.jpg
+P1036,Spatium DDR5 16GB,RAM,MSI,69.99,30,4.1,no,no,NA,Black,[DDR5, 16GB, Single Stick],[An entry level memory module offering a straightforward upgrade path for budget builds.],spatium_ddr5_16gb.jpg
+P1037,MWE Gold 750,PSU,COOLERMASTER,109.99,16,4.4,no,no,5,Black,[80+ Gold, Modular],[A fully modular power supply offering reliable, efficient power delivery for mid to high-end builds.],mwe_gold_750.jpg
+P1038,ROG Loki 850,PSU,ASUS,229.00,7,4.6,no,yes,10,White,[80+ Platinum, SFX-L, Modular],[A compact yet powerful power supply, well suited to small form factor builds requiring high wattage.],rog_loki_850.jpg
+P1039,MPG A850G,PSU,MSI,149.99,10,4.3,no,no,10,Black,[80+ Gold, Modular],[A modular power supply designed with a focus on quiet operation, even under heavy load.],mpg_a850g.jpg
+P1040,MasterBox TD500,Case,COOLERMASTER,109.99,12,4.5,no,no,NA,Black,[Mid-Tower, Mesh Front],[A mid-tower case with a distinctive mesh front panel, allowing for excellent airflow.],masterbox_td500.jpg
+P1041,ROG Hyperion GR701,Case,ASUS,349.00,3,4.7,no,yes,NA,White,[Full-Tower, RGB],[A premium full-tower case designed to accommodate large builds, complete with tempered glass panels.],rog_hyperion.jpg
+P1042,MAG Pano 100R,Case,MSI,159.99,8,4.2,no,no,NA,Black,[Mid-Tower, Panoramic Glass],[A mid-tower case featuring panoramic tempered glass, showing off internal components from multiple angles.],mag_pano_100r.jpg
+P1043,MasterLiquid ML360,Cooling,COOLERMASTER,159.99,9,4.5,no,no,5,Black,[AIO, 360mm, RGB],[A 360mm all-in-one liquid cooler, providing strong thermal performance for high-end processors.],masterliquid_ml360.jpg
+P1044,ROG Ryujin III 360,Cooling,ASUS,349.00,4,4.8,no,yes,6,White,[AIO, LCD Display, 360mm],[A premium liquid cooler featuring a customizable LCD display on the pump head, and near silent operation.],ryujin_iii.jpg
+P1045,MAG Coreliquid 240,Cooling,MSI,119.99,13,4.1,no,no,3,Black,[AIO, 240mm],[A compact 240mm liquid cooler, well suited to smaller cases without sacrificing cooling performance.],mag_coreliquid_240.jpg

@@ -40,9 +40,18 @@ assets folder, much simpler that way without going overboard.
 
 Also, this week's content is a real wake-up call into how a good program should behave. I most likely will need to separate
 the fields that people will search for when search for products, i.e. name, brands into the DreamProduct class & the fields
-that are used to identify a product which people will not search for, i.e. id, quantity etc. This ensures we adhere to 
+that are used to identify a product which people will not search for, i.e. productId, quantity etc. This ensures we adhere to 
 OOD principles, in particular each program must have a small scope at which it excels in. I cannot just attempt to have 
 the product class do the job of both DreamProduct & Products themselves.
 
 So in regard to the images, I will pick a handful of product images & embed my products with links to the images (stored 
 in the assets folder).
+
+I've generated the allProducts.txt file now, I just need to find images for the products & embed them within the file,
+so we actually get product images showing up on JOptionPane. I'm also a little unsure about the aggregation of the
+Product & DreamProduct classes, this is something I will need to work on tomorrow...
+
+Hmm, actually im now thinking what if I just try and get a basic version of this working ASAP, without attempting to
+follow best practices, that way I can just see the initial thing working first and get a better idea of the entire program
+and how everything is connected, then refactor it and follow best practices. I think this is what I will do...
+
