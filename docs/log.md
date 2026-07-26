@@ -55,3 +55,12 @@ Hmm, actually im now thinking what if I just try and get a basic version of this
 follow best practices, that way I can just see the initial thing working first and get a better idea of the entire program
 and how everything is connected, then refactor it and follow best practices. I think this is what I will do...
 
+### <u> 23/07/2026 </u>
+
+User main home selection menu started...
+Initialised the needed classes like cart, order, user etc.
+
+### <u> 26/07/2026 </u>
+
+Completed main home selection menu in a very graceful manner (imo)
+continued with class initialisations on cart, order, user etc...
