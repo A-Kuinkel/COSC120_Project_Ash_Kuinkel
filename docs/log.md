@@ -64,3 +64,22 @@ Initialised the needed classes like cart, order, user etc.
 
 Completed main home selection menu in a very graceful manner (imo)
 continued with class initialisations on cart, order, user etc...
+
+### <u> 27/07/2026 </u>
+The plan for today is to start on the frist page that the user will be able to navigate to i.e. the page that displays
+all the products.
+
+So I've now completed a really basic load all products page, returning just the id, name & price. However, I'm now realising
+that it may not be so easy to do like a GUI. I completely forgot JOptionPane is very simple, so now I must ask if we're
+allowed to look into it ourselves and build a GUI, else I will be returning just the products in the command line.....
+(which isn't very interesting, unlike the GUI).
+
+With that being said, I completely forgot that some warranty years were N/A on the dataset & hence spent quite a bit attempting
+to pin the error down. I was wondering why I was getting shown the error message:
+
+"Oops..., we didn't recognise that." +
+" Please enter an integer from the following options provided!"
+
+Even though I was entering 1 and why I was only being returned 33 products instead of the 45 or 46. It turned out that doing
+Integer.parseInt(productInfo[9]) on N/A values caused some problems, so hence why I've decided for now we label the ones with 
+N/A as -1 and they wil be displayed appropriately to the user in a later step.
