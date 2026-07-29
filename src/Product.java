@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Product {
@@ -12,7 +13,7 @@ public class Product {
     private float rating;
     private boolean wireless;
     private boolean onSale;
-    private int warrantyYears;
+    private Integer warrantyYears;
     private String colour;
     private List<String> tags;
     private String description;
@@ -22,10 +23,27 @@ public class Product {
     // I will most likely have to do something like:
     // private final DreamProduct keywords;
 
-    // constructor
-    Product (String productId, String name, Category category, Brand brand, double price, int quantity,
-             float rating, boolean wireless, boolean onSale, int warrantyYears, String colour,
-             List<String> tags, String description, String displayImage){
+    /**
+     * A constructor which will help us when instantiating the
+     *
+     * @param productId
+     * @param name
+     * @param category
+     * @param brand
+     * @param price
+     * @param quantity
+     * @param rating
+     * @param wireless
+     * @param onSale
+     * @param warrantyYears
+     * @param colour
+     * @param tags
+     * @param description
+     * @param displayImage
+     */
+    public Product(String productId, String name, Category category, Brand brand, double price, int quantity,
+                   float rating, boolean wireless, boolean onSale, Integer warrantyYears, String colour,
+                   List<String> tags, String description, String displayImage) {
 
         this.productId = productId;
         this.name = name;
@@ -43,33 +61,82 @@ public class Product {
         this.displayImage = displayImage;
         // ** REFACTOR THOUGHTS **
         // keywords = new DreamProduct(name,category,brand,tags,minPrice,maxPrice)
-    };
+    }
+
+    ;
 
     // getters/setters:
     // I will only do the getters I know I will need in here 100% first,
     // because I am not sure about the shared ones:
 
     // also make sure to add Javadoc comments here:
-    public String getProductId() {return productId;}
+    public String getProductId() {
+        return productId;
+    }
 
-    public double getPrice() {return price;}
-    
-    public int getQuantity() {return quantity;}
-    
-    public float getRating() {return rating;}
+    public double getPrice() {
+        return price;
+    }
 
-    public boolean isWireless() {return wireless;}
+    public int getQuantity() {
+        return quantity;
+    }
 
-    public boolean getIsOnSale() {return onSale;}
+    public float getRating() {
+        return rating;
+    }
 
-    public int getWarrantyYears() {return warrantyYears;}
+    public boolean isWireless() {
+        return wireless;
+    }
 
-    public String getColour() {return colour;}
+    public boolean getIsOnSale() {
+        return onSale;
+    }
 
-    public String getDisplayImage() {return displayImage;}
+    public Integer getWarrantyYears() {
+        return warrantyYears;
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public String getDisplayImage() {
+        return displayImage;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<String> getTags() {
+        return new ArrayList<>(tags);
+    }
 
     // methods:
-    public static String getProductInfo(){
+    public String getProductInfo() {
+        return "This product's ID is: " + productId +
+                "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
+                "\nIt's price is " + price +
+                "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
+                "\nGet it Quick! There are only " + quantity + " of these remaining!" +
+                "\nOur customers have rated this product " + rating + "." +
+                "\nIt comes with a " + warrantyYears + " year warranty." +
+                "The product's colour is " + colour + ".";
+    }
 
-    };
+    ;
 }

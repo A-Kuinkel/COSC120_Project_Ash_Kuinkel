@@ -85,7 +85,7 @@ public class ByteBazaar {
             boolean productIsWireless = productInfo[7].equalsIgnoreCase("yes");
             boolean productOnSale = productInfo[8].equalsIgnoreCase("yes");
             // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
-            int productWarrantyYears = productInfo[9].equalsIgnoreCase("N/A") ? Integer.parseInt(productInfo[9]) : -1;
+            Integer productWarrantyYears = productInfo[9].equalsIgnoreCase("N/A") ? Integer.parseInt(productInfo[9]) : null;
             String productColour = productInfo[10];
             String productDescription = productInfo[12];
             String productDisplayImage = productInfo[13];
