@@ -45,7 +45,7 @@ public class ByteBazaar {
                         // take to first page
                         System.out.println("First page!");
                         try {
-                            loadProductPage();
+                            loadAllProducts();
                         } catch (IOException e) {
                             System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
                         }
@@ -69,7 +69,7 @@ public class ByteBazaar {
         } while (userSelectedOption != 1 && userSelectedOption != 2 && userSelectedOption != 3);
     }
 
-    private static void loadProductPage() throws IOException {
+    private static void loadAllProducts() throws IOException {
         System.out.println("Loading ByteBazaar products...");
         Path productsFile = Path.of(productsFilePath);
 
