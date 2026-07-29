@@ -1,5 +1,3 @@
-package enums;
-
 public enum Category {
     // categories, i.e. laptop, mouse, keyboards etc
     LAPTOPS, MOUSE, KEYBOARD, MONITOR, DESKTOP, GPU, CPU, RAM, PSU, CASE, COOLING;

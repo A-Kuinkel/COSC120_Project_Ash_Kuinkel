@@ -1,6 +1,3 @@
-import enums.Brand;
-import enums.Category;
-
 import java.util.List;
 
 public class Product {
@@ -72,4 +69,7 @@ public class Product {
     public String getDisplayImage() {return displayImage;}
 
     // methods:
+    public static String getProductInfo(){
+
+    };
 }

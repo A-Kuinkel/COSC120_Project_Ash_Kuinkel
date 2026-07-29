@@ -1,6 +1,3 @@
-import enums.Brand;
-import enums.Category;
-
 import java.util.ArrayList;
 import java.util.List;
 

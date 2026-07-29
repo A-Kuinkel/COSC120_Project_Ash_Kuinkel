@@ -1,5 +1,3 @@
-package enums;
-
 public enum Brand {
     // our list of brands:
     AMD, ASUS, APPLE, COOLERMASTER, DELL, HP, INTEL, LENOVO, LG, LOGITECH, MSI, NVIDIA, SAMSUNG;
