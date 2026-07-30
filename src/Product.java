@@ -186,22 +186,43 @@ public class Product {
     // setters for fields that may be changed after product created, e.g. whether on sale or not, the price maybe,
     // quantity as well, tags is debatable ( but I doubt it'd change, so leave it...), description could possibly be
     // updated so include a setter for this & finally the display image...
+
+    /**
+     * Setter method to help change the price of the product as needed.
+     * @param price -> a double value representing the new value we wish to assign to the price of the product.
+     */
     public void  setProductPrice(double price) {
         this.price = price;
     }
 
+    /**
+     * Setter method to update quantity of product as needed.
+     * @param quantity -> int value to represent the updated available quantity of the product
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    /**
+     * Setter method helping us change the sale status of the product as needed.
+     * @param onSale -> boolean value representing the new value of whether the product is on sale or not.
+     */
     public void setonSale(boolean onSale) {
         this.onSale = onSale;
     }
 
+    /**
+     * Setter method to change the product description as needed.
+     * @param description -> a String which will feature the new description of the product.
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Setter method used to update the display image of a product.
+     * @param displayImage -> a String which will contain the location of file for new displayImage for the product.
+     */
     public void setDisplayImage(String displayImage) {
         this.displayImage = displayImage;
     }
