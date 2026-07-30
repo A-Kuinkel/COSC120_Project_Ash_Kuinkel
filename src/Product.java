@@ -1,12 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- ** TODO: FINISH OF JAVADOC COMMENTS **
- */
-
 /**
- * Explain this class briefly & what it does....
+ * The class (blueprint) for our product dictating what information a product should contain &
+ * provides a convenient way to access our products.
  */
 public class Product {
 
@@ -71,13 +68,8 @@ public class Product {
         // keywords = new DreamProduct(name,category,brand,tags,minPrice,maxPrice)
     }
 
-    ;
-
-    // getters/setters:
     // I will only do the getters I know I will need in here 100% first,
     // because I am not sure about the shared ones:
-
-    // also make sure to add Javadoc comments here:
 
     /**
      * the unique productID of each product.
@@ -104,80 +96,80 @@ public class Product {
     }
 
     /**
-     *
-     * @return
+     * What other customers have rated the product.
+     * @return the overall rating of the product out of 5.
      */
     public float getRating() {
         return rating;
     }
 
     /**
-     *
-     * @return
+     * Boolean value to represent if product is wireless.
+     * @return true if product is wireless else return false.
      */
     public boolean isWireless() {
         return wireless;
     }
 
     /**
-     *
-     * @return
+     * Boolean value to represent if product is currently on sale.
+     * @return true if on sale else return false
      */
     public boolean getIsOnSale() {
         return onSale;
     }
 
     /**
-     *
-     * @return
+     * How many years of warranty the product comes with.
+     * @return the warranty time period the product comes with.
      */
     public Integer getWarrantyYears() {
         return warrantyYears;
     }
 
     /**
-     *
-     * @return
+     * Product colour.
+     * @return the colour of the product.
      */
     public String getColour() {
         return colour;
     }
 
     /**
-     *
-     * @return
+     * The image associated with the product on display.
+     * @return the display image of the specific product.
      */
     public String getDisplayImage() {
         return displayImage;
     }
 
     /**
-     *
-     * @return
+     * Product name.
+     * @return the name associated with the product.
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
-     * @return
+     * Which category the product belongs to.
+     * @return the category which the selected product belongs to.
      */
     public Category getCategory() {
         return category;
     }
 
     /**
-     *
-     * @return
+     * Which brand is this a product of?
+     * @return the brand which the selected product belongs to.
      */
     public Brand getBrand() {
         return brand;
     }
 
     /**
-     *
-     * @return
+     * A brief description of some specific product.
+     * @return the description of the product.
      */
     public String getDescription() {
         return description;
@@ -191,11 +183,9 @@ public class Product {
         return new ArrayList<>(tags);
     }
 
-    // methods:
-
     /**
-     *
-     * @return
+     * Product information (for the customer to see) of a specific product.
+     * @return a nicely formatted String with the product information.
      */
     public String getProductInfo() {
         return "This product's ID is: " + productId +
@@ -207,6 +197,4 @@ public class Product {
                 "\nIt comes with a " + warrantyYears + " year warranty." +
                 "The product's colour is " + colour + ".";
     }
-
-    ;
 }
