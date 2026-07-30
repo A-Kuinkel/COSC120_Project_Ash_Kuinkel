@@ -115,7 +115,7 @@ public class Product {
      * Boolean value to represent if product is currently on sale.
      * @return true if on sale else return false
      */
-    public boolean getIsOnSale() {
+    public boolean isOnSale() {
         return onSale;
     }
 
@@ -194,7 +194,7 @@ public class Product {
                 "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
                 "\nGet it Quick! There are only " + quantity + " of these remaining!" +
                 "\nOur customers have rated this product " + rating + "." +
-                "\nIt comes with a " + warrantyYears + " year warranty." +
+                "\nIt comes with " + (warrantyYears ==  null ? "no specifically listed warranty." : ( "a" + warrantyYears + " year warranty.")) +
                 "The product's colour is " + colour + ".";
     }
 }
