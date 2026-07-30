@@ -183,6 +183,29 @@ public class Product {
         return new ArrayList<>(tags);
     }
 
+    // setters for fields that may be changed after product created, e.g. whether on sale or not, the price maybe,
+    // quantity as well, tags is debatable ( but I doubt it'd change, so leave it...), description could possibly be
+    // updated so include a setter for this & finally the display image...
+    public void  setProductPrice(double price) {
+        this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setonSale(boolean onSale) {
+        this.onSale = onSale;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDisplayImage(String displayImage) {
+        this.displayImage = displayImage;
+    }
+
     /**
      * Product information (for the customer to see) of a specific product.
      * @return a nicely formatted String with the product information.
@@ -195,6 +218,6 @@ public class Product {
                 "\nGet it Quick! There are only " + quantity + " of these remaining!" +
                 "\nOur customers have rated this product " + rating + "." +
                 "\nIt comes with " + (warrantyYears ==  null ? "no specifically listed warranty." : ( "a" + warrantyYears + " year warranty.")) +
-                "The product's colour is " + colour + ".";
+                "\nThe product's colour is " + colour + ".";
     }
 }
