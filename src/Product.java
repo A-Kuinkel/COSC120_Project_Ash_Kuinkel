@@ -7,7 +7,8 @@ import java.util.List;
  */
 public class Product {
 
-    // fields:
+    // so the ones initialised in dreamproduct, don't need to be duplicated here i think...
+    // instead we should call the DreamProduct class which is like the aggregation here..
     final private String productId;
     private String name;
     private Category category;
