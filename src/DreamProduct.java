@@ -51,12 +51,18 @@ public class DreamProduct {
 
     public String getAllDreamProductFeatures(){
     /**TODO: COMPLETE THIS METHOD**/
+    // here we have to return in a nice format,the desirable/dream characteristics of our products...
     return "";
     }
 
     // methods
     public boolean productMatchesDreamProductFeatures() {
         /**TODO: COMPLETE THIS METHOD**/
+        // if both happen to be a Collection e.g. set, list etc. (e.g. for tags) then check if the user dream & product
+        // contain any same keywords & show the user that product, e.g if user dream product has the word "Gaming" then
+        // we check for our tags only since thats the one that features the collection dataset type & go through all
+        // products and check which also have the tags "Gaming" & for the ones that do have that tag, return true else
+        // we return false to indicate that the current product does not match....
         return false;
     }
 }
