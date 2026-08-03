@@ -181,6 +181,14 @@ public class Product {
         // instead of doing this everytime we need to access the onSale:
         // boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
         // I'll just create like a method/getter in the DreamProduct.java instead... which will also defend against value mismatch errors
+
+        /**
+            Using our getter methods we made in DreamProduct now makes this job so much easier:
+         **/
+        boolean onSale = this.productSearchableCharacteristics.isOnSale();
+        boolean wireless = this.productSearchableCharacteristics.isWireless();
+        String colour = this.getProductSearchableCharacteristics().getColour();
+
         return "This product's ID is: " + productId +
                 "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
                 "\nIt's price is " + price +
