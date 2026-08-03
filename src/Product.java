@@ -10,17 +10,11 @@ public class Product {
     // so the ones initialised in dreamproduct, don't need to be duplicated here i think...
     // instead we should call the DreamProduct class which is like the aggregation here..
     final private String productId;
-    private String name;
-    private Category category;
-    private Brand brand;
+    private final String name;
     private double price;
     private int quantity;
-    private float rating;
-    private boolean wireless;
-    private boolean onSale;
+    private final float rating;
     private Integer warrantyYears;
-    private String colour;
-    private List<String> tags;
     private String description;
     private String displayImage;
 
@@ -32,37 +26,24 @@ public class Product {
      * A constructor which will help us when instantiating the Product Class.
      * Without our constructor declaration, java compiler will just generate a default
      * constructor w/out any args..... NOT what we want!
-     * @param productId -> a unique string value which is the ID of the product. Each product must have an ID.
-     * @param name -> a String for the name of the product, e.g. Apple MacBook Air 2 2021.
-     * @param category -> an ENUM type CATEGORY in which the product belongs, i.e. mouse, laptops etc.
-     * @param brand -> another ENUM type BRAND which the product belongs to.
-     * @param price -> a double value representing the price of the product.
-     * @param quantity -> an int value to represent the amount of stock available for a certain product.
-     * @param rating -> a float value displaying the "ratings" that the users have given to the specific product.
-     * @param wireless -> a boolean value to specify if the product is wireless or not.
-     * @param onSale -> another boolean value used to help notify users of whether the item is on sale or not.
+     *
+     * @param productId     -> a unique string value which is the ID of the product. Each product must have an ID.
+     * @param name          -> a String for the name of the product, e.g. Apple MacBook Air 2 2021.
+     * @param price         -> a double value representing the price of the product.
+     * @param quantity      -> an int value to represent the amount of stock available for a certain product.
+     * @param rating        -> a float value displaying the "ratings" that the users have given to the specific product.
      * @param warrantyYears -> an int value describing the time period of warranty for the product.
-     * @param colour -> a String value used to describe the colour of the product.
-     * @param tags -> a List of Strings 'tags' that are relevant to the product. Very useful for finding relevant search results.
-     * @param description -> a String to simply enter a description of the product.
-     * @param displayImage -> a String value which will store the filepath to the display image of the specific product.
+     * @param description   -> a String to simply enter a description of the product.
+     * @param displayImage  -> a String value which will store the filepath to the display image of the specific product.
      */
-    public Product(String productId, String name, Category category, Brand brand, double price, int quantity,
-                   float rating, boolean wireless, boolean onSale, Integer warrantyYears, String colour,
-                   List<String> tags, String description, String displayImage) {
-
+    public Product(String productId, String name, double price, int quantity,
+                   float rating, Integer warrantyYears, String description, String displayImage) {
         this.productId = productId;
         this.name = name;
-        this.category = category;
-        this.brand = brand;
         this.price = price;
         this.quantity = quantity;
-        this.rating = rating;
-        this.wireless = wireless;
-        this.onSale = onSale;
         this.warrantyYears = warrantyYears;
-        this.colour = colour;
-        this.tags = tags;
+        this.rating = rating;
         this.description = description;
         this.displayImage = displayImage;
         // ** REFACTOR THOUGHTS **
@@ -74,6 +55,7 @@ public class Product {
 
     /**
      * the unique productID of each product.
+     *
      * @return the productID.
      */
     public String getProductId() {
@@ -81,7 +63,17 @@ public class Product {
     }
 
     /**
+     * Product name.
+     *
+     * @return the name associated with the product.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Price (2 d.p.).
+     *
      * @return the price of the product to 2 d.p.
      */
     public double getPrice() {
@@ -90,6 +82,7 @@ public class Product {
 
     /**
      * Quantity of available products.
+     *
      * @return the amount of stock that business has for the product.
      */
     public int getQuantity() {
@@ -98,6 +91,7 @@ public class Product {
 
     /**
      * What other customers have rated the product.
+     *
      * @return the overall rating of the product out of 5.
      */
     public float getRating() {
@@ -105,23 +99,8 @@ public class Product {
     }
 
     /**
-     * Boolean value to represent if product is wireless.
-     * @return true if product is wireless else return false.
-     */
-    public boolean isWireless() {
-        return wireless;
-    }
-
-    /**
-     * Boolean value to represent if product is currently on sale.
-     * @return true if on sale else return false
-     */
-    public boolean isOnSale() {
-        return onSale;
-    }
-
-    /**
      * How many years of warranty the product comes with.
+     *
      * @return the warranty time period the product comes with.
      */
     public Integer getWarrantyYears() {
@@ -129,47 +108,8 @@ public class Product {
     }
 
     /**
-     * Product colour.
-     * @return the colour of the product.
-     */
-    public String getColour() {
-        return colour;
-    }
-
-    /**
-     * The image associated with the product on display.
-     * @return the display image of the specific product.
-     */
-    public String getDisplayImage() {
-        return displayImage;
-    }
-
-    /**
-     * Product name.
-     * @return the name associated with the product.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Which category the product belongs to.
-     * @return the category which the selected product belongs to.
-     */
-    public Category getCategory() {
-        return category;
-    }
-
-    /**
-     * Which brand is this a product of?
-     * @return the brand which the selected product belongs to.
-     */
-    public Brand getBrand() {
-        return brand;
-    }
-
-    /**
      * A brief description of some specific product.
+     *
      * @return the description of the product.
      */
     public String getDescription() {
@@ -177,11 +117,12 @@ public class Product {
     }
 
     /**
-     * Tags related to the product (useful for relevance during searching of products).
-     * @return a copy of the tags list, so that it is not accidentally modified (due to mutability).
+     * The image associated with the product on display.
+     *
+     * @return the display image of the specific product.
      */
-    public List<String> getTags() {
-        return new ArrayList<>(tags);
+    public String getDisplayImage() {
+        return displayImage;
     }
 
     // setters for fields that may be changed after product created, e.g. whether on sale or not, the price maybe,
@@ -190,14 +131,16 @@ public class Product {
 
     /**
      * Setter method to help change the price of the product as needed.
+     *
      * @param price -> a double value representing the new value we wish to assign to the price of the product.
      */
-    public void  setProductPrice(double price) {
+    public void setProductPrice(double price) {
         this.price = price;
     }
 
     /**
      * Setter method to update quantity of product as needed.
+     *
      * @param quantity -> int value to represent the updated available quantity of the product
      */
     public void setQuantity(int quantity) {
@@ -205,15 +148,8 @@ public class Product {
     }
 
     /**
-     * Setter method helping us change the sale status of the product as needed.
-     * @param onSale -> boolean value representing the new value of whether the product is on sale or not.
-     */
-    public void setonSale(boolean onSale) {
-        this.onSale = onSale;
-    }
-
-    /**
      * Setter method to change the product description as needed.
+     *
      * @param description -> a String which will feature the new description of the product.
      */
     public void setDescription(String description) {
@@ -222,6 +158,7 @@ public class Product {
 
     /**
      * Setter method used to update the display image of a product.
+     *
      * @param displayImage -> a String which will contain the location of file for new displayImage for the product.
      */
     public void setDisplayImage(String displayImage) {
@@ -230,6 +167,7 @@ public class Product {
 
     /**
      * Product information (for the customer to see) of a specific product.
+     *
      * @return a nicely formatted String with the product information.
      */
     public String getProductInfo() {
@@ -239,7 +177,7 @@ public class Product {
                 "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
                 "\nGet it Quick! There are only " + quantity + " of these remaining!" +
                 "\nOur customers have rated this product " + rating + "." +
-                "\nIt comes with " + (warrantyYears ==  null ? "no specifically listed warranty." : ( "a" + warrantyYears + " year warranty.")) +
+                "\nIt comes with " + (warrantyYears == null ? "no specifically listed warranty." : ("a" + warrantyYears + " year warranty.")) +
                 "\nThe product's colour is " + colour + ".";
     }
 }

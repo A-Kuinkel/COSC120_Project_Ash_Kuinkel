@@ -8,18 +8,19 @@ import java.util.Map;
  */
 public class DreamProduct {
 
-
     private final double minPrice;
     private final double maxPrice;
     private final float minRating;
+    private final Integer minWarrantyYears;
     private final Map<ProductAttribute, Object> productAttributesMap;
 
 
     // this constructor will be used when a user is selecting/creating their dream product....
-    public DreamProduct(int minPrice, int maxPrice, float minRating, Map<ProductAttribute, Object> productAttributesMap) {
+    public DreamProduct(int minPrice, int maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttribute, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
+        this.minWarrantyYears = minWarrantyYears;
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
     }
 
@@ -29,6 +30,7 @@ public class DreamProduct {
         this.minPrice = -1;
         this.maxPrice = -1;
         this.minRating = -1;
+        this.minWarrantyYears = -1;
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
     }
 
@@ -49,10 +51,10 @@ public class DreamProduct {
         return new LinkedHashMap<>(productAttributesMap);
     }
 
-    public String getAllDreamProductFeatures(){
-    /**TODO: COMPLETE THIS METHOD**/
-    // here we have to return in a nice format,the desirable/dream characteristics of our products...
-    return "";
+    public String getAllDreamProductFeatures() {
+        /**TODO: COMPLETE THIS METHOD**/
+        // here we have to return in a nice format,the desirable/dream characteristics of our products...
+        return "";
     }
 
     // methods
