@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +16,7 @@ public class DreamProduct {
 
 
     // this constructor will be used when a user is selecting/creating their dream product....
-    public DreamProduct(int minPrice, int maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
+    public DreamProduct(double minPrice, double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
@@ -47,6 +49,70 @@ public class DreamProduct {
 
     public Map<ProductAttributes, Object> getAllProductAttributes() {
         return new LinkedHashMap<>(productAttributesMap);
+    }
+
+    public boolean isOnSale() {
+        // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or any other value somehow....
+        // if we get a null/other value here then that's no good as it'll throw an error, so I think this is enough to guard against
+        // it:
+        Object isOnSaleValue = this.getAllProductAttributes().get(ProductAttributes.ON_SALE);
+        boolean onSale = false;
+        if (isOnSaleValue instanceof Boolean) {
+            // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
+            // so to convert it back to a primitive we must cast it to a boolean, like this:
+            onSale = (boolean) isOnSaleValue;
+        }
+        ;
+        return onSale;
+    }
+
+    public boolean isWireless() {
+        Object isWirelessValue = this.getAllProductAttributes().get(ProductAttributes.WIRELESS);
+        boolean wireless = false;
+        if (isWirelessValue instanceof Boolean) {
+            wireless = (boolean) isWirelessValue;
+        }
+        return wireless;
+    }
+
+    public String getColour() {
+        Object colourValue = this.getAllProductAttributes().get(ProductAttributes.COLOUR);
+        String colour = "N/A";
+        if (colourValue instanceof String) {
+            colour = (String) colourValue;
+        }
+        return colour;
+    }
+
+    public List<String> getTags() {
+        Object tagsValue = this.getAllProductAttributes().get(ProductAttributes.TAGS);
+        List<String> tags = new ArrayList<>();
+        if (tagsValue instanceof List<?> list) {
+            for (Object tag : list) {
+                if (tag instanceof String string) {
+                    tags.add(string);
+                }
+            }
+        }
+        return tags;
+    }
+
+    public Brand getBrand() {
+        Object brandValue = this.getAllProductAttributes().get(ProductAttributes.BRAND);
+        Brand brand = null;
+        if (brandValue instanceof Brand someBrand) {
+            brand = someBrand;
+        }
+        return brand;
+    }
+
+    public Category getCategory() {
+        Object categoryValue = this.getAllProductAttributes().get(ProductAttributes.CATEGORY);
+        Category category = null;
+        if (categoryValue instanceof Category someCat) {
+            category = someCat;
+        }
+        return category;
     }
 
     public String getAllDreamProductFeatures() {

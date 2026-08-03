@@ -177,10 +177,10 @@ public class Product {
     public String getProductInfo() {
         // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
         // so to convert it back to a primitive we must cast it to a boolean, like this:
-        boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
-        boolean wireless = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.WIRELESS);
-        // same story with this, we need to convert from object to String using the .toString() method:
-        String colour = this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.COLOUR).toString();
+        // boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
+        // instead of doing this everytime we need to access the onSale:
+        // boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
+        // I'll just create like a method/getter in the DreamProduct.java instead... which will also defend against value mismatch errors
         return "This product's ID is: " + productId +
                 "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
                 "\nIt's price is " + price +
