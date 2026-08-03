@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The class (blueprint) for our product dictating what information a product should contain &
  * provides a convenient way to access our products.
@@ -14,9 +11,12 @@ public class Product {
     private double price;
     private int quantity;
     private final float rating;
-    private Integer warrantyYears;
+    private final Integer warrantyYears;
     private String description;
     private String displayImage;
+    private final DreamProduct productSearchableCharacteristics; // unlikely that somebody is searching for product
+    // by e.g. quantity or productId, they're most likely searching by name, brand, category etc. hence why I named this
+    // variable productSearchableCharacteristics.
 
     // ** REFACTOR THOUGHTS **
     // I will most likely have to do something like:
@@ -35,9 +35,10 @@ public class Product {
      * @param warrantyYears -> an int value describing the time period of warranty for the product.
      * @param description   -> a String to simply enter a description of the product.
      * @param displayImage  -> a String value which will store the filepath to the display image of the specific product.
+     * @param productSearchableCharacteristics -> an instance of the DreamProduct class which stores the searchable attributes associated with a product.
      */
-    public Product(String productId, String name, double price, int quantity,
-                   float rating, Integer warrantyYears, String description, String displayImage) {
+    public Product(String productId, String name, double price, int quantity, float rating,
+                   Integer warrantyYears, String description, String displayImage, DreamProduct productSearchableCharacteristics) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -46,6 +47,7 @@ public class Product {
         this.rating = rating;
         this.description = description;
         this.displayImage = displayImage;
+        this.productSearchableCharacteristics = productSearchableCharacteristics;
         // ** REFACTOR THOUGHTS **
         // keywords = new DreamProduct(name,category,brand,tags,minPrice,maxPrice)
     }
@@ -125,6 +127,8 @@ public class Product {
         return displayImage;
     }
 
+    public DreamProduct getProductSearchableCharacteristics() {return productSearchableCharacteristics;}
+
     // setters for fields that may be changed after product created, e.g. whether on sale or not, the price maybe,
     // quantity as well, tags is debatable ( but I doubt it'd change, so leave it...), description could possibly be
     // updated so include a setter for this & finally the display image...
@@ -171,6 +175,12 @@ public class Product {
      * @return a nicely formatted String with the product information.
      */
     public String getProductInfo() {
+        // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
+        // so to convert it back to a primitive we must cast it to a boolean, like this:
+        boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
+        boolean wireless = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.WIRELESS);
+        // same story with this, we need to convert from object to String using the .toString() method:
+        String colour = this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.COLOUR).toString();
         return "This product's ID is: " + productId +
                 "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
                 "\nIt's price is " + price +

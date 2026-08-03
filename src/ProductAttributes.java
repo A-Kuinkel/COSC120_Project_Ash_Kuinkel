@@ -1,4 +1,4 @@
-public enum ProductAttribute {
+public enum ProductAttributes {
 
     CATEGORY,BRAND,TAGS,WIRELESS,COLOUR,ON_SALE;
 

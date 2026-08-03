@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,11 +10,11 @@ public class DreamProduct {
     private final double maxPrice;
     private final float minRating;
     private final Integer minWarrantyYears;
-    private final Map<ProductAttribute, Object> productAttributesMap;
+    private final Map<ProductAttributes, Object> productAttributesMap;
 
 
     // this constructor will be used when a user is selecting/creating their dream product....
-    public DreamProduct(int minPrice, int maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttribute, Object> productAttributesMap) {
+    public DreamProduct(int minPrice, int maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
@@ -26,7 +24,7 @@ public class DreamProduct {
 
     // also we need one to assign the existing products with their own sort of attributes that are able to be compared
     // against rather than having a user search for their dream products for example....
-    public DreamProduct(Map<ProductAttribute, Object> productAttributesMap) {
+    public DreamProduct(Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = -1;
         this.maxPrice = -1;
         this.minRating = -1;
@@ -47,7 +45,7 @@ public class DreamProduct {
         return minRating;
     }
 
-    public Map<ProductAttribute, Object> getAllProductAttributes() {
+    public Map<ProductAttributes, Object> getAllProductAttributes() {
         return new LinkedHashMap<>(productAttributesMap);
     }
 

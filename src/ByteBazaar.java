@@ -90,8 +90,6 @@ public class ByteBazaar {
             String productDescription = productInfo[12];
             String productDisplayImage = productInfo[13];
 
-
-
             List<String> filteredProducts = new ArrayList<>();
             filteredProducts.add(productInfo[0]);
             filteredProducts.add(productName);
