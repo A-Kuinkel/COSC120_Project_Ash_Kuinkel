@@ -48,6 +48,8 @@ public class DreamProduct {
         return new LinkedHashMap<>(productAttributesMap);
     }
 
+    public Object getProductAttribute(ProductAttributes productAttribute) { return getAllProductAttributes().get(productAttribute); }
+
     public boolean isOnSale() {
         // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or any other value somehow....
         // if we get a null/other value here then that's no good as it'll throw an error, so I think this is enough to guard against
@@ -127,14 +129,27 @@ public class DreamProduct {
         // ON_SALE : TRUE etc...
     }
 
-    // methods
-    public boolean productMatchesDreamProductFeatures() {
+    // check if the Map of the Product matches with the user's dream product:
+    public boolean productMatchesDreamProductFeatures(DreamProduct aRealProductCharacteristics) {
         /**TODO: COMPLETE THIS METHOD**/
         // if both happen to be a Collection e.g. set, list etc. (e.g. for tags) then check if the user dream & product
         // contain any same keywords & show the user that product, e.g if user dream product has the word "Gaming" then
         // we check for our tags only since thats the one that features the collection dataset type & go through all
         // products and check which also have the tags "Gaming" & for the ones that do have that tag, return true else
         // we return false to indicate that the current product does not match....
-        return false;
+
+        // first comparing the
+        for (ProductAttributes mapKeys : aRealProductCharacteristics.getAllProductAttributes().keySet()){
+            // is this map Key something the user specified in their search? If yes then proceed else just return product matches:
+            if(this.productAttributesMap.containsKey(mapKeys)){
+                // check if tags/brands etc. match:
+                if(getProductAttribute(mapKeys) instanceof Collection<?> && aRealProductCharacteristics.getProductAttribute(mapKeys) instanceof Collection<?>){
+                    Set<Object> thingsInCommon = new HashSet<>((Collection<?>) aRealProductCharacteristics.getProductAttribute(mapKeys));
+                    thingsInCommon.retainAll((Collection<?>) getProductAttribute(mapKeys));
+                    if(thingsInCommon.isEmpty()){return false;}
+                }
+            }
+        }
+        return true;
     }
 }
