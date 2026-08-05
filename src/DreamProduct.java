@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -116,9 +113,18 @@ public class DreamProduct {
     }
 
     public String getAllDreamProductFeatures() {
-        /**TODO: COMPLETE THIS METHOD**/
         // here we have to return in a nice format,the desirable/dream characteristics of our products...
-        return "";
+        StringBuilder  allDreamProductFeatures = new StringBuilder();
+
+        // looping through all of the keys within the map
+        for (ProductAttributes productAttributes : productAttributesMap.keySet()) {
+            allDreamProductFeatures.append("\n").append(productAttributes).append(":")
+                    .append(productAttributesMap.get(productAttributes));
+        }
+        return allDreamProductFeatures.toString();
+        // so this will return the products Dream features e.g.
+        // BRAND : SAMSUNG
+        // ON_SALE : TRUE etc...
     }
 
     // methods
