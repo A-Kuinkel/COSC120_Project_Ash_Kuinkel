@@ -143,10 +143,17 @@ public class DreamProduct {
             // is this map Key something the user specified in their search? If yes then proceed else just return product matches:
             if(this.productAttributesMap.containsKey(mapKeys)){
                 // check if tags/brands etc. match:
-                if(getProductAttribute(mapKeys) instanceof Collection<?> && aRealProductCharacteristics.getProductAttribute(mapKeys) instanceof Collection<?>){
-                    Set<Object> thingsInCommon = new HashSet<>((Collection<?>) aRealProductCharacteristics.getProductAttribute(mapKeys));
-                    thingsInCommon.retainAll((Collection<?>) getProductAttribute(mapKeys));
+                Object userWantedProduct = getProductAttribute(mapKeys);
+                Object actualProduct = aRealProductCharacteristics.getProductAttribute(mapKeys);
+
+                if(userWantedProduct instanceof Collection<?> && actualProduct instanceof Collection<?>){
+                    Set<Object> thingsInCommon = new HashSet<>((Collection<?>) actualProduct);
+                    thingsInCommon.retainAll((Collection<?>) userWantedProduct);
                     if(thingsInCommon.isEmpty()){return false;}
+                }
+                // if the user says they want, e.g. category laptops, we must only return the true on the products with category laptops & false for everything else:
+                else if (!userWantedProduct.equals(actualProduct)){
+                    return false;
                 }
             }
         }
