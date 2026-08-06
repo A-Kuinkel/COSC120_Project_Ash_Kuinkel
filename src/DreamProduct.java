@@ -1,7 +1,10 @@
 import java.util.*;
 
 /**
- *
+ * The class (blueprint) for our DreamProduct, which informs users/developers of the information
+ * that the user is able to search for a product with & also provides two important helper methods
+ * one to output the dream features of a product & one to see whether a product matches the user
+ * dream product...
  */
 public class DreamProduct {
 
@@ -13,6 +16,16 @@ public class DreamProduct {
 
 
     // this constructor will be used when a user is selecting/creating their dream product....
+
+    /**
+     * A constructor which will be used when a user is selecting/creating their dream product.
+     * These are all fields the user is able to search by.
+     * @param minPrice ->
+     * @param maxPrice ->
+     * @param minRating ->
+     * @param minWarrantyYears ->
+     * @param productAttributesMap ->
+     */
     public DreamProduct(double minPrice, double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
@@ -23,6 +36,11 @@ public class DreamProduct {
 
     // also we need one to assign the existing products with their own sort of attributes that are able to be compared
     // against rather than having a user search for their dream products for example....
+
+    /**
+     *
+     * @param productAttributesMap ->
+     */
     public DreamProduct(Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = -1;
         this.maxPrice = -1;
@@ -31,25 +49,49 @@ public class DreamProduct {
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
     }
 
-
+    /**
+     *
+     * @return
+     */
     public double getMinPrice() {
         return minPrice;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMaxPrice() {
         return maxPrice;
     }
 
+    /**
+     *
+     * @return
+     */
     public float getMinRating() {
         return minRating;
     }
 
+    /**
+     *
+     * @return
+     */
     public Map<ProductAttributes, Object> getAllProductAttributes() {
         return new LinkedHashMap<>(productAttributesMap);
     }
 
+    /**
+     *
+     * @param productAttribute
+     * @return
+     */
     public Object getProductAttribute(ProductAttributes productAttribute) { return getAllProductAttributes().get(productAttribute); }
 
+    /**
+     *
+     * @return
+     */
     public boolean isOnSale() {
         // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or any other value somehow....
         // if we get a null/other value here then that's no good as it'll throw an error, so I think this is enough to guard against
@@ -65,6 +107,10 @@ public class DreamProduct {
         return onSale;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isWireless() {
         Object isWirelessValue = this.getAllProductAttributes().get(ProductAttributes.WIRELESS);
         boolean wireless = false;
@@ -74,6 +120,10 @@ public class DreamProduct {
         return wireless;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getColour() {
         Object colourValue = this.getAllProductAttributes().get(ProductAttributes.COLOUR);
         String colour = "N/A";
@@ -83,6 +133,10 @@ public class DreamProduct {
         return colour;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getTags() {
         Object tagsValue = this.getAllProductAttributes().get(ProductAttributes.TAGS);
         List<String> tags = new ArrayList<>();
@@ -96,6 +150,10 @@ public class DreamProduct {
         return tags;
     }
 
+    /**
+     *
+     * @return
+     */
     public Brand getBrand() {
         Object brandValue = this.getAllProductAttributes().get(ProductAttributes.BRAND);
         Brand brand = null;
@@ -105,6 +163,10 @@ public class DreamProduct {
         return brand;
     }
 
+    /**
+     *
+     * @return
+     */
     public Category getCategory() {
         Object categoryValue = this.getAllProductAttributes().get(ProductAttributes.CATEGORY);
         Category category = null;
@@ -114,6 +176,10 @@ public class DreamProduct {
         return category;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAllDreamProductFeatures() {
         // here we have to return in a nice format,the desirable/dream characteristics of our products...
         StringBuilder  allDreamProductFeatures = new StringBuilder();
@@ -130,6 +196,11 @@ public class DreamProduct {
     }
 
     // check if the Map of the Product matches with the user's dream product:
+    /**
+     *
+     * @param aRealProductCharacteristics
+     * @return
+     */
     public boolean productMatchesDreamProductFeatures(DreamProduct aRealProductCharacteristics) {
         /**TODO: COMPLETE THIS METHOD**/
         // if both happen to be a Collection e.g. set, list etc. (e.g. for tags) then check if the user dream & product
