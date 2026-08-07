@@ -20,11 +20,12 @@ public class DreamProduct {
     /**
      * A constructor which will be used when a user is selecting/creating their dream product.
      * These are all fields the user is able to search by.
-     * @param minPrice ->
-     * @param maxPrice ->
-     * @param minRating ->
-     * @param minWarrantyYears ->
-     * @param productAttributesMap ->
+     * @param minPrice -> The user's selection of the minPrice their potential dream product should have.
+     * @param maxPrice -> The user's selection of the maxPrice their potential dream product should have.
+     * @param minRating -> The user's selection of the minRating their potential dream product should have.
+     * @param minWarrantyYears -> The user's selection of the min. number of warranty their dream product should have.
+     * @param productAttributesMap -> Map containing the additional attributes that user may search by including, e.g.
+     *                                colour, brand, category etc.
      */
     public DreamProduct(double minPrice, double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
@@ -38,8 +39,10 @@ public class DreamProduct {
     // against rather than having a user search for their dream products for example....
 
     /**
+     * A constructor which will be used when assigning existing products, with their own set of dream attributes which
+     * are able to be compared...
      *
-     * @param productAttributesMap ->
+     * @param productAttributesMap -> A map of the product's comparable attributes, e.g. brand, category etc.
      */
     public DreamProduct(Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = -1;
@@ -50,32 +53,36 @@ public class DreamProduct {
     }
 
     /**
+     * The minimum price user has selected for their potential dream product.
      *
-     * @return
+     * @return the minimum price.
      */
     public double getMinPrice() {
         return minPrice;
     }
 
     /**
+     * The maximum price user has selected for their potential dream product.
      *
-     * @return
+     * @return the maximum price.
      */
     public double getMaxPrice() {
         return maxPrice;
     }
 
     /**
+     * The minimum rating user has selected for their potential dream product.
      *
-     * @return
+     * @return the minimum rating.
      */
     public float getMinRating() {
         return minRating;
     }
 
     /**
+     * The other product Attributes that the user may've searched by for their potential dream product.
      *
-     * @return
+     * @return the linked hashmap of productAttributes
      */
     public Map<ProductAttributes, Object> getAllProductAttributes() {
         return new LinkedHashMap<>(productAttributesMap);
@@ -83,14 +90,17 @@ public class DreamProduct {
 
     /**
      *
-     * @param productAttribute
-     * @return
+     * @param productAttribute -> a specific searchable attribute of product, e.g. brand, category etc.
+     *
+     * @return the  searchable product attribute.
      */
     public Object getProductAttribute(ProductAttributes productAttribute) { return getAllProductAttributes().get(productAttribute); }
 
     /**
+     * Convenient method to check if product is onSale or not. Convenient because we define this only once
+     * here & can use it within different parts of the program.
      *
-     * @return
+     * @return true if the product is on sale else, return false.
      */
     public boolean isOnSale() {
         // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or any other value somehow....
@@ -108,8 +118,9 @@ public class DreamProduct {
     }
 
     /**
+     * Convenient method to check if product is wireless.
      *
-     * @return
+     * @return true if product is wireless, else return false.
      */
     public boolean isWireless() {
         Object isWirelessValue = this.getAllProductAttributes().get(ProductAttributes.WIRELESS);
@@ -121,8 +132,9 @@ public class DreamProduct {
     }
 
     /**
+     * Convenient method to check the colour of the product.
      *
-     * @return
+     * @return the colour of the product.
      */
     public String getColour() {
         Object colourValue = this.getAllProductAttributes().get(ProductAttributes.COLOUR);
@@ -134,8 +146,9 @@ public class DreamProduct {
     }
 
     /**
+     * Convenient method to return all the tags associated with a specific product.
      *
-     * @return
+     * @return the tags of the featured product.
      */
     public List<String> getTags() {
         Object tagsValue = this.getAllProductAttributes().get(ProductAttributes.TAGS);
@@ -151,8 +164,9 @@ public class DreamProduct {
     }
 
     /**
+     *  Convenient method to check the brand of a product.
      *
-     * @return
+     * @return the brand that the product belongs to.
      */
     public Brand getBrand() {
         Object brandValue = this.getAllProductAttributes().get(ProductAttributes.BRAND);
@@ -164,8 +178,9 @@ public class DreamProduct {
     }
 
     /**
+     * Convenient method to check the category of a product.
      *
-     * @return
+     * @return the category that the product belongs to.
      */
     public Category getCategory() {
         Object categoryValue = this.getAllProductAttributes().get(ProductAttributes.CATEGORY);
@@ -178,7 +193,7 @@ public class DreamProduct {
 
     /**
      *
-     * @return
+     * @return the product attributes
      */
     public String getAllDreamProductFeatures() {
         // here we have to return in a nice format,the desirable/dream characteristics of our products...
