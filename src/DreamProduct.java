@@ -221,7 +221,7 @@ public class DreamProduct {
         // products and check which also have the tags "Gaming" & for the ones that do have that tag, return true else
         // we return false to indicate that the current product does not match....
 
-        // first comparing the
+        // first comparing the two product attributes:
         for (ProductAttributes mapKeys : aRealProductCharacteristics.getAllProductAttributes().keySet()){
             // is this map Key something the user specified in their search? If yes then proceed else just return product matches:
             if(this.productAttributesMap.containsKey(mapKeys)){
@@ -229,12 +229,16 @@ public class DreamProduct {
                 Object userWantedProduct = getProductAttribute(mapKeys);
                 Object actualProduct = aRealProductCharacteristics.getProductAttribute(mapKeys);
 
+                // we only ever go to this if block, if we are comparing the tags since that's the only attribute in the
+                // format of Collection:
                 if(userWantedProduct instanceof Collection<?> && actualProduct instanceof Collection<?>){
                     Set<Object> thingsInCommon = new HashSet<>((Collection<?>) actualProduct);
                     thingsInCommon.retainAll((Collection<?>) userWantedProduct);
                     if(thingsInCommon.isEmpty()){return false;}
                 }
-                // if the user says they want, e.g. category laptops, we must only return the true on the products with category laptops & false for everything else:
+
+                // for everything else, besides the tags, if the user says they want, e.g. category laptops,
+                // we must only return the true on the products with category laptops & false for everything else:
                 else if (!userWantedProduct.equals(actualProduct)){
                     return false;
                 }
