@@ -14,9 +14,6 @@ public class DreamProduct {
     private final Integer minWarrantyYears;
     private final Map<ProductAttributes, Object> productAttributesMap;
 
-
-    // this constructor will be used when a user is selecting/creating their dream product....
-
     /**
      * A constructor which will be used when a user is selecting/creating their dream product.
      * These are all fields the user is able to search by.
@@ -34,9 +31,6 @@ public class DreamProduct {
         this.minWarrantyYears = minWarrantyYears;
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
     }
-
-    // also we need one to assign the existing products with their own sort of attributes that are able to be compared
-    // against rather than having a user search for their dream products for example....
 
     /**
      * A constructor which will be used when assigning existing products, with their own set of dream attributes which
@@ -113,7 +107,6 @@ public class DreamProduct {
             // so to convert it back to a primitive we must cast it to a boolean, like this:
             onSale = (boolean) isOnSaleValue;
         }
-        ;
         return onSale;
     }
 
@@ -192,6 +185,8 @@ public class DreamProduct {
     }
 
     /**
+     * Allows for a well formatted and easily readable string containing a dream product's features/attributes.
+     * Lists all features/attributes of the product on their own separate lines.
      *
      * @return the product attributes
      */
@@ -199,7 +194,7 @@ public class DreamProduct {
         // here we have to return in a nice format,the desirable/dream characteristics of our products...
         StringBuilder  allDreamProductFeatures = new StringBuilder();
 
-        // looping through all of the keys within the map
+        // looping through all the keys within the map
         for (ProductAttributes productAttributes : productAttributesMap.keySet()) {
             allDreamProductFeatures.append("\n").append(productAttributes).append(":")
                     .append(productAttributesMap.get(productAttributes));
@@ -210,17 +205,19 @@ public class DreamProduct {
         // ON_SALE : TRUE etc...
     }
 
-    // check if the Map of the Product matches with the user's dream product:
     /**
+     * Compares the user's dream product which they searched for to an existing product and it's
+     * attributes. If the user's specifications match some product/products exactly then we know
+     * that these are most likely the user's dream products.
      *
-     * @param aRealProductCharacteristics
-     * @return
+     * @param aRealProductCharacteristics -> the real characteristics/attributes an existing product holds.
+     *
+     * @return true if all the user's dream attributes is indeed matching with the real products characteristics/attributes.
      */
     public boolean productMatchesDreamProductFeatures(DreamProduct aRealProductCharacteristics) {
-        /**TODO: COMPLETE THIS METHOD**/
         // if both happen to be a Collection e.g. set, list etc. (e.g. for tags) then check if the user dream & product
-        // contain any same keywords & show the user that product, e.g if user dream product has the word "Gaming" then
-        // we check for our tags only since thats the one that features the collection dataset type & go through all
+        // contain any same keywords & show the user that product, e.g. if user dream product has the word "Gaming" then
+        // we check for our tags only since that's the one that features the collection dataset type & go through all
         // products and check which also have the tags "Gaming" & for the ones that do have that tag, return true else
         // we return false to indicate that the current product does not match....
 
