@@ -1,11 +1,13 @@
+import java.util.List;
+
 /**
  * The class (blueprint) for our product dictating what information a product should contain &
  * provides a convenient way to access our products.
  */
 public class Product {
 
-    // so the ones initialised in dreamproduct, don't need to be duplicated here i think...
-    // instead we should call the DreamProduct class which is like the aggregation here..
+    // so the ones initialised in dream product, don't need to be duplicated here I think...
+    // instead we should call the DreamProduct class which is like the aggregation here.
     final private String productId;
     private final String name;
     private double price;
@@ -17,10 +19,6 @@ public class Product {
     private final DreamProduct productSearchableCharacteristics; // unlikely that somebody is searching for product
     // by e.g. quantity or productId, they're most likely searching by name, brand, category etc. hence why I named this
     // variable productSearchableCharacteristics.
-
-    // ** REFACTOR THOUGHTS **
-    // I will most likely have to do something like:
-    // private final DreamProduct keywords;
 
     /**
      * A constructor which will help us when instantiating the Product Class.
@@ -48,12 +46,7 @@ public class Product {
         this.description = description;
         this.displayImage = displayImage;
         this.productSearchableCharacteristics = productSearchableCharacteristics;
-        // ** REFACTOR THOUGHTS **
-        // keywords = new DreamProduct(name,category,brand,tags,minPrice,maxPrice)
     }
-
-    // I will only do the getters I know I will need in here 100% first,
-    // because I am not sure about the shared ones:
 
     /**
      * the unique productID of each product.
@@ -188,6 +181,9 @@ public class Product {
         boolean onSale = this.productSearchableCharacteristics.isOnSale();
         boolean wireless = this.productSearchableCharacteristics.isWireless();
         String colour = this.getProductSearchableCharacteristics().getColour();
+        Category category = this.getProductSearchableCharacteristics().getCategory();
+        Brand brand = this.getProductSearchableCharacteristics().getBrand();
+        List<String> tags = this.getProductSearchableCharacteristics().getTags();
 
         return "This product's ID is: " + productId +
                 "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
@@ -195,7 +191,10 @@ public class Product {
                 "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
                 "\nGet it Quick! There are only " + quantity + " of these remaining!" +
                 "\nOur customers have rated this product " + rating + "." +
-                "\nIt comes with " + (warrantyYears == null ? "no specifically listed warranty." : ("a" + warrantyYears + " year warranty.")) +
-                "\nThe product's colour is " + colour + ".";
+                "\nIt comes with " + (warrantyYears == null ? "no specifically listed warranty." : ("a " + warrantyYears + " year warranty.")) +
+                "\nThe product's colour is " + colour + "." +
+                "\nThe product belongs to the category: " + category +
+                "\nIt is a product of the brand: " + brand +
+                "\nGet similar results to this product by searching the tags: " + tags;
     }
 }
