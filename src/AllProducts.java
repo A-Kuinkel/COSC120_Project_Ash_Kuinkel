@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,22 +15,39 @@ public class AllProducts {
     // use an appropriate data structure here to store/access the Product class Objects.... I think like a list would
     // be good.... in the examples from the lecture they use a hashset, but is that really necessary? I mean there is
     // actually no duplicate items & even if two products had the same names, their id's would differ.
+    List<Product> productList = new ArrayList<>();
 
     // method to add Products to our data structure:
     public void addProductsToDataStructure(Product product){
-        // TODO: finish off method
         // this one should be relatively easy, we just add the product to e.g. a map,set etc. whatever ds we decide to go with.
+        productList.add(product);
     }
 
     // method to compare Product in the data structure to user dream object (param):
     public List<Product> compareProductToUserDreamProduct(DreamProduct dreamProduct){
-        // TODO: finish off this method
         // well there seems as if there is only one way to approach this, get the product from the data structure,
         // compare it to the dreamProduct using our matches method from DreamProduct class, i.e. going onto comparing
         // the attributes specified by the user, against some real product within the database file. I originally thought
         // that I may return like a boolean for this method... but reading the rubric again it does explicitly mention
         // that we need to return a collection of our products...
-        return null;
+        List<Product> matchingProducts = new ArrayList<>();
+        for (Product product : productList){
+            // checking for match against the user's searchable attribute requirements:
+            if(product.getProductSearchableCharacteristics().productMatchesDreamProductFeatures(dreamProduct)){
+                // checking to ensure that the product fits within the user's budget, minRating, warranty wishes etc.
+                // also note that we don't check for the attributes inside the ProductAttributes Map, as those have
+                // already been handled within the .productMatchesDreamProductFeatures() method in DreamProduct class.
+                boolean matchesBudget = product.getPrice() >= dreamProduct.getMinPrice() &&
+                        product.getPrice() <= dreamProduct.getMaxPrice();
+                boolean matchesRating = product.getRating() > dreamProduct.getMinRating();
+                boolean matchesWarranty = product.getWarrantyYears() > dreamProduct.getMinWarrantyYears();
+
+                if(matchesBudget && matchesRating && matchesWarranty){
+                    matchingProducts.add(product);
+                }
+            }
+        }
+        return matchingProducts;
     }
 
     // method to search a product by its name... e.g. user may not care for brand or category, they just want laptops...
