@@ -37,10 +37,15 @@ public class AllProducts {
                 // checking to ensure that the product fits within the user's budget, minRating, warranty wishes etc.
                 // also note that we don't check for the attributes inside the ProductAttributes Map, as those have
                 // already been handled within the .productMatchesDreamProductFeatures() method in DreamProduct class.
-                boolean matchesBudget = product.getPrice() >= dreamProduct.getMinPrice() &&
-                        product.getPrice() <= dreamProduct.getMaxPrice();
+                boolean matchesBudget = (product.getPrice() == -1 || product.getPrice() >= dreamProduct.getMinPrice()) &&
+                        (product.getPrice() == -1 || product.getPrice() <= dreamProduct.getMaxPrice()); // if the product price
+                // is -1, that means user skipped the price selection, so just return everything to them...
                 boolean matchesRating = product.getRating() > dreamProduct.getMinRating();
-                boolean matchesWarranty = product.getWarrantyYears() > dreamProduct.getMinWarrantyYears();
+                boolean matchesWarranty = dreamProduct.getMinWarrantyYears() == null
+                        || (product.getWarrantyYears() != null
+                        && product.getWarrantyYears() > dreamProduct.getMinWarrantyYears()); // Some warranty values in
+                        // our db file are null, and the user may not care about warranty... so we must just handle those
+                        // cases as well by checking for null.
 
                 if(matchesBudget && matchesRating && matchesWarranty){
                     matchingProducts.add(product);
@@ -52,7 +57,7 @@ public class AllProducts {
 
     // method to search a product by its name... e.g. user may not care for brand or category, they just want laptops...
     public List<Product> searchProductByName(String productName){
-        // TODO: finish off this method
+        // TODO: FINISH OFF THIS METHOD;
         // the simplest way I think we can do this is just get the exact name the user searched... convert it to lowercase
         // remove all trailing/beginning whitespace and simply check with a .contains() method... However, I think making
         // use of the tags here is also very important... in some way, for a cool similar items factor or something....
@@ -60,7 +65,17 @@ public class AllProducts {
         // find the exact thing you're looking for, but here are some more items you may like:.... maybe that'd be a good
         // place to make use of tags, but the simpler option may just be to give the user this we couldn't find message then
         // just return all products...
-        return null;
+        // this reveals something more interesting that I seemed to have skipped over before, the product list will hold the
+        // entire database content the entire time program is running, so all the products we have in our file will be held
+        // by the data structure in this file (which will be called in the main file, ByteBazaar).
+        List<Product> matchingProducts = new ArrayList<>();
+
+        for (Product product : productList){
+            if(product.getName().toLowerCase().contains(productName.toLowerCase())){
+                matchingProducts.add(product);
+            }
+        }
+        return matchingProducts;
     }
 
     public Product getProductById(String productId){
@@ -75,6 +90,7 @@ public class AllProducts {
     // these attributes from the database... we don't have to hard code everything in the drop-downs, because what if
     // the db changes?
     public List<Brand> getAllUniqueBrands(){
+
         return null;
     }
 
