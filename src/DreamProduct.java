@@ -74,6 +74,13 @@ public class DreamProduct {
     }
 
     /**
+     * The minimum time period of warranty the user wants their dream product to have.
+     *
+     * @return the minimum warranty period.
+     */
+    public Integer getMinWarrantyYears() {return minWarrantyYears;}
+
+    /**
      * The other product Attributes that the user may've searched by for their potential dream product.
      *
      * @return the linked hashmap of productAttributes
