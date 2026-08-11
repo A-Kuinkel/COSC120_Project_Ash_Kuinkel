@@ -1,13 +1,7 @@
 import java.util.*;
 
 /**
- * The rubric specifically says to follow these instructions for this class:
- * The Registry class contains:
- *  1) an appropriate field (data structure) to store and access Domain class objects
- *  2) a method to add Domain class objects to the data structure
- *  3) a method to compare Domain class objects in the field (data structure) to a user's 'dream' object (parameter),
- *  returning an appropriate collection of matching Domain class objects.
- *  4) any other methods as necessary for your program to run
+ *
  */
 public class AllProducts {
 
@@ -18,12 +12,26 @@ public class AllProducts {
     Map<String,Product> productMap = new HashMap<>();
 
     // method to add Products to our data structure:
+
+    /**
+     * Method to add a product to the productMap (holding every product within the dataset)
+     *
+     * @param product -> an instance of the product class, i.e. a real product from the dataset
+     */
     public void addProductsToDataStructure(Product product){
         // this one should be relatively easy, we just add the product to e.g. a map,set etc. whatever ds we decide to go with.
         String id = product.getProductId();
         productMap.put(id,product);
     }
 
+    /**
+     * A method to check if a Product matches the user's dream product criteria.
+     *
+     * @param dreamProduct -> An instance of the DreamProduct class, representing the characteristics of the user's dream
+     *                        product.
+     *
+     * @return the list of Products containing all the products that have met the criteria to be user's dream product.
+     */
     // method to compare Product in the data structure to user dream object (param):
     public List<Product> compareProductToUserDreamProduct(DreamProduct dreamProduct){
         // well there seems as if there is only one way to approach this, get the product from the data structure,
@@ -59,6 +67,14 @@ public class AllProducts {
     }
 
     // method to search a product by its name... e.g. user may not care for brand or category, they just want laptops...
+
+    /**
+     * A method to enable a user to search for a product by its name.
+     *
+     * @param productName -> The user's search term (in the form of a string).
+     *
+     * @return the list of Products containing all the products which match the user's search.
+     */
     public List<Product> searchProductByName(String productName){
         // TODO: FINISH OFF THIS METHOD;
         // the simplest way I think we can do this is just get the exact name the user searched... convert it to lowercase
@@ -81,6 +97,13 @@ public class AllProducts {
         return matchingProducts;
     }
 
+    /**
+     * Method to fetch any product within the Hashmap (containing all products from db) by its id.
+     *
+     * @param productId -> The id of the product we wish to fetch.
+     *
+     * @return the individual product.
+     */
     public Product getProductById(String productId){
         // TODO: finish off this method
         // this is useful when we want to quickly retrieve a product, e.g. if user selects a product from the matches
@@ -95,6 +118,12 @@ public class AllProducts {
     // what if we had 1000 entries we needed to change? Nobody is doing that, it's bad practice, so we must create these
     // dynamic methods. & e.g. if user wants to filter product by brand or anything, everything is very easy with these
     // dynamic methods:
+
+    /**
+     * Method to retrieve all the unique brands associated with our products.
+     *
+     * @return all the unique brands present within the HashMap.
+     */
     public Set<Brand> getAllUniqueBrands(){
         Set<Brand> uniqueBrands = new HashSet<>();
         // all our brand values in dataset are populated with appropriate values, no null, n/a or anything so we don't
@@ -105,6 +134,11 @@ public class AllProducts {
         return uniqueBrands;
     }
 
+    /**
+     * Method to retrieve all the unique categories that our products belong to.
+     *
+     * @return the unique categories within the HashMap.
+     */
     public Set<Category> getAllUniqueCategories(){
         Set<Category> uniqueCategories = new HashSet<>();
         // same with categories, our dataset doesn't have like null or anything for categories, so no need for an explicit
@@ -115,6 +149,11 @@ public class AllProducts {
         return uniqueCategories;
     }
 
+    /**
+     * Method to retrieve all the unique tags that our products are listed with.
+     *
+     * @return the unique tags within the HashMap storing our products.
+     */
     public Set<String> getAllUniqueTags(){
         Set<String> uniqueTags = new HashSet<>();
         for (Product product : productMap.values()){
@@ -124,7 +163,7 @@ public class AllProducts {
             for (String thisProductsTags : product.getProductSearchableCharacteristics().getTags()){
                 uniqueTags.add(thisProductsTags);
             }
-            // also intellij suggests that we can write this second for loop logic in one line using:
+            // also IntelliJ suggests that we can write this second for loop logic in one line using:
             // uniqueTags.addAll(product.getProductSearchableCharacteristics().getTags());
             // but I argue my line is much more readable & easy to follow for me coming back to this code later on
             // down the line, hence why I have kept my loop.
@@ -132,6 +171,11 @@ public class AllProducts {
         return uniqueTags;
     }
 
+    /**
+     * Method to retrieve all the unique colours that our products are available in.
+     *
+     * @return all the unique colours within the HashMap containing our products.
+     */
     public Set<String> getAllUniqueColours(){
         Set<String> uniqueColours = new HashSet<>();
         for (Product product : productMap.values()){
@@ -142,6 +186,11 @@ public class AllProducts {
         return uniqueColours;
     }
 
+    /**
+     * Method ot retrieve all the unique warranty time periods that products may have.
+     *
+     * @return all the unique warranty years within the HashMap.
+     */
     public Set<Integer> getAllUniqueWarrantyYears(){
         Set<Integer> uniqueWarrantyYears = new HashSet<>();
         for (Product product : productMap.values()){
