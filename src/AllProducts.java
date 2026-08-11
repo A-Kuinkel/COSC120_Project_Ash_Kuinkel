@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The rubric specifically says to follow these instructions for this class:
@@ -15,12 +14,14 @@ public class AllProducts {
     // use an appropriate data structure here to store/access the Product class Objects.... I think like a list would
     // be good.... in the examples from the lecture they use a hashset, but is that really necessary? I mean there is
     // actually no duplicate items & even if two products had the same names, their id's would differ.
-    List<Product> productList = new ArrayList<>();
+    // **EDIT**: Now im thinking a hashmap, where each product is stored with id as key would be better for this...
+    Map<String,Product> productMap = new HashMap<>();
 
     // method to add Products to our data structure:
     public void addProductsToDataStructure(Product product){
         // this one should be relatively easy, we just add the product to e.g. a map,set etc. whatever ds we decide to go with.
-        productList.add(product);
+        String id = product.getProductId();
+        productMap.put(id,product);
     }
 
     // method to compare Product in the data structure to user dream object (param):
@@ -31,15 +32,15 @@ public class AllProducts {
         // that I may return like a boolean for this method... but reading the rubric again it does explicitly mention
         // that we need to return a collection of our products...
         List<Product> matchingProducts = new ArrayList<>();
-        for (Product product : productList){
+        for (Product product : productMap.values()){
             // checking for match against the user's searchable attribute requirements:
             if(product.getProductSearchableCharacteristics().productMatchesDreamProductFeatures(dreamProduct)){
                 // checking to ensure that the product fits within the user's budget, minRating, warranty wishes etc.
                 // also note that we don't check for the attributes inside the ProductAttributes Map, as those have
                 // already been handled within the .productMatchesDreamProductFeatures() method in DreamProduct class.
-                boolean matchesBudget = (product.getPrice() == -1 || product.getPrice() >= dreamProduct.getMinPrice()) &&
-                        (product.getPrice() == -1 || product.getPrice() <= dreamProduct.getMaxPrice()); // if the product price
-                // is -1, that means user skipped the price selection, so just return everything to them...
+                boolean matchesBudget = (dreamProduct.getMinPrice() == -1 || product.getPrice() >= dreamProduct.getMinPrice()) &&
+                        (dreamProduct.getMaxPrice() == -1 || product.getPrice() <= dreamProduct.getMaxPrice()); // if the dream product
+                // min/max price is -1, that means user skipped the price selection, so just return everything to them.
                 boolean matchesRating = product.getRating() > dreamProduct.getMinRating();
                 boolean matchesWarranty = dreamProduct.getMinWarrantyYears() == null
                         || (product.getWarrantyYears() != null
@@ -70,7 +71,7 @@ public class AllProducts {
         // by the data structure in this file (which will be called in the main file, ByteBazaar).
         List<Product> matchingProducts = new ArrayList<>();
 
-        for (Product product : productList){
+        for (Product product : productMap.values()){
             if(product.getName().toLowerCase().contains(productName.toLowerCase())){
                 matchingProducts.add(product);
             }
@@ -83,31 +84,67 @@ public class AllProducts {
         // this is useful when we want to quickly retrieve a product, e.g. if user selects a product from the matches
         // they got, then we should immediately return the info of that product screen, like amazon once you click on a
         // product it takes you to a page with the display image and everything...
-        return null;
+        return productMap.get(productId);
     }
 
     // These following methods are all used to dynamically fetch the drop-down menus when the user is searching by
     // these attributes from the database... we don't have to hard code everything in the drop-downs, because what if
-    // the db changes?
-    public List<Brand> getAllUniqueBrands(){
-
-        return null;
+    // the db changes? Then we'd have to change what we hard-coded, whilst it will probably be fine for this task,
+    // what if we had 1000 entries we needed to change? Nobody is doing that, it's bad practice, so we must create these
+    // dynamic methods. & e.g. if user wants to filter product by brand or anything, everything is very easy with these
+    // dynamic methods:
+    public Set<Brand> getAllUniqueBrands(){
+        Set<Brand> uniqueBrands = new HashSet<>();
+        for (Product product : productMap.values()){
+            uniqueBrands.add(product.getProductSearchableCharacteristics().getBrand());
+        }
+        return uniqueBrands;
     }
 
-    public List<Category> getAllUniqueCategories(){
-        return null;
+    public Set<Category> getAllUniqueCategories(){
+        Set<Category> uniqueCategories = new HashSet<>();
+        for (Product product : productMap.values()){
+            uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
+        }
+        return uniqueCategories;
     }
 
-    public List<String> getAllUniqueTags(){
-        return null;
+    public Set<String> getAllUniqueTags(){
+        Set<String> uniqueTags = new HashSet<>();
+        for (Product product : productMap.values()){
+            // for every product, loop inside the tags list & only add the unique tags, this is important else im pretty
+            // sure we'll get like one tag saying ['rgb','Gaming','Wireless'] & maybe like ['rgb','Gaming', 'High performance']
+            // and to avoid that we only add like rgb,gaming,high performance,wireless within the set:
+            for (String thisProductsTags : product.getProductSearchableCharacteristics().getTags()){
+                uniqueTags.add(thisProductsTags);
+            }
+            // also intellij suggests that we can write this second for loop logic in one line using:
+            // uniqueTags.addAll(product.getProductSearchableCharacteristics().getTags());
+            // but I argue my line is much more readable & easy to follow for me coming back to this code later on
+            // down the line, hence why I have kept my loop.
+        }
+        return uniqueTags;
     }
 
-    public List<String> getAllUniqueColours(){
-        return null;
+    public Set<String> getAllUniqueColours(){
+        Set<String> uniqueColours = new HashSet<>();
+        for (Product product : productMap.values()){
+            uniqueColours.add(product.getProductSearchableCharacteristics().getColour());
+        }
+        return uniqueColours;
     }
 
-    public List<Integer> getAllUniqueWarrantyYears(){
-        return null;
+    public Set<Integer> getAllUniqueWarrantyYears(){
+        Set<Integer> uniqueWarrantyYears = new HashSet<>();
+        for (Product product : productMap.values()){
+            // if the warranty is null, just skip it, no need to add a null section, it's much better to have the user
+            // not select anything regarding warranty if they don't care, rather than having to select null on a drop-down
+            // menu:
+            if (product.getWarrantyYears() != null){
+                uniqueWarrantyYears.add(product.getWarrantyYears());
+            }
+        }
+        return uniqueWarrantyYears;
     }
 
 
