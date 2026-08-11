@@ -41,10 +41,12 @@ public class AllProducts {
                 boolean matchesBudget = (dreamProduct.getMinPrice() == -1 || product.getPrice() >= dreamProduct.getMinPrice()) &&
                         (dreamProduct.getMaxPrice() == -1 || product.getPrice() <= dreamProduct.getMaxPrice()); // if the dream product
                 // min/max price is -1, that means user skipped the price selection, so just return everything to them.
-                boolean matchesRating = product.getRating() > dreamProduct.getMinRating();
+                // if the dreamProduct rating is -1, that means user doesn't care about the rating, so again, we return
+                // everything back to them:
+                boolean matchesRating = dreamProduct.getMinRating() == -1 || product.getRating() >= dreamProduct.getMinRating();
                 boolean matchesWarranty = dreamProduct.getMinWarrantyYears() == null
                         || (product.getWarrantyYears() != null
-                        && product.getWarrantyYears() > dreamProduct.getMinWarrantyYears()); // Some warranty values in
+                        && product.getWarrantyYears() >= dreamProduct.getMinWarrantyYears()); // Some warranty values in
                         // our db file are null, and the user may not care about warranty... so we must just handle those
                         // cases as well by checking for null.
 
@@ -95,6 +97,8 @@ public class AllProducts {
     // dynamic methods:
     public Set<Brand> getAllUniqueBrands(){
         Set<Brand> uniqueBrands = new HashSet<>();
+        // all our brand values in dataset are populated with appropriate values, no null, n/a or anything so we don't
+        // really have to do an explicit check here...
         for (Product product : productMap.values()){
             uniqueBrands.add(product.getProductSearchableCharacteristics().getBrand());
         }
@@ -103,6 +107,8 @@ public class AllProducts {
 
     public Set<Category> getAllUniqueCategories(){
         Set<Category> uniqueCategories = new HashSet<>();
+        // same with categories, our dataset doesn't have like null or anything for categories, so no need for an explicit
+        // check here.
         for (Product product : productMap.values()){
             uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
         }
@@ -129,7 +135,9 @@ public class AllProducts {
     public Set<String> getAllUniqueColours(){
         Set<String> uniqueColours = new HashSet<>();
         for (Product product : productMap.values()){
-            uniqueColours.add(product.getProductSearchableCharacteristics().getColour());
+            // skip if N/A:
+            if(!product.getProductSearchableCharacteristics().getColour().equalsIgnoreCase("N/A")){
+            uniqueColours.add(product.getProductSearchableCharacteristics().getColour());}
         }
         return uniqueColours;
     }
