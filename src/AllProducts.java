@@ -1,7 +1,13 @@
+/**
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ */
+
 import java.util.*;
 
 /**
- *
+ * The class which is used to create & hold the database information of our products, dynamically during
+ * the entire life of the program.
  */
 public class AllProducts {
 
@@ -9,7 +15,8 @@ public class AllProducts {
     // be good.... in the examples from the lecture they use a hashset, but is that really necessary? I mean there is
     // actually no duplicate items & even if two products had the same names, their id's would differ.
     // **EDIT**: Now im thinking a hashmap, where each product is stored with id as key would be better for this...
-    Map<String,Product> productMap = new HashMap<>();
+    // we can make this final as it takes in the products from the file at the start of the program once:
+    private final Map<String,Product> productMap = new HashMap<>();
 
     // method to add Products to our data structure:
 
@@ -94,6 +101,7 @@ public class AllProducts {
                 matchingProducts.add(product);
             }
         }
+        matchingProducts = !matchingProducts.isEmpty() ? matchingProducts : null;
         return matchingProducts;
     }
 
@@ -109,7 +117,7 @@ public class AllProducts {
         // this is useful when we want to quickly retrieve a product, e.g. if user selects a product from the matches
         // they got, then we should immediately return the info of that product screen, like amazon once you click on a
         // product it takes you to a page with the display image and everything...
-        return productMap.get(productId);
+        return productMap.getOrDefault(productId, null);
     }
 
     // These following methods are all used to dynamically fetch the drop-down menus when the user is searching by
@@ -131,6 +139,7 @@ public class AllProducts {
         for (Product product : productMap.values()){
             uniqueBrands.add(product.getProductSearchableCharacteristics().getBrand());
         }
+        uniqueBrands = uniqueBrands.isEmpty() ? null : uniqueBrands;
         return uniqueBrands;
     }
 
@@ -146,6 +155,7 @@ public class AllProducts {
         for (Product product : productMap.values()){
             uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
         }
+        uniqueCategories = uniqueCategories.isEmpty() ? null : uniqueCategories;
         return uniqueCategories;
     }
 
@@ -168,6 +178,7 @@ public class AllProducts {
             // but I argue my line is much more readable & easy to follow for me coming back to this code later on
             // down the line, hence why I have kept my loop.
         }
+        uniqueTags = uniqueTags.isEmpty() ? null : uniqueTags;
         return uniqueTags;
     }
 
@@ -183,6 +194,7 @@ public class AllProducts {
             if(!product.getProductSearchableCharacteristics().getColour().equalsIgnoreCase("N/A")){
             uniqueColours.add(product.getProductSearchableCharacteristics().getColour());}
         }
+        uniqueColours = uniqueColours.isEmpty() ? null : uniqueColours;
         return uniqueColours;
     }
 

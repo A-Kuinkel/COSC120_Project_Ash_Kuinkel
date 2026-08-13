@@ -14,6 +14,9 @@ public class ByteBazaar {
 
     public static void main(String[] args) {
 
+        // our load all should be right here... we need the product dataset for almost all cases:
+        // i.e. allProducts = loadAllProducts();
+
         int userSelectedOption = 0;
         do {
             String onboardingScreenUserInput = JOptionPane.showInputDialog("""
@@ -85,9 +88,12 @@ public class ByteBazaar {
             // appropriate category, we add the check just in case:
             Category productCategory = Category.valueOf(productInfo[2]);
             Brand productBrand = Brand.valueOf(productInfo[3]);
+
+            // need to add try catch statements for these parse statements to handle NFEs:
             double productPrice = Double.parseDouble(productInfo[4]);
             int productQuantity = Integer.parseInt(productInfo[5]);
             float productRating = Float.parseFloat(productInfo[6]);
+
             boolean productIsWireless = productInfo[7].equalsIgnoreCase("yes");
             boolean productOnSale = productInfo[8].equalsIgnoreCase("yes");
             // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
@@ -101,6 +107,9 @@ public class ByteBazaar {
             // for (String tag : formattedTagFromFile.split(",")) {
             //   productTags.add(tag);
             // }
+            /** May need to change this to set to remove any possible duplicates e.g. a product may have
+             * [rgb,rgb] (twice):
+             */
             List<String> productTags = new ArrayList<>(Arrays.asList(formattedTagFromFile.split(",")));
 
             String productDescription = productInfo[12];
