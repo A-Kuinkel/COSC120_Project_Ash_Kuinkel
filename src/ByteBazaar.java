@@ -79,23 +79,68 @@ public class ByteBazaar {
         for(String line: lines){
             String[] productInfo = line.split(",");
 
+            String productId = productInfo[0];
             String productName = productInfo[1];
-            String productPrice = productInfo[4];
+            // our dataset contains valid categories, but if we ever get an entry that say doesn't contain an
+            // appropriate category, we add the check just in case:
+            Category productCategory = Category.valueOf(productInfo[2]);
+            Brand productBrand = Brand.valueOf(productInfo[3]);
+            double productPrice = Double.parseDouble(productInfo[4]);
+            int productQuantity = Integer.parseInt(productInfo[5]);
             float productRating = Float.parseFloat(productInfo[6]);
             boolean productIsWireless = productInfo[7].equalsIgnoreCase("yes");
             boolean productOnSale = productInfo[8].equalsIgnoreCase("yes");
             // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
             Integer productWarrantyYears = productInfo[9].equalsIgnoreCase("N/A") ? Integer.parseInt(productInfo[9]) : null;
             String productColour = productInfo[10];
+
+            String formattedTagFromFile = productInfo[11].replace("[","")
+                                                         .replace("]","");
+
+            // the Arrays.asList logic is doing the same thing as this:
+            // for (String tag : formattedTagFromFile.split(",")) {
+            //   productTags.add(tag);
+            // }
+            List<String> productTags = new ArrayList<>(Arrays.asList(formattedTagFromFile.split(",")));
+
             String productDescription = productInfo[12];
             String productDisplayImage = productInfo[13];
 
-            List<String> filteredProducts = new ArrayList<>();
-            filteredProducts.add(productInfo[0]);
-            filteredProducts.add(productName);
-            filteredProducts.add(productPrice);
+            DreamProduct existingProductFeatures = new DreamProduct()
+
+            Product productInstance =  new Product(productId,productName,productPrice,productQuantity,productRating,productWarrantyYears,productDescription,productDisplayImage);
             System.out.println(filteredProducts);
         }
 
     }
 }
+
+/**
+ * import java.util.List;
+ * import java.util.ArrayList;
+ * import java.util.Arrays;
+ *
+ * class Main {
+ *     public static void main(String[] args) {
+ *         String productTagFromFile = "[Creator, High Performance]";
+ *
+ *         List<String> tagsArr = new ArrayList<>();
+ *         for (String tag : productTagFromFile
+ *                           .replace("[","")
+ *                           .replace("]","")
+ *                           .split(",")){
+ *             System.out.println(tag.trim());
+ *             tagsArr.add(tag.trim());
+ *         }
+ *         System.out.println("Tags arr:" + tagsArr);
+ *
+ *         String[] correctFormat = new String[tagsArr.size()];
+ *
+ *         for (int i = 0; i< tagsArr.size(); i++ ){
+ *             correctFormat[i] = tagsArr.get(i);
+ *         }
+ *
+ *         System.out.println("Maybe the correct format? " + Arrays.toString(correctFormat));
+ *     }
+ * }
+ */
