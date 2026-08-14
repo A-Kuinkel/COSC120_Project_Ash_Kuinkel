@@ -3,14 +3,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ByteBazaar {
 
     private static final String productsFilePath = "src/allProducts.txt";
-
+    private static AllProducts allProducts;
 
     public static void main(String[] args) {
 
@@ -115,41 +113,24 @@ public class ByteBazaar {
             String productDescription = productInfo[12];
             String productDisplayImage = productInfo[13];
 
-            DreamProduct existingProductFeatures = new DreamProduct()
+            Map<ProductAttributes,Object> existingProductAttributes = new LinkedHashMap<>();
 
-            Product productInstance =  new Product(productId,productName,productPrice,productQuantity,productRating,productWarrantyYears,productDescription,productDisplayImage);
-            System.out.println(filteredProducts);
+            existingProductAttributes.put(ProductAttributes.CATEGORY,productCategory);
+            existingProductAttributes.put(ProductAttributes.BRAND,productBrand);
+            existingProductAttributes.put(ProductAttributes.TAGS,productTags);
+            existingProductAttributes.put(ProductAttributes.WIRELESS,productIsWireless);
+            existingProductAttributes.put(ProductAttributes.COLOUR,productColour);
+            existingProductAttributes.put(ProductAttributes.ON_SALE,productOnSale);
+
+            DreamProduct addDreamFeaturesToExistingProduct = new DreamProduct(existingProductAttributes);
+
+            Product productInstance =  new Product(productId,productName,productPrice,productQuantity,productRating,
+                    productWarrantyYears,productDescription,productDisplayImage,addDreamFeaturesToExistingProduct);
+
+            // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
+            // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
+            allProducts.addProductsToDataStructure(productInstance);
         }
 
     }
 }
-
-/**
- * import java.util.List;
- * import java.util.ArrayList;
- * import java.util.Arrays;
- *
- * class Main {
- *     public static void main(String[] args) {
- *         String productTagFromFile = "[Creator, High Performance]";
- *
- *         List<String> tagsArr = new ArrayList<>();
- *         for (String tag : productTagFromFile
- *                           .replace("[","")
- *                           .replace("]","")
- *                           .split(",")){
- *             System.out.println(tag.trim());
- *             tagsArr.add(tag.trim());
- *         }
- *         System.out.println("Tags arr:" + tagsArr);
- *
- *         String[] correctFormat = new String[tagsArr.size()];
- *
- *         for (int i = 0; i< tagsArr.size(); i++ ){
- *             correctFormat[i] = tagsArr.get(i);
- *         }
- *
- *         System.out.println("Maybe the correct format? " + Arrays.toString(correctFormat));
- *     }
- * }
- */

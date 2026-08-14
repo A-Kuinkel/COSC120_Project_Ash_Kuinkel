@@ -83,7 +83,6 @@ public class AllProducts {
      * @return the list of Products containing all the products which match the user's search.
      */
     public List<Product> searchProductByName(String productName){
-        // TODO: FINISH OFF THIS METHOD;
         // the simplest way I think we can do this is just get the exact name the user searched... convert it to lowercase
         // remove all trailing/beginning whitespace and simply check with a .contains() method... However, I think making
         // use of the tags here is also very important... in some way, for a cool similar items factor or something....
@@ -113,7 +112,6 @@ public class AllProducts {
      * @return the individual product.
      */
     public Product getProductById(String productId){
-        // TODO: finish off this method
         // this is useful when we want to quickly retrieve a product, e.g. if user selects a product from the matches
         // they got, then we should immediately return the info of that product screen, like amazon once you click on a
         // product it takes you to a page with the display image and everything...
