@@ -139,4 +139,12 @@ public class ByteBazaar {
         }
 
     }
+
+    private void signup(){
+        // TODO
+    }
+
+    private void login(){
+        // TODO
+    }
 }
