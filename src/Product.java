@@ -191,10 +191,13 @@ public class Product {
                 "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
                 "\nGet it Quick! There are only " + quantity + " of these remaining!" +
                 "\nOur customers have rated this product " + rating + "." +
-                "\nIt comes with " + (warrantyYears == null ? "no specifically listed warranty." : ("a " + warrantyYears + " year warranty.")) +
+                "\nIt comes with " + (warrantyYears == null ? "no specific listed warranty." : ("a " + warrantyYears + " year warranty.")) +
                 "\nThe product's colour is " + colour + "." +
                 "\nThe product belongs to the category: " + category +
                 "\nIt is a product of the brand: " + brand +
-                "\nGet similar results to this product by searching the tags: " + tags;
+                "\nGet similar results to this product by searching the tags: " + tags + "\n" +
+                // giving the output some room to breathe:
+                "\n======================================================================" +
+                "\n======================================================================\n";
     }
 }
