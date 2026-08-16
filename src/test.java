@@ -1,19 +1,27 @@
 public static void main(String[] args){
-    Car car1 = new Car("Mazda","red",false);
+    User user = new User("John","Doe","johndoe1@gmail.com","+44 312 568 333","4 Country Rd London");
 
-    System.out.println(car1.toString());
+    List<Product> products = new ArrayList<>();
+    Map<ProductAttributes,Object> existingProductAttributes = new LinkedHashMap<>();
+
+    existingProductAttributes.put(ProductAttributes.CATEGORY,Category.LAPTOPS);
+    existingProductAttributes.put(ProductAttributes.BRAND,Brand.ASUS);
+    existingProductAttributes.put(ProductAttributes.TAGS,Arrays.asList("Good","Great"));
+    existingProductAttributes.put(ProductAttributes.WIRELESS,true);
+    existingProductAttributes.put(ProductAttributes.COLOUR,"Black");
+    existingProductAttributes.put(ProductAttributes.ON_SALE,true);
+
+    DreamProduct addDreamFeaturesToExistingProduct = new DreamProduct(existingProductAttributes);
+
+    Product product = new Product("1","Product1",12.99,3,3.4f,2,
+            "Product1 is a brilliant product!","product1.img",addDreamFeaturesToExistingProduct);
+    Product product2 = new Product("2","Product2",15.50,1,4.5f,1,
+            "Product2 is also a brilliant product!","product2.img",addDreamFeaturesToExistingProduct);
+    products.add(product);
+    products.add(product2);
+
+    Order sampleOrder = new Order(user,products);
+
+    System.out.println(sampleOrder.toString());
 }
-
-public static class Car{
-    private final String brand;
-    private final String colour;
-    private final boolean is_4wd;
-
-    public Car(String brand, String colour, boolean is_4wd){
-        this.brand = brand;
-        this.colour = colour;
-        this.is_4wd = is_4wd;
-    }
-}
-
 

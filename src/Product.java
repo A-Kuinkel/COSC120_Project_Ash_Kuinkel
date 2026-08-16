@@ -167,6 +167,8 @@ public class Product {
      *
      * @return a nicely formatted String with the product information.
      */
+    //TODO: Strip away all the extra noise in the strings.... just doing Product ID : P1001 is fine... no need to say
+    // like this Product's id is P1001... just worsens readability...
     public String getProductInfo() {
         // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
         // so to convert it back to a primitive we must cast it to a boolean, like this:

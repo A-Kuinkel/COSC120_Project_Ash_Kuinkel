@@ -24,13 +24,13 @@ public class Order {
         StringBuilder holdFormattedItemsInfo = new StringBuilder();
 
         for (Product product : itemsInfo){
-            holdFormattedItemsInfo.append(product);
+            holdFormattedItemsInfo.append(product.getProductInfo());
         }
 
-        return "**ORDER OVERVIEW**\n" + "**BUYER INFORMATION**\n" + "Buyer Full Name: "
+        return "\n**ORDER OVERVIEW**\n" + "\n" + "**BUYER INFORMATION**\n" + "Buyer Full Name: "
                 + userInfo.fullName() + "\n" + "Buyer Email: " + userInfo.email() + "\n" + "Buyer Phone Number: "
-                + userInfo.phoneNumber() + "\n" + "Buyer Shipping Address: " + userInfo.shippingAddress() +
-                "**PRODUCT INFORMATION**\n" + holdFormattedItemsInfo;
+                + userInfo.phoneNumber() + "\n" + "Buyer Shipping Address: " + userInfo.shippingAddress() + "\n" +
+                "\n**PRODUCT INFORMATION**\n" + holdFormattedItemsInfo;
     }
 
 
