@@ -9,7 +9,8 @@ public class Cart {
 
     // ^ The source code is only meant to have like one txt file... so this means that what I was thinking before
     // shouldn't really be the way to approach it. Better to just have the cart remember only the current running
-    // session.
+    // session because there isn't really anywhere appropriate we can save the user's cart/order info without creating
+    // another .txt db file.
 
     // fields
     List<Product> products;
@@ -43,7 +44,8 @@ public class Cart {
         return total;
     }
 
-    public String getCartOverview(){
+    @Override
+    public String toString() {
 
     }
 

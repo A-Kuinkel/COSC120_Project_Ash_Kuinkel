@@ -18,9 +18,19 @@ public class Order {
 
     // methods:
 
-    public String getOrderOverview(){
-        // TODO
-        return "";
+    @Override
+    public String toString() {
+
+        StringBuilder holdFormattedItemsInfo = new StringBuilder();
+
+        for (Product product : itemsInfo){
+            holdFormattedItemsInfo.append(product);
+        }
+
+        return "**ORDER OVERVIEW**\n" + "**BUYER INFORMATION**\n" + "Buyer Full Name: "
+                + userInfo.fullName() + "\n" + "Buyer Email: " + userInfo.email() + "\n" + "Buyer Phone Number: "
+                + userInfo.phoneNumber() + "\n" + "Buyer Shipping Address: " + userInfo.shippingAddress() +
+                "**PRODUCT INFORMATION**\n" + holdFormattedItemsInfo;
     }
 
 
