@@ -24,7 +24,7 @@ public class ByteBazaar {
                     from all your favourite brands.
                     
                     Please select one of the following options:
-                    1. Browse our list of products.
+                    1. Search for a product.
                     2. Signup for an account with ByteBazaar to become a member and order online.
                     3. Login to my ByteBazaar account.
                     
@@ -142,9 +142,13 @@ public class ByteBazaar {
 
     private void signup(){
         // TODO
+        // get the user to enter some basic details.... maybe we can somehow incorporate passwords onto here aswell
+        //
     }
 
     private void login(){
         // TODO
+        // im thinking instead of password we just get them to enter their info, etc... & call the user record save it
+        // to a data structure to hold
     }
 }

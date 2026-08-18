@@ -20,8 +20,9 @@ public static void main(String[] args){
     products.add(product);
     products.add(product2);
 
-    Order sampleOrder = new Order(user,products);
+    // Order sampleOrder = new Order(user,products);
+    Cart sampleCart = new Cart(products,user);
 
-    System.out.println(sampleOrder.toString());
+    System.out.println(sampleCart);
 }
 

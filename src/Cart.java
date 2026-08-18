@@ -17,7 +17,7 @@ public class Cart {
     User user;
 
     Cart (List<Product> products, User user) {
-        this.products = new ArrayList<>(products); // hmm is this correct? Because we actually do want to end up changing the cart not just a copy of it.
+        this.products = new ArrayList<>(products);
         this.user = user;
     }
 
@@ -44,10 +44,16 @@ public class Cart {
         return total;
     }
 
-// TODO:
-//    @Override
-//    public String toString() {
-//
-//    }
+    @Override
+    public String toString() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Product  product : products) {
+            stringBuilder.append(product.getProductInfo());
+        }
+
+        return "\n**CART OVERVIEW**\n" + stringBuilder;
+    }
 
 }

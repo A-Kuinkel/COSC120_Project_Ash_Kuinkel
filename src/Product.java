@@ -167,8 +167,6 @@ public class Product {
      *
      * @return a nicely formatted String with the product information.
      */
-    //TODO: Strip away all the extra noise in the strings.... just doing Product ID : P1001 is fine... no need to say
-    // like this Product's id is P1001... just worsens readability...
     public String getProductInfo() {
         // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
         // so to convert it back to a primitive we must cast it to a boolean, like this:
@@ -187,17 +185,17 @@ public class Product {
         Brand brand = this.getProductSearchableCharacteristics().getBrand();
         List<String> tags = this.getProductSearchableCharacteristics().getTags();
 
-        return "This product's ID is: " + productId +
-                "\nMost importantly, it is currently " + (onSale ? "ON SALE!" : "not on sale.") +
-                "\nIt's price is " + price +
-                "\nThis product is " + (wireless ? "wireless." : "not wireless.") +
-                "\nGet it Quick! There are only " + quantity + " of these remaining!" +
-                "\nOur customers have rated this product " + rating + "." +
-                "\nIt comes with " + (warrantyYears == null ? "no specific listed warranty." : ("a " + warrantyYears + " year warranty.")) +
-                "\nThe product's colour is " + colour + "." +
-                "\nThe product belongs to the category: " + category +
-                "\nIt is a product of the brand: " + brand +
-                "\nGet similar results to this product by searching the tags: " + tags + "\n" +
+        return "\nProduct ID: " + productId +
+                "\nOnSale: " + (onSale ? "ON SALE!" : "not on sale") +
+                "\nPrice: " + "$" +price +
+                "\nWireless: " + (wireless ? "WIRELESS!" : "not wireless") +
+                "\nIn Stock: " + quantity +
+                "\nRating: " + rating +
+                "\nWarranty: " + (warrantyYears == null ? "no listed warranty." : (warrantyYears + " year warranty")) +
+                "\nColour: " + colour +
+                "\nCategory: " + category +
+                "\nBrand: " + brand +
+                "\nGet similar results to this product by searching tags: " + tags + "\n" +
                 // giving the output some room to breathe:
                 "\n======================================================================" +
                 "\n======================================================================\n";
