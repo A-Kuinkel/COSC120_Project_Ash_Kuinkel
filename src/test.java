@@ -1,5 +1,6 @@
 public static void main(String[] args){
-    User user = new User("John","Doe","johndoe1@gmail.com","+44 312 568 333","4 Country Rd London");
+    User user = new User("John","Doe","johndoe1@gmail.com",
+            "john","+44 312 568 333","4 Country Rd London");
 
     List<Product> products = new ArrayList<>();
     Map<ProductAttributes,Object> existingProductAttributes = new LinkedHashMap<>();

@@ -34,7 +34,7 @@ public class ByteBazaar {
                     4. Logout of my ByteBazaar account.
                     
                     If you would like to see the status of your orders & see your cart,
-                    you must first login to your account.
+                    or update your information, you must first login to your account.
                     
                     Please enter an integer, i.e. 1,2 or 3 reflective of your intended choice.
                     
@@ -154,9 +154,13 @@ public class ByteBazaar {
         // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
         // save hashed passwords to it... but we can't with just one txt... no way passwords can be stored in a product
         // db:
-        String signupFormScreen;
-        String lastName;
-        do {
+        String signupFormScreen = null;
+        String lastName = null;
+        String email = null;
+        String password = null;
+        String phoneNumber = null;
+        String shippingAddress = null;
+        //TODO: ADD VALIDATION TO MAKE SURE WE CATCH BAD INPUT ON THESE FIELDS:
              signupFormScreen = JOptionPane.showInputDialog("""
                     **SIGNUP FORM**
                     Thank you for signing up & becoming a member with ByteBazaar.
@@ -170,8 +174,24 @@ public class ByteBazaar {
                      What is your last name?
                      """);
 
+             email = JOptionPane.showInputDialog("""
+                    What is your email?
+             """);
 
-        } while (signupFormScreen != null || lastName != null);
+             password = JOptionPane.showInputDialog("""
+                     (Note that your info will not be saved after the program is closed, so you
+                     will need to signup again with your information).
+                     
+                     Please enter a password for your account (8 chars min, 30 chars max):
+                     """);
+
+             phoneNumber = JOptionPane.showInputDialog("""
+                     Please enter your phone number (7 chars min, 15 chars max):
+                    """);
+
+             shippingAddress = JOptionPane.showInputDialog("""
+                     Please enter your shipping address:
+                     """);
     }
 
     private static void login(){
