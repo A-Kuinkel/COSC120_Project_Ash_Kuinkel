@@ -14,7 +14,11 @@ public class ByteBazaar {
 
         // our load all should be right here... we need the product dataset for almost all cases:
         // i.e. allProducts = loadAllProducts();
-        loadAllProducts();
+        try {
+            loadAllProducts();
+        } catch (IOException e) {
+            System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
+        }
 
         int userSelectedOption = 0;
         do {
@@ -27,6 +31,7 @@ public class ByteBazaar {
                     1. Search for a product.
                     2. Signup for an account with ByteBazaar to become a member and order online.
                     3. Login to my ByteBazaar account.
+                    4. Logout of my ByteBazaar account.
                     
                     If you would like to see the status of your orders & see your cart,
                     you must first login to your account.
@@ -46,15 +51,11 @@ public class ByteBazaar {
                     case 1:
                         // take to first page
                         System.out.println("First page!");
-//                        try {
-//                            loadAllProducts();
-//                        } catch (IOException e) {
-//                            System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
-//                        }
                         break;
                     case 2:
                         // take to second page
                         System.out.println("Second page!");
+                        signup();
                         break;
                     case 3:
                         // take to third page
@@ -140,15 +141,46 @@ public class ByteBazaar {
 
     }
 
-    private void signup(){
-        // TODO
-        // get the user to enter some basic details.... maybe we can somehow incorporate passwords onto here aswell
-        //
+    // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the user
+    // credentials to a data structure... on signup (& yes that includes a password) & then have the user login whilst
+    // validating that the password/username they entered is correct, if correct we can just flip a boolean variable
+    // called like loggedIn to true & that will remain true for the entire length of the program until the user closes
+    // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
+
+    private static void signup(){
+        // get the user to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
+        // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
+        // current session. This is the only way we are able to enable passwords whilst only keeping the one product txt
+        // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
+        // save hashed passwords to it... but we can't with just one txt... no way passwords can be stored in a product
+        // db:
+        String signupFormScreen;
+        String lastName;
+        do {
+             signupFormScreen = JOptionPane.showInputDialog("""
+                    **SIGNUP FORM**
+                    Thank you for signing up & becoming a member with ByteBazaar.
+                    By creating an account, you are able to order our products online!
+                    Please fill out the form, one question at a time appropriately:
+                   \s
+                    What is your first name?\s
+                   \s""");
+
+             lastName = JOptionPane.showInputDialog("""
+                     What is your last name?
+                     """);
+
+
+        } while (signupFormScreen != null || lastName != null);
     }
 
-    private void login(){
+    private static void login(){
         // TODO
         // im thinking instead of password we just get them to enter their info, etc... & call the user record save it
         // to a data structure to hold
+    }
+
+    private static void logout(){
+
     }
 }
