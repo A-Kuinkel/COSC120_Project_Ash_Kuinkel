@@ -8,7 +8,7 @@ import java.util.*;
 public class ByteBazaar {
 
     private static final String productsFilePath = "src/allProducts.txt";
-    private static final AllProducts allProducts = new  AllProducts();
+    private static final AllProducts allProducts = new AllProducts();
 
     public static void main(String[] args) throws IOException {
 
@@ -64,7 +64,8 @@ public class ByteBazaar {
                     default:
                         JOptionPane.showMessageDialog(null, "Please select an integer from the following options provided!");
                         break;
-                };
+                }
+                ;
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +
                         " Please enter an integer from the following options provided!");
@@ -79,7 +80,7 @@ public class ByteBazaar {
         List<String> lines = Files.readAllLines(productsFile);
         lines.removeFirst();
 
-        for(String line: lines){
+        for (String line : lines) {
             // originally was doing just line.split(",") and was wondering why when testing I was only getting singular
             // values for the tags etc. & I think it's splitting up the tags inside the brackets as well... so I had to
             // search up regex that makes sure to split the commas, but avoids doing so if the commas are within square
@@ -101,11 +102,11 @@ public class ByteBazaar {
             boolean productIsWireless = productInfo[7].equalsIgnoreCase("yes");
             boolean productOnSale = productInfo[8].equalsIgnoreCase("yes");
             // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
-            Integer productWarrantyYears = productInfo[9].equalsIgnoreCase("NA") ?  null : Integer.parseInt(productInfo[9]);
+            Integer productWarrantyYears = productInfo[9].equalsIgnoreCase("NA") ? null : Integer.parseInt(productInfo[9]);
             String productColour = productInfo[10];
 
-            String formattedTagFromFile = productInfo[11].replace("[","")
-                                                         .replace("]","");
+            String formattedTagFromFile = productInfo[11].replace("[", "")
+                    .replace("]", "");
 
             // the Arrays.asList logic is doing the same thing as this:
             // for (String tag : formattedTagFromFile.split(",")) {
@@ -119,19 +120,19 @@ public class ByteBazaar {
             String productDescription = productInfo[12];
             String productDisplayImage = productInfo[13];
 
-            Map<ProductAttributes,Object> existingProductAttributes = new LinkedHashMap<>();
+            Map<ProductAttributes, Object> existingProductAttributes = new LinkedHashMap<>();
 
-            existingProductAttributes.put(ProductAttributes.CATEGORY,productCategory);
-            existingProductAttributes.put(ProductAttributes.BRAND,productBrand);
-            existingProductAttributes.put(ProductAttributes.TAGS,productTags);
-            existingProductAttributes.put(ProductAttributes.WIRELESS,productIsWireless);
-            existingProductAttributes.put(ProductAttributes.COLOUR,productColour);
-            existingProductAttributes.put(ProductAttributes.ON_SALE,productOnSale);
+            existingProductAttributes.put(ProductAttributes.CATEGORY, productCategory);
+            existingProductAttributes.put(ProductAttributes.BRAND, productBrand);
+            existingProductAttributes.put(ProductAttributes.TAGS, productTags);
+            existingProductAttributes.put(ProductAttributes.WIRELESS, productIsWireless);
+            existingProductAttributes.put(ProductAttributes.COLOUR, productColour);
+            existingProductAttributes.put(ProductAttributes.ON_SALE, productOnSale);
 
             DreamProduct addDreamFeaturesToExistingProduct = new DreamProduct(existingProductAttributes);
 
-            Product productInstance =  new Product(productId,productName,productPrice,productQuantity,productRating,
-                    productWarrantyYears,productDescription,productDisplayImage,addDreamFeaturesToExistingProduct);
+            Product productInstance = new Product(productId, productName, productPrice, productQuantity, productRating,
+                    productWarrantyYears, productDescription, productDisplayImage, addDreamFeaturesToExistingProduct);
 
             System.out.println(productInstance.getProductInfo());
             // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
@@ -147,7 +148,7 @@ public class ByteBazaar {
     // called like loggedIn to true & that will remain true for the entire length of the program until the user closes
     // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
 
-    private static void signup(){
+    private static void signup() {
         // get the user to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
         // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
         // current session. This is the only way we are able to enable passwords whilst only keeping the one product txt
@@ -161,46 +162,84 @@ public class ByteBazaar {
         String phoneNumber = null;
         String shippingAddress = null;
         //TODO: ADD VALIDATION TO MAKE SURE WE CATCH BAD INPUT ON THESE FIELDS:
-             signupFormScreen = JOptionPane.showInputDialog("""
-                    **SIGNUP FORM**
-                    Thank you for signing up & becoming a member with ByteBazaar.
-                    By creating an account, you are able to order our products online!
-                    Please fill out the form, one question at a time appropriately:
-                   \s
-                    What is your first name?\s
-                   \s""");
+        signupFormScreen = JOptionPane.showInputDialog("""
+                 **SIGNUP FORM**
+                 Thank you for signing up & becoming a member with ByteBazaar.
+                 By creating an account, you are able to order our products online!
+                 Please fill out the form, one question at a time appropriately:
+                \s
+                 What is your first name?\s
+                \s""");
 
-             lastName = JOptionPane.showInputDialog("""
-                     What is your last name?
-                     """);
+        // don't skip past this until the user enters a valid first name, or closes program/cancels:
+        while (signupFormScreen == null || signupFormScreen.trim().isEmpty() ||
+                !checkIfNameIsAlphabetLetter(signupFormScreen)) {
 
-             email = JOptionPane.showInputDialog("""
-                    What is your email?
-             """);
+            // user has pressed cancel/x so just get them out:
+            if (signupFormScreen == null) {
+                return;
+            }
 
-             password = JOptionPane.showInputDialog("""
-                     (Note that your info will not be saved after the program is closed, so you
-                     will need to signup again with your information).
-                     
-                     Please enter a password for your account (8 chars min, 30 chars max):
-                     """);
+            JOptionPane.showMessageDialog(null, "Oops! Found invalid input, please enter " +
+                    "your first name in letters only.");
 
-             phoneNumber = JOptionPane.showInputDialog("""
-                     Please enter your phone number (7 chars min, 15 chars max):
-                    """);
+            signupFormScreen = JOptionPane.showInputDialog("""
+                     **SIGNUP FORM**
+                     Thank you for signing up & becoming a member with ByteBazaar.
+                     By creating an account, you are able to order our products online!
+                     Please fill out the form, one question at a time appropriately:
+                    \s
+                     What is your first name?\s
+                    \s""");
+        }
 
-             shippingAddress = JOptionPane.showInputDialog("""
-                     Please enter your shipping address:
-                     """);
+        lastName = JOptionPane.showInputDialog("""
+                What is your last name?
+                """);
+
+        email = JOptionPane.showInputDialog("""
+                       What is your email?
+                """);
+
+        password = JOptionPane.showInputDialog("""
+                (Note that your info will not be saved after the program is closed, so you
+                will need to signup again with your information).
+                
+                Please enter a password for your account (8 chars min, 30 chars max):
+                """);
+
+        phoneNumber = JOptionPane.showInputDialog("""
+                 Please enter your phone number (7 chars min, 15 chars max):
+                """);
+
+        shippingAddress = JOptionPane.showInputDialog("""
+                Please enter your shipping address:
+                """);
     }
 
-    private static void login(){
+    private static void login() {
         // TODO
         // im thinking instead of password we just get them to enter their info, etc... & call the user record save it
         // to a data structure to hold
     }
 
-    private static void logout(){
+    private static void logout() {
 
+    }
+
+    // helper methods:
+
+    /**
+     *
+     * @param userInput
+     * @return
+     */
+    private static boolean checkIfNameIsAlphabetLetter(String userInput) {
+        for (int i = 0; i < userInput.length(); i++) {
+            if (!Character.isLetter(userInput.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
