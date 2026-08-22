@@ -155,12 +155,12 @@ public class ByteBazaar {
         // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
         // save hashed passwords to it... but we can't with just one txt... no way passwords can be stored in a product
         // db:
-        String signupFormScreen = null;
-        String lastName = null;
-        String email = null;
-        String password = null;
-        String phoneNumber = null;
-        String shippingAddress = null;
+        String signupFormScreen;
+        String lastName;
+        String email;
+        String password;
+        String phoneNumber;
+        String shippingAddress;
         //TODO: ADD VALIDATION TO MAKE SURE WE CATCH BAD INPUT ON THESE FIELDS:
         signupFormScreen = JOptionPane.showInputDialog("""
                  **SIGNUP FORM**
@@ -193,13 +193,49 @@ public class ByteBazaar {
                     \s""");
         }
 
+        // further validation logic for each field:
         lastName = JOptionPane.showInputDialog("""
                 What is your last name?
                 """);
 
+        while (lastName == null || lastName.trim().isEmpty()
+                || !checkIfNameIsAlphabetLetter(lastName)) {
+
+            if (lastName == null) {
+                return;
+            }
+
+            JOptionPane.showMessageDialog(null, "Oops! Found invalid input, please enter " +
+                    "your last name in letters only.");
+
+            lastName = JOptionPane.showInputDialog("""
+                    What is your last name?
+                    """);
+        }
+
         email = JOptionPane.showInputDialog("""
                        What is your email?
                 """);
+
+        while (email == null || email.trim().isEmpty()) {
+
+            if (email == null) {
+                return;
+            }
+
+            // TODO: regex check to check for @ & . in the email...
+            if (!email.contains("@") || !email.contains(".")) {
+                JOptionPane.showMessageDialog(null,
+                        "Email must contain an '@' & '.' symbols.");
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Invalid email address, please enter a valid email address.");
+
+            email = JOptionPane.showInputDialog("""
+                           What is your email?
+                    """);
+        }
 
         password = JOptionPane.showInputDialog("""
                 (Note that your info will not be saved after the program is closed, so you
@@ -208,13 +244,70 @@ public class ByteBazaar {
                 Please enter a password for your account (8 chars min, 30 chars max):
                 """);
 
+        while (password == null || password.trim().isEmpty()) {
+            if (password == null) {
+                return;
+            }
+
+            if (password.length() < 8) {
+                JOptionPane.showMessageDialog(null,
+                        "Password must be at least 8 characters long.");
+            } else if (password.length() > 30) {
+                JOptionPane.showMessageDialog(null,
+                        "Password must be at most 30 characters long.");
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Please enter a valid password for your account.");
+
+            password = JOptionPane.showInputDialog("""
+                    (Note that your info will not be saved after the program is closed, so you
+                    will need to signup again with your information).
+                    
+                    Please enter a password for your account (8 chars min, 30 chars max):
+                    """);
+        }
+
         phoneNumber = JOptionPane.showInputDialog("""
                  Please enter your phone number (7 chars min, 15 chars max):
                 """);
 
+        while (phoneNumber == null || phoneNumber.trim().isEmpty()
+                || !checkIfDigitsOnly(phoneNumber)) {
+            if (phoneNumber == null) {
+                return;
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Invalid phone number, please enter a valid phone number.");
+
+            if (phoneNumber.length() < 7) {
+                JOptionPane.showMessageDialog(null,
+                        "Phone number must be at least 7 characters long.");
+            } else if (phoneNumber.length() > 15) {
+                JOptionPane.showMessageDialog(null,
+                        "Phone number must be at most 15 characters long.");
+            }
+
+            phoneNumber = JOptionPane.showInputDialog("""
+                     Please enter your phone number (7 chars min, 15 chars max):
+                    """);
+        }
+
         shippingAddress = JOptionPane.showInputDialog("""
                 Please enter your shipping address:
                 """);
+
+        while (shippingAddress == null || shippingAddress.trim().isEmpty()) {
+            if (shippingAddress == null) {
+                return;
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Please enter a valid shipping address");
+
+
+        }
     }
 
     private static void login() {
@@ -237,6 +330,15 @@ public class ByteBazaar {
     private static boolean checkIfNameIsAlphabetLetter(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
             if (!Character.isLetter(userInput.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean checkIfDigitsOnly(String userInput) {
+        for (int i = 0; i < userInput.length(); i++) {
+            if (!Character.isDigit(userInput.charAt(i))) {
                 return false;
             }
         }
