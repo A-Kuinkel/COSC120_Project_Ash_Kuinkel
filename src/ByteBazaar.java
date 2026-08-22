@@ -9,6 +9,8 @@ public class ByteBazaar {
 
     private static final String productsFilePath = "src/allProducts.txt";
     private static final AllProducts allProducts = new AllProducts();
+    public static boolean loggedIn = false; // switch to track if user is logged in or not
+    // gets updated on signup/login/logout etc.
 
     public static void main(String[] args) throws IOException {
 
@@ -20,6 +22,7 @@ public class ByteBazaar {
             System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
         }
 
+        // boolean to track if user logged in or not throughout the entire program:
         int userSelectedOption = 0;
         do {
             String onboardingScreenUserInput = JOptionPane.showInputDialog("""
@@ -62,7 +65,8 @@ public class ByteBazaar {
                         System.out.println("Third page!");
                         break;
                     default:
-                        JOptionPane.showMessageDialog(null, "Please select an integer from the following options provided!");
+                        JOptionPane.showMessageDialog(null,
+                                "Please select an integer from the following options provided!");
                         break;
                 }
                 ;
@@ -73,6 +77,10 @@ public class ByteBazaar {
         } while (userSelectedOption != 1 && userSelectedOption != 2 && userSelectedOption != 3);
     }
 
+    // so the behaviour we want with this is to go through every product within our db file, validate
+    // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
+    // the current product row/line... because I think having one row break the entire flow of the
+    // program may not be so good.
     private static void loadAllProducts() throws IOException {
         System.out.println("Loading ByteBazaar products...\n");
         Path productsFile = Path.of(productsFilePath);
@@ -81,63 +89,137 @@ public class ByteBazaar {
         lines.removeFirst();
 
         for (String line : lines) {
-            // originally was doing just line.split(",") and was wondering why when testing I was only getting singular
-            // values for the tags etc. & I think it's splitting up the tags inside the brackets as well... so I had to
-            // search up regex that makes sure to split the commas, but avoids doing so if the commas are within square
-            // brackets.... & gemini provided me with this regex:
-            String[] productInfo = line.split(",(?![^\\[\\]]*+\\])");
+            try {
+                // originally was doing just line.split(",") and was wondering why when testing I was only getting singular
+                // values for the tags etc. & I think it's splitting up the tags inside the brackets as well... so I had to
+                // search up regex that makes sure to split the commas, but avoids doing so if the commas are within square
+                // brackets.... & gemini provided me with this regex:
+                String[] productInfo = line.split(",(?![^\\[\\]]*+\\])");
 
-            String productId = productInfo[0];
-            String productName = productInfo[1];
-            // our dataset contains valid categories, but if we ever get an entry that say doesn't contain an
-            // appropriate category, we add the check just in case:
-            Category productCategory = Category.valueOf(productInfo[2].trim().toUpperCase());
-            Brand productBrand = Brand.valueOf(productInfo[3]);
+                String productId = productInfo[0].trim();
+                String productName = productInfo[1].trim();
+                // our dataset contains valid categories, but if we ever get an entry that say doesn't contain an
+                // appropriate category, we add the check just in case:
+                Category productCategory;
+                try {
+                    productCategory = Category.valueOf(productInfo[2].trim().toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Product with an invalid category detected: "
+                                    + productInfo[2].trim().toUpperCase() + "... skipping.");
+                    continue;
+                }
 
-            // need to add try catch statements for these parse statements to handle NFEs:
-            double productPrice = Double.parseDouble(productInfo[4]);
-            int productQuantity = Integer.parseInt(productInfo[5]);
-            float productRating = Float.parseFloat(productInfo[6]);
+                Brand productBrand;
+                try {
+                    productBrand = Brand.valueOf(productInfo[3]);
+                } catch (IllegalArgumentException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Product with an invalid brand detected: "
+                                    + productInfo[3].trim().toUpperCase() + "... skipping.");
+                    continue;
+                }
 
-            boolean productIsWireless = productInfo[7].equalsIgnoreCase("yes");
-            boolean productOnSale = productInfo[8].equalsIgnoreCase("yes");
-            // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
-            Integer productWarrantyYears = productInfo[9].equalsIgnoreCase("NA") ? null : Integer.parseInt(productInfo[9]);
-            String productColour = productInfo[10];
+                // need to add try catch statements for these parse statements to handle NFEs:
+                double productPrice = 0;
+                int productQuantity = 0;
+                float productRating = 0;
+                try {
+                    productPrice = Double.parseDouble(productInfo[4].trim());
+                    productQuantity = Integer.parseInt(productInfo[5].trim());
+                    productRating = Float.parseFloat(productInfo[6].trim());
 
-            String formattedTagFromFile = productInfo[11].replace("[", "")
-                    .replace("]", "");
+                    if (productPrice < 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Product with an invalid price detected: "
+                                        + productInfo[4].trim() + "... skipping.");
+                        continue;
+                    }
 
-            // the Arrays.asList logic is doing the same thing as this:
-            // for (String tag : formattedTagFromFile.split(",")) {
-            //   productTags.add(tag);
-            // }
-            /** May need to change this to set to remove any possible duplicates e.g. a product may have
-             * [rgb,rgb] (twice):
-             */
-            List<String> productTags = new ArrayList<>(Arrays.asList(formattedTagFromFile.split(",")));
+                    if (productQuantity < 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Product with an invalid quantity detected: "
+                                        + productInfo[5].trim() + "... skipping.");
+                        continue;
+                    }
 
-            String productDescription = productInfo[12];
-            String productDisplayImage = productInfo[13];
+                    if (productRating < 0 || productRating > 5) {
+                        JOptionPane.showMessageDialog(null,
+                                "Product with an invalid rating detected: "
+                                        + productInfo[6].trim() + "... skipping.");
+                        continue;
+                    }
 
-            Map<ProductAttributes, Object> existingProductAttributes = new LinkedHashMap<>();
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Product with an invalid number detected: " + line + "... skipping.");
+                }
 
-            existingProductAttributes.put(ProductAttributes.CATEGORY, productCategory);
-            existingProductAttributes.put(ProductAttributes.BRAND, productBrand);
-            existingProductAttributes.put(ProductAttributes.TAGS, productTags);
-            existingProductAttributes.put(ProductAttributes.WIRELESS, productIsWireless);
-            existingProductAttributes.put(ProductAttributes.COLOUR, productColour);
-            existingProductAttributes.put(ProductAttributes.ON_SALE, productOnSale);
+                boolean productIsWireless = productInfo[7].trim().equalsIgnoreCase("yes");
+                boolean productOnSale = productInfo[8].trim().equalsIgnoreCase("yes");
 
-            DreamProduct addDreamFeaturesToExistingProduct = new DreamProduct(existingProductAttributes);
+                // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
+                Integer productWarrantyYears = null;
+                String productWarranty = productInfo[9].trim();
 
-            Product productInstance = new Product(productId, productName, productPrice, productQuantity, productRating,
-                    productWarrantyYears, productDescription, productDisplayImage, addDreamFeaturesToExistingProduct);
+                boolean CheckWarrantyForNA = productWarranty.equalsIgnoreCase("NA")
+                        || productWarranty.equalsIgnoreCase("N/A");
 
-            System.out.println(productInstance.getProductInfo());
-            // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
-            // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
-            allProducts.addProductsToDataStructure(productInstance);
+                if (!CheckWarrantyForNA && !productWarranty.isEmpty()) {
+                    try {
+                        productWarrantyYears = Integer.parseInt(productWarranty);
+
+                        if (productWarrantyYears < 0 || productWarrantyYears > 100) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Product with an invalid warranty detected: "
+                                            + line + "... skipping.");
+                        }
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null,
+                                "Product with an invalid warranty detected: "
+                                        + productWarranty + "... skipping.");
+                    }
+                }
+
+                String productColour = productInfo[10].trim();
+
+                String formattedTagFromFile = productInfo[11].replace("[", "")
+                        .replace("]", "");
+
+                // the Arrays.asList logic is doing the same thing as this:
+                // for (String tag : formattedTagFromFile.split(",")) {
+                //   productTags.add(tag);
+                // }
+                /** May need to change this to set to remove any possible duplicates e.g. a product may have
+                 * [rgb,rgb] (twice):
+                 */
+                List<String> productTags = new ArrayList<>(Arrays.asList(formattedTagFromFile.split(",")));
+
+                String productDescription = productInfo[12].trim();
+                String productDisplayImage = productInfo[13].trim();
+
+                Map<ProductAttributes, Object> existingProductAttributes = new LinkedHashMap<>();
+
+                existingProductAttributes.put(ProductAttributes.CATEGORY, productCategory);
+                existingProductAttributes.put(ProductAttributes.BRAND, productBrand);
+                existingProductAttributes.put(ProductAttributes.TAGS, productTags);
+                existingProductAttributes.put(ProductAttributes.WIRELESS, productIsWireless);
+                existingProductAttributes.put(ProductAttributes.COLOUR, productColour);
+                existingProductAttributes.put(ProductAttributes.ON_SALE, productOnSale);
+
+                DreamProduct addDreamFeaturesToExistingProduct = new DreamProduct(existingProductAttributes);
+
+                Product productInstance = new Product(productId, productName, productPrice, productQuantity, productRating,
+                        productWarrantyYears, productDescription, productDisplayImage, addDreamFeaturesToExistingProduct);
+
+                System.out.println(productInstance.getProductInfo());
+                // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
+                // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
+                allProducts.addProductsToDataStructure(productInstance);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "Error whilst attempting to load products: " + e);
+            }
         }
 
     }
@@ -161,7 +243,7 @@ public class ByteBazaar {
         String password;
         String phoneNumber;
         String shippingAddress;
-        //TODO: ADD VALIDATION TO MAKE SURE WE CATCH BAD INPUT ON THESE FIELDS:
+
         signupFormScreen = JOptionPane.showInputDialog("""
                  **SIGNUP FORM**
                  Thank you for signing up & becoming a member with ByteBazaar.
@@ -173,7 +255,7 @@ public class ByteBazaar {
 
         // don't skip past this until the user enters a valid first name, or closes program/cancels:
         while (signupFormScreen == null || signupFormScreen.trim().isEmpty() ||
-                !checkIfNameIsAlphabetLetter(signupFormScreen)) {
+                !checkIfLettersOnly(signupFormScreen)) {
 
             // user has pressed cancel/x so just get them out:
             if (signupFormScreen == null) {
@@ -199,7 +281,7 @@ public class ByteBazaar {
                 """);
 
         while (lastName == null || lastName.trim().isEmpty()
-                || !checkIfNameIsAlphabetLetter(lastName)) {
+                || !checkIfLettersOnly(lastName)) {
 
             if (lastName == null) {
                 return;
@@ -223,7 +305,6 @@ public class ByteBazaar {
                 return;
             }
 
-            // TODO: regex check to check for @ & . in the email...
             if (!email.contains("@") || !email.contains(".")) {
                 JOptionPane.showMessageDialog(null,
                         "Email must contain an '@' & '.' symbols.");
@@ -306,7 +387,9 @@ public class ByteBazaar {
             JOptionPane.showMessageDialog(null,
                     "Please enter a valid shipping address");
 
-
+            shippingAddress = JOptionPane.showInputDialog("""
+                    Please enter your shipping address:
+                    """);
         }
     }
 
@@ -327,7 +410,7 @@ public class ByteBazaar {
      * @param userInput
      * @return
      */
-    private static boolean checkIfNameIsAlphabetLetter(String userInput) {
+    private static boolean checkIfLettersOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
             if (!Character.isLetter(userInput.charAt(i))) {
                 return false;
@@ -343,5 +426,12 @@ public class ByteBazaar {
             }
         }
         return true;
+    }
+
+    // TODO: We should probably just store password in a variable throughout the
+    // lifecycle of the program, it may be better to replicate some security by
+    // introducing a hashing method:
+    private static String hashPassword(String password) {
+        return "";
     }
 }
