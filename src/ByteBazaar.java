@@ -430,8 +430,85 @@ public class ByteBazaar {
 
     // TODO: We should probably just store password in a variable throughout the
     // lifecycle of the program, it may be better to replicate some security by
-    // introducing a hashing method:
-    private static String hashPassword(String password) {
-        return "";
+    // introducing a hashing method, although not a super secure one...:
+
+    // note that here I asked google to just give me an extended alphaNumeric array in Java:
+    private static final String extendedAlphaNumericChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            + "abcdefghijklmnopqrstuvwxyz"
+            + "0123456789"
+            + "!@#$%^&*()-_=+[]{}|;:,.<>?/";
+
+
+    public static String hashPassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            return "";
+        }
+
+        int hashIntNum = 0;
+
+        /**
+         * important thing here to talk about here is my integer overflow with the nested loop like this:
+         * or even why my original value of 337 was a bad choice....
+         *  for  (int i = 0; i < password.length(); i++) {
+         *             for (int j = 0; j < extendedAlphaNumericChars.length(); j++) {
+         *                 if (j % 2 == 0) {
+         *                     hashIntNum = (hashIntNum * 97) + password.charAt(i) + extendedAlphaNumericChars.charAt(j);
+         *                 }
+         *             }
+         *         }
+         */
+        // also there's a lot to talk about here in regard to this loop; i.e. it uses modulo with the ascii val of
+        // the current char of password, so e.g. if user plaintext pass start with e; ascii of like 101 % 88 = 13....
+        // everything is falling in between the 88 char thing we set out earlier (extAlphaNums)... So then we just use
+        // this index, i.e. index 13 and grab the 12th element from the extAlphNums string.. which would be like 'M'
+        // (also 77 in ascii b10) in this case... then we just get our hashIntNum to do like (for first iteration ofc):
+        // 0 * 97 + 101 + 77 = 178 etc. either way it's good cause the calculation is completely dependent on user's
+        // password choice... it will change for every password letter they enter...
+        for (int i = 0; i < password.length(); i++) {
+
+            int indexForChar = password.charAt(i) % extendedAlphaNumericChars.length();
+            char alphaNumChar = extendedAlphaNumericChars.charAt(indexForChar);
+
+            hashIntNum = (hashIntNum * 97) + password.charAt(i) + alphaNumChar;
+        }
+        System.out.println("FINAL INT HASH: " + hashIntNum);
+
+        StringBuilder hashedPassword = new StringBuilder(Integer.toHexString(hashIntNum).toUpperCase());
+        System.out.println("HASHED PASSWORD: " + hashedPassword);
+
+        for (int i = 0; i < password.length(); i++) {
+            int indexForChar = password.charAt(i) % extendedAlphaNumericChars.length();
+
+            hashedPassword.append(extendedAlphaNumericChars.charAt(indexForChar));
+
+        }
+
+        System.out.println("HASHED PASSWORD v2: " + hashedPassword);
+
+        // convert back to list:
+        List<Character> characters = new ArrayList<>();
+
+        for (char c : hashedPassword.toString().toCharArray()) {
+            characters.add(c);
+        }
+
+        Random random = new Random(238746);
+
+        Collections.shuffle(characters, random);
+
+        StringBuilder finalHashedResult = new StringBuilder();
+        for (Character character : characters) {
+            finalHashedResult.append(character);
+        }
+
+        System.out.println("FINAL HASHED RESULT: " + finalHashedResult);
+
+        return finalHashedResult.toString();
+    }
+
+    private static boolean comparePasswords(String userInput, String storedHashedPassword) {
+        String hashedPsw = hashPassword(userInput);
+
+        return hashedPsw.equals(storedHashedPassword);
     }
 }
