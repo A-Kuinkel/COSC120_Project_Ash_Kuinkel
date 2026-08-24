@@ -76,6 +76,7 @@ public class ByteBazaar {
                     case 4:
                         // take to fourth page
                         System.out.println("Fourth page!");
+                        logout();
                         break;
                     case 5:
                         // take to fifth page
@@ -486,6 +487,7 @@ public class ByteBazaar {
             if (email.equals(tempUserAccountInfoHolder.email()) &&
                     comparePasswords(password)) {
                 loggedIn = true;
+                signedInUser =  tempUserAccountInfoHolder;
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
                 return;
             }
@@ -496,7 +498,15 @@ public class ByteBazaar {
     }
 
     private static void logout() {
-
+        if(signedInUser == null){
+            JOptionPane.showMessageDialog(null, """
+                    Please ensure that you are logged in first, before attempting to sign out!
+                    """);
+            return;
+        }
+        loggedIn = false;
+        signedInUser =  null;
+        JOptionPane.showMessageDialog(null, "Successfully logged out!");
     }
 
     // helper methods:

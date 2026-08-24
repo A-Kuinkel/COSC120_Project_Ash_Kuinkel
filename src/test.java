@@ -26,10 +26,20 @@ public static void main(String[] args){
 //
 //    System.out.println(sampleCart);
 
-    String hashed = ByteBazaar.hashPassword("SuperSecret123!");
-    System.out.println("HASH1: " +hashed);
+//    String hashed = ByteBazaar.hashPassword("SuperSecret123!");
+//    System.out.println("HASH1: " +hashed);
+//
+//    String hashed2 = ByteBazaar.hashPassword("SuperSecret9999999!");
+//    System.out.println("HASH2: " +hashed2);
 
-    String hashed2 = ByteBazaar.hashPassword("SuperSecret9999999!");
-    System.out.println("HASH2: " +hashed2);
+    User tempUserInfoHolder = new User("a","b","ab@gmail.com","password",
+            "1234567","country rd");
+
+    User signedInUser = tempUserInfoHolder;
+    signedInUser = null;
+    System.out.println(signedInUser);
+    // System.out.println("USR NAME:" + signedInUser.fullName());
+
+    System.out.println(signedInUser);
 }
 
