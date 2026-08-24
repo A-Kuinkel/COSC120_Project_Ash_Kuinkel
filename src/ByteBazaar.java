@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +10,10 @@ public class ByteBazaar {
     private static final AllProducts allProducts = new AllProducts();
     public static boolean loggedIn = false; // switch to track if user is logged in or not
     // gets updated on signup/login/logout etc.
+    private static String userStoredHashedPassword; // only one .txt file allowed, so the password will float around
+    // as a variable
+    private static User tempUserAccountInfoHolder;
+    private static User signedInUser;
 
     public static void main(String[] args) throws IOException {
 
@@ -22,8 +25,10 @@ public class ByteBazaar {
             System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
         }
 
-        // boolean to track if user logged in or not throughout the entire program:
+        // boolean to track if tempUserAccountInfoHolder logged in or not throughout the entire program:
         int userSelectedOption = 0;
+        boolean programRunning = true;
+
         do {
             String onboardingScreenUserInput = JOptionPane.showInputDialog("""
                     Welcome to ByteBazaar!
@@ -35,9 +40,10 @@ public class ByteBazaar {
                     2. Signup for an account with ByteBazaar to become a member and order online.
                     3. Login to my ByteBazaar account.
                     4. Logout of my ByteBazaar account.
+                    5. Exit program.
                     
-                    If you would like to see the status of your orders & see your cart,
-                    or update your information, you must first login to your account.
+                    If you would like to place orders, see your cart or maybe even
+                    update your information, you must first login to your account.
                     
                     Please enter an integer, i.e. 1,2 or 3 reflective of your intended choice.
                     
@@ -45,6 +51,8 @@ public class ByteBazaar {
 
             if (onboardingScreenUserInput == null) {
                 System.exit(0);
+                programRunning = false;
+                break;
             }
 
             try {
@@ -63,6 +71,17 @@ public class ByteBazaar {
                     case 3:
                         // take to third page
                         System.out.println("Third page!");
+                        login();
+                        break;
+                    case 4:
+                        // take to fourth page
+                        System.out.println("Fourth page!");
+                        break;
+                    case 5:
+                        // take to fifth page
+                        System.out.println("Fifth page!");
+                        JOptionPane.showMessageDialog(null, "Thank you for using ByteBazaar!");
+                        programRunning = false;
                         break;
                     default:
                         JOptionPane.showMessageDialog(null,
@@ -74,7 +93,7 @@ public class ByteBazaar {
                 JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +
                         " Please enter an integer from the following options provided!");
             }
-        } while (userSelectedOption != 1 && userSelectedOption != 2 && userSelectedOption != 3);
+        } while (programRunning);
     }
 
     // so the behaviour we want with this is to go through every product within our db file, validate
@@ -224,14 +243,14 @@ public class ByteBazaar {
 
     }
 
-    // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the user
-    // credentials to a data structure... on signup (& yes that includes a password) & then have the user login whilst
+    // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
+    // credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
     // validating that the password/username they entered is correct, if correct we can just flip a boolean variable
-    // called like loggedIn to true & that will remain true for the entire length of the program until the user closes
+    // called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
     // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
 
     private static void signup() {
-        // get the user to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
+        // get the tempUserAccountInfoHolder to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
         // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
         // current session. This is the only way we are able to enable passwords whilst only keeping the one product txt
         // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
@@ -253,11 +272,11 @@ public class ByteBazaar {
                  What is your first name?\s
                 \s""");
 
-        // don't skip past this until the user enters a valid first name, or closes program/cancels:
+        // don't skip past this until the tempUserAccountInfoHolder enters a valid first name, or closes program/cancels:
         while (signupFormScreen == null || signupFormScreen.trim().isEmpty() ||
                 !checkIfLettersOnly(signupFormScreen)) {
 
-            // user has pressed cancel/x so just get them out:
+            // tempUserAccountInfoHolder has pressed cancel/x so just get them out:
             if (signupFormScreen == null) {
                 return;
             }
@@ -348,6 +367,8 @@ public class ByteBazaar {
                     Please enter a password for your account (8 chars min, 30 chars max):
                     """);
         }
+        // storing our password:
+        userStoredHashedPassword = hashPassword(password);
 
         phoneNumber = JOptionPane.showInputDialog("""
                  Please enter your phone number (7 chars min, 15 chars max):
@@ -391,12 +412,78 @@ public class ByteBazaar {
                     Please enter your shipping address:
                     """);
         }
+
+        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, hashPassword(password), phoneNumber, shippingAddress);
+        JOptionPane.showMessageDialog(null, "Successfully signed up!");
     }
 
     private static void login() {
         // TODO
-        // im thinking instead of password we just get them to enter their info, etc... & call the user record save it
+        // im thinking instead of password we just get them to enter their info, etc... & call the tempUserAccountInfoHolder record save it
         // to a data structure to hold
+        // Never mind, we will just ask for email/password for log in:
+
+        String email;
+        String password;
+
+        // note that a validation to check for like @ or . in the email isn't really needed for login
+        // method, as this is validated during the signin & for login, we can just check if email exists
+        // only:
+        do {
+
+            email = JOptionPane.showInputDialog(null, """
+                    **LOGIN FORM**
+                    After logging in, you will be able to place orders,
+                    view cart and update your information.
+                    
+                    Please note once again that, this is session based,
+                    i.e. your information is retained until you close
+                    the program. Upon reopening, you will need to sign
+                    up for an account & log in again. Thanks for under-
+                    standing :)
+                    
+                    Please enter the email for your account:
+                    """);
+
+            if(email == null)
+        } while (email == null || email.trim().isEmpty());
+
+        do {
+            password = JOptionPane.showInputDialog(null,
+                    "Please enter the password for your account:");
+        } while (password == null || password.trim().isEmpty());
+
+        // TODO: I need to guard against people trying to login before signing up; because right
+        // now it will just throw an error saying like Cannot invoke User.email() because
+        // ByteBazaar.tempUserAccountInfoHolder is null....
+        while (!email.equals(tempUserAccountInfoHolder.email()) || !comparePasswords(password)) {
+            JOptionPane.showMessageDialog(null, "Invalid Credentials");
+
+            do {
+
+                email = JOptionPane.showInputDialog(null, """
+                        **LOGIN FORM**
+                        After logging in, you will be able to place orders,
+                        view cart and update your information.
+                        
+                        Please note once again that, this is session based,
+                        i.e. your information is retained until you close
+                        the program. Upon reopening, you will need to sign
+                        up for an account & log in again. Thanks for under-
+                        standing :)
+                        
+                        Please enter the email for your account:
+                        """);
+            } while (email == null || email.trim().isEmpty());
+
+            do {
+                password = JOptionPane.showInputDialog(null,
+                        "Please enter the password for your account:");
+            } while (password == null || password.trim().isEmpty());
+
+        }
+        loggedIn = true;
+        JOptionPane.showMessageDialog(null, "Successfully logged in!");
     }
 
     private static void logout() {
@@ -458,11 +545,11 @@ public class ByteBazaar {
          *         }
          */
         // also there's a lot to talk about here in regard to this loop; i.e. it uses modulo with the ascii val of
-        // the current char of password, so e.g. if user plaintext pass start with e; ascii of like 101 % 88 = 13....
+        // the current char of password, so e.g. if tempUserAccountInfoHolder plaintext pass start with e; ascii of like 101 % 88 = 13....
         // everything is falling in between the 88 char thing we set out earlier (extAlphaNums)... So then we just use
         // this index, i.e. index 13 and grab the 12th element from the extAlphNums string.. which would be like 'M'
         // (also 77 in ascii b10) in this case... then we just get our hashIntNum to do like (for first iteration ofc):
-        // 0 * 97 + 101 + 77 = 178 etc. either way it's good cause the calculation is completely dependent on user's
+        // 0 * 97 + 101 + 77 = 178 etc. either way it's good cause the calculation is completely dependent on tempUserAccountInfoHolder's
         // password choice... it will change for every password letter they enter...
         for (int i = 0; i < password.length(); i++) {
 
@@ -506,9 +593,9 @@ public class ByteBazaar {
         return finalHashedResult.toString();
     }
 
-    private static boolean comparePasswords(String userInput, String storedHashedPassword) {
+    private static boolean comparePasswords(String userInput) {
         String hashedPsw = hashPassword(userInput);
-
-        return hashedPsw.equals(storedHashedPassword);
+        String storedHashedPsw = userStoredHashedPassword;
+        return hashedPsw.equals(storedHashedPsw);
     }
 }
