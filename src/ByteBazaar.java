@@ -413,23 +413,33 @@ public class ByteBazaar {
                     """);
         }
 
-        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, hashPassword(password), phoneNumber, shippingAddress);
+        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, hashPassword(password),
+                phoneNumber, shippingAddress);
         JOptionPane.showMessageDialog(null, "Successfully signed up!");
     }
 
     private static void login() {
         // TODO
-        // im thinking instead of password we just get them to enter their info, etc... & call the tempUserAccountInfoHolder record save it
-        // to a data structure to hold
-        // Never mind, we will just ask for email/password for log in:
-
+        // im thinking  call the tempUserAccountInfoHolder record save info to it for a data structure to hold...
         String email;
         String password;
 
         // note that a validation to check for like @ or . in the email isn't really needed for login
         // method, as this is validated during the signin & for login, we can just check if email exists
         // only:
-        do {
+        // TODO: I need to guard against people trying to login before signing up; because right
+        // now it will just throw an error saying like Cannot invoke User.email() because
+        // ByteBazaar.tempUserAccountInfoHolder is null....
+        if (tempUserAccountInfoHolder == null) {
+            JOptionPane.showMessageDialog(null, """
+                    You must first create an account before you can login!
+                    
+                    Please return to the sign up page, sign up for an account & then login.
+                    """);
+            return;
+        }
+
+        while (true) {
 
             email = JOptionPane.showInputDialog(null, """
                     **LOGIN FORM**
@@ -444,46 +454,29 @@ public class ByteBazaar {
                     
                     Please enter the email for your account:
                     """);
+            if (email == null) {
+                return;
+            }
 
-            if(email == null)
-        } while (email == null || email.trim().isEmpty());
-
-        do {
             password = JOptionPane.showInputDialog(null,
                     "Please enter the password for your account:");
-        } while (password == null || password.trim().isEmpty());
+            if (password == null) {
+                return;
+            }
 
-        // TODO: I need to guard against people trying to login before signing up; because right
-        // now it will just throw an error saying like Cannot invoke User.email() because
-        // ByteBazaar.tempUserAccountInfoHolder is null....
-        while (!email.equals(tempUserAccountInfoHolder.email()) || !comparePasswords(password)) {
-            JOptionPane.showMessageDialog(null, "Invalid Credentials");
+            // checking the password & email... note this is also a security concept, here... we shouldn't inform the
+            // user if the password was incorrect or the email was incorrect, else an attacker's life will be much
+            // easier.... really not so necessary here, but good to add:
+            if (email.equals(tempUserAccountInfoHolder.email()) &&
+                    password.equals(tempUserAccountInfoHolder.password())) {
+                loggedIn = true;
+                JOptionPane.showMessageDialog(null, "Successfully logged in!");
+                return;
+            }
 
-            do {
-
-                email = JOptionPane.showInputDialog(null, """
-                        **LOGIN FORM**
-                        After logging in, you will be able to place orders,
-                        view cart and update your information.
-                        
-                        Please note once again that, this is session based,
-                        i.e. your information is retained until you close
-                        the program. Upon reopening, you will need to sign
-                        up for an account & log in again. Thanks for under-
-                        standing :)
-                        
-                        Please enter the email for your account:
-                        """);
-            } while (email == null || email.trim().isEmpty());
-
-            do {
-                password = JOptionPane.showInputDialog(null,
-                        "Please enter the password for your account:");
-            } while (password == null || password.trim().isEmpty());
-
+            JOptionPane.showMessageDialog(null,
+                    "Invalid Credentials, please try again.");
         }
-        loggedIn = true;
-        JOptionPane.showMessageDialog(null, "Successfully logged in!");
     }
 
     private static void logout() {
