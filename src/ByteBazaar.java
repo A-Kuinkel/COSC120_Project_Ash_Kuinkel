@@ -272,17 +272,22 @@ public class ByteBazaar {
                  What is your first name?\s
                 \s""");
 
-        // don't skip past this until the tempUserAccountInfoHolder enters a valid first name, or closes program/cancels:
+        // don't skip past this until the user enters a valid first name, or closes program/cancels:
         while (signupFormScreen == null || signupFormScreen.trim().isEmpty() ||
                 !checkIfLettersOnly(signupFormScreen)) {
 
-            // tempUserAccountInfoHolder has pressed cancel/x so just get them out:
+            // user has pressed cancel/x so just get them out:
             if (signupFormScreen == null) {
                 return;
             }
 
-            JOptionPane.showMessageDialog(null, "Oops! Found invalid input, please enter " +
-                    "your first name in letters only.");
+            if (signupFormScreen.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid first name.");
+            } else if (!checkIfLettersOnly(signupFormScreen)) {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid input, please enter your first name in letters only.
+                        """);
+            }
 
             signupFormScreen = JOptionPane.showInputDialog("""
                      **SIGNUP FORM**
@@ -306,8 +311,13 @@ public class ByteBazaar {
                 return;
             }
 
-            JOptionPane.showMessageDialog(null, "Oops! Found invalid input, please enter " +
-                    "your last name in letters only.");
+            if (lastName.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid last name.");
+            } else if (!checkIfLettersOnly(lastName)) {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid input, please enter your last name in letters only.
+                        """);
+            }
 
             lastName = JOptionPane.showInputDialog("""
                     What is your last name?
@@ -318,19 +328,19 @@ public class ByteBazaar {
                        What is your email?
                 """);
 
-        while (email == null || email.trim().isEmpty()) {
+        while (email == null || email.trim().isEmpty() || !email.contains("@") || !email.contains(".")) {
 
             if (email == null) {
                 return;
             }
 
-            if (!email.contains("@") || !email.contains(".")) {
-                JOptionPane.showMessageDialog(null,
-                        "Email must contain an '@' & '.' symbols.");
+            if (email.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter a valid email.");
+            } else if (!email.contains("@") || !email.contains(".")) {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid input; Email must contain '@' & '.' symbols.
+                        """);
             }
-
-            JOptionPane.showMessageDialog(null,
-                    "Invalid email address, please enter a valid email address.");
 
             email = JOptionPane.showInputDialog("""
                            What is your email?
@@ -344,21 +354,21 @@ public class ByteBazaar {
                 Please enter a password for your account (8 chars min, 30 chars max):
                 """);
 
-        while (password == null || password.trim().isEmpty()) {
+        while (password == null || password.trim().isEmpty() || password.length() < 8 || password.length() > 30) {
             if (password == null) {
                 return;
             }
 
-            if (password.length() < 8) {
+            if (password.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid password for your account.");
+            } else if (password.length() < 8) {
                 JOptionPane.showMessageDialog(null,
                         "Password must be at least 8 characters long.");
-            } else if (password.length() > 30) {
+            } else {
                 JOptionPane.showMessageDialog(null,
                         "Password must be at most 30 characters long.");
             }
-
-            JOptionPane.showMessageDialog(null,
-                    "Please enter a valid password for your account.");
 
             password = JOptionPane.showInputDialog("""
                     (Note that your info will not be saved after the program is closed, so you
@@ -375,20 +385,26 @@ public class ByteBazaar {
                 """);
 
         while (phoneNumber == null || phoneNumber.trim().isEmpty()
-                || !checkIfDigitsOnly(phoneNumber)) {
+                || !checkIfDigitsOnly(phoneNumber) || phoneNumber.length() < 7 || phoneNumber.length() > 15) {
             if (phoneNumber == null) {
                 return;
             }
 
-            JOptionPane.showMessageDialog(null,
-                    "Invalid phone number, please enter a valid phone number.");
-
-            if (phoneNumber.length() < 7) {
+            if (phoneNumber.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null,
-                        "Phone number must be at least 7 characters long.");
+                        "Invalid phone number, please enter a valid phone number.");
+            } else if(!checkIfDigitsOnly(phoneNumber)) {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid phone number; Phone number must contain digits only.");
+                        """);
+            }else if (phoneNumber.length() < 7) {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid input; Phone number must be at least 7 characters long.");
+                        """);
             } else if (phoneNumber.length() > 15) {
-                JOptionPane.showMessageDialog(null,
-                        "Phone number must be at most 15 characters long.");
+                JOptionPane.showMessageDialog(null, """
+                        Oops! Found invalid input; Phone number must be at most 15 characters long.");
+                        """);
             }
 
             phoneNumber = JOptionPane.showInputDialog("""
@@ -413,7 +429,7 @@ public class ByteBazaar {
                     """);
         }
 
-        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, hashPassword(password),
+        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, userStoredHashedPassword,
                 phoneNumber, shippingAddress);
         JOptionPane.showMessageDialog(null, "Successfully signed up!");
     }
@@ -468,7 +484,7 @@ public class ByteBazaar {
             // user if the password was incorrect or the email was incorrect, else an attacker's life will be much
             // easier.... really not so necessary here, but good to add:
             if (email.equals(tempUserAccountInfoHolder.email()) &&
-                    password.equals(tempUserAccountInfoHolder.password())) {
+                    comparePasswords(password)) {
                 loggedIn = true;
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
                 return;
