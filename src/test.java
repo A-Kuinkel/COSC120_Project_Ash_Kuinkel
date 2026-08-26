@@ -44,20 +44,28 @@ public static void main(String[] args){
 //
 //    System.out.println(signedInUser);
 
-    JTextField weorfnewo = new JTextField();
-    JTextField wkrufvr = new JTextField();
+    JTextField textField = new JTextField();
+    JTextField textField1 = new JTextField();
+    JCheckBoxMenuItem checkbox =  new JCheckBoxMenuItem();
+    JMenuItem menuBar = new JMenuItem();
 
     Object[] message = {
-            "Random:", weorfnewo,
-            "Another random:", wkrufvr,
+            menuBar,
+            "Random:", textField,
+            "Another random:", textField1,
+            "checkbox:", checkbox,
     };
 
     int option = JOptionPane.showConfirmDialog(null, message, "eukfdvwekf:", JOptionPane.OK_CANCEL_OPTION);
 
     if(option == JOptionPane.OK_OPTION){
-        String wekfu = weorfnewo.getText();
-        String ewkfdjbew = wkrufvr.getText();
-        System.out.println("RANDOM TEXT: " + wekfu + " " + ewkfdjbew);
+        String fieldText = textField.getText();
+        String field1Text = textField1.getText();
+        String checkboxText = checkbox.getText();
+        String menuBarText = menuBar.getText();
+        System.out.println("RANDOM TEXT: " + fieldText + " " + field1Text);
+        System.out.println("CHECKBOX TEXT: " + checkboxText + " ");
+        System.out.println("MENU BAR TEXT: " + menuBarText);
     }
 }
 

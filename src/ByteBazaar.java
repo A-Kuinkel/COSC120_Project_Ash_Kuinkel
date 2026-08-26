@@ -62,6 +62,7 @@ public class ByteBazaar {
                     case 1:
                         // take to first page
                         System.out.println("First page!");
+                        searchMenu();
                         break;
                     case 2:
                         // take to second page
@@ -254,7 +255,25 @@ public class ByteBazaar {
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
     private static void searchMenu() {
 
-    }
+            // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I
+            // just thought we could like add this "I don't mind" option at the beginning easily.
+            List<Object> uniqueCategories = new LinkedList<>(Arrays.asList(Category.values()));
+            uniqueCategories.addFirst("I don't mind"); // turns out java has an addFirst method, even better!
+            // conversion into String[] in format combo box drop-down likes:
+            String[] categories = new String[uniqueCategories.size()];
+            for (int i = 0; i < uniqueCategories.size(); i++) {
+                categories[i] = uniqueCategories.get(i).toString();
+            }
+
+            JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
+
+            Object[] componentsOnScreen = {
+                "Categories:", categoriesDropDown,
+            };
+
+            JOptionPane.showConfirmDialog(null,componentsOnScreen,"ByteBazaar Search Menu",JOptionPane.OK_CANCEL_OPTION);
+
+        }
 
     // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
     // credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
@@ -526,7 +545,6 @@ public class ByteBazaar {
     }
 
     // helper methods:
-
     /**
      *
      * @param userInput
