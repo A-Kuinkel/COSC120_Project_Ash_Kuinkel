@@ -68,6 +68,14 @@ public static void main(String[] args){
 //        System.out.println("MENU BAR TEXT: " + menuBarText);
 //    }
 
+    String[] choices = new String []{"A", "B", "C", "D", "E"};
+    JCheckBox[] checkBoxes = new JCheckBox[choices.length];
+    for (int i = 0; i < choices.length; i++) { checkBoxes[i] = new JCheckBox(choices[i]); }
 
+    Object[] menu = {
+            "Letter: ", checkBoxes,
+    };
+
+    JOptionPane.showConfirmDialog(null,menu,"Menu",JOptionPane.OK_CANCEL_OPTION);
 }
 

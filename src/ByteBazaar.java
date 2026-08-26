@@ -254,16 +254,34 @@ public class ByteBazaar {
     // Used this as a reference for having multiple input fields in one sort of window:
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
     private static void searchMenu() {
+        JTextField mainSearchBar = new JTextField();
 
         LinkedList<Object> uniqueCategories = new LinkedList<>(allProducts.getAllUniqueCategories());
         String[] categories = processDropDownToStringArr(uniqueCategories);
         JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
 
+        LinkedList<Object> uniqueBrands = new LinkedList<>(allProducts.getAllUniqueBrands());
+        String[] brands = processDropDownToStringArr(uniqueBrands);
+        JComboBox<String> brandDropDown = new JComboBox<>(brands);
+
         Object[] componentsOnScreen = {
-                "Categories:", categoriesDropDown,
+                "Search for a product by name:\n",mainSearchBar,
+                "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
         };
 
-        JOptionPane.showConfirmDialog(null, componentsOnScreen, "ByteBazaar Search Menu", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, componentsOnScreen,
+                "ByteBazaar Search Menu", JOptionPane.OK_CANCEL_OPTION);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String searchText = mainSearchBar.getText();
+            String category = (String) categoriesDropDown.getSelectedItem();
+            String brand = (String) brandDropDown.getSelectedItem();
+
+            System.out.println("Main search text: " + searchText);
+            System.out.println("Selected Category: " + category);
+            System.out.println("Brand: " + brand);
+
+        }
 
     }
 
