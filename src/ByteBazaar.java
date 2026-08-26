@@ -244,11 +244,27 @@ public class ByteBazaar {
 
     }
 
+    // How I'm envisioning this right now is that we will have the user press option '1' on the main screen to go into
+    // the search for a product section & then this is where the user will be presented with the search options - where
+    // they are able to search for their dream product. Ideally I'd want like a search bar looking field, include some
+    // checkboxes, drop down menus etc. all within the one page, that way it just looks much better than having one
+    // input in one box etc... & of course, I think having a separate method to process these search results & call our
+    // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
+    // Used this as a reference for having multiple input fields in one sort of window:
+    // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
+    private static void searchMenu() {
+
+    }
+
     // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
     // credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
     // validating that the password/username they entered is correct, if correct we can just flip a boolean variable
     // called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
     // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
+
+    // TODO: Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
+    // for every input... just looks much nicer that way. I will have to see if this is possible first.
+    // Use this as reference: https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
 
     private static void signup() {
         // get the tempUserAccountInfoHolder to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but

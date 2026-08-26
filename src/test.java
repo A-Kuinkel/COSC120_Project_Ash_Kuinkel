@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public static void main(String[] args){
 //    User user = new User("John","Doe","johndoe1@gmail.com",
 //            "john","+44 312 568 333","4 Country Rd London");
@@ -32,14 +34,30 @@ public static void main(String[] args){
 //    String hashed2 = ByteBazaar.hashPassword("SuperSecret9999999!");
 //    System.out.println("HASH2: " +hashed2);
 
-    User tempUserInfoHolder = new User("a","b","ab@gmail.com","password",
-            "1234567","country rd");
+//    User tempUserInfoHolder = new User("a","b","ab@gmail.com","password",
+//            "1234567","country rd");
+//
+//    User signedInUser = tempUserInfoHolder;
+//    signedInUser = null;
+//    System.out.println(signedInUser);
+//    // System.out.println("USR NAME:" + signedInUser.fullName());
+//
+//    System.out.println(signedInUser);
 
-    User signedInUser = tempUserInfoHolder;
-    signedInUser = null;
-    System.out.println(signedInUser);
-    // System.out.println("USR NAME:" + signedInUser.fullName());
+    JTextField weorfnewo = new JTextField();
+    JTextField wkrufvr = new JTextField();
 
-    System.out.println(signedInUser);
+    Object[] message = {
+            "Random:", weorfnewo,
+            "Another random:", wkrufvr,
+    };
+
+    int option = JOptionPane.showConfirmDialog(null, message, "eukfdvwekf:", JOptionPane.OK_CANCEL_OPTION);
+
+    if(option == JOptionPane.OK_OPTION){
+        String wekfu = weorfnewo.getText();
+        String ewkfdjbew = wkrufvr.getText();
+        System.out.println("RANDOM TEXT: " + wekfu + " " + ewkfdjbew);
+    }
 }
 
