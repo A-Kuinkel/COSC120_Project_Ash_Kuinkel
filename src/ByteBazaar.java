@@ -255,25 +255,17 @@ public class ByteBazaar {
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
     private static void searchMenu() {
 
-            // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I
-            // just thought we could like add this "I don't mind" option at the beginning easily.
-            List<Object> uniqueCategories = new LinkedList<>(Arrays.asList(Category.values()));
-            uniqueCategories.addFirst("I don't mind"); // turns out java has an addFirst method, even better!
-            // conversion into String[] in format combo box drop-down likes:
-            String[] categories = new String[uniqueCategories.size()];
-            for (int i = 0; i < uniqueCategories.size(); i++) {
-                categories[i] = uniqueCategories.get(i).toString();
-            }
+        LinkedList<Object> uniqueCategories = new LinkedList<>(allProducts.getAllUniqueCategories());
+        String[] categories = processDropDownToStringArr(uniqueCategories);
+        JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
 
-            JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
-
-            Object[] componentsOnScreen = {
+        Object[] componentsOnScreen = {
                 "Categories:", categoriesDropDown,
-            };
+        };
 
-            JOptionPane.showConfirmDialog(null,componentsOnScreen,"ByteBazaar Search Menu",JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(null, componentsOnScreen, "ByteBazaar Search Menu", JOptionPane.OK_CANCEL_OPTION);
 
-        }
+    }
 
     // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
     // credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
@@ -429,11 +421,11 @@ public class ByteBazaar {
             if (phoneNumber.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid phone number, please enter a valid phone number.");
-            } else if(!checkIfDigitsOnly(phoneNumber)) {
+            } else if (!checkIfDigitsOnly(phoneNumber)) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid phone number; Phone number must contain digits only.");
                         """);
-            }else if (phoneNumber.length() < 7) {
+            } else if (phoneNumber.length() < 7) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input; Phone number must be at least 7 characters long.");
                         """);
@@ -522,7 +514,7 @@ public class ByteBazaar {
             if (email.equals(tempUserAccountInfoHolder.email()) &&
                     comparePasswords(password)) {
                 loggedIn = true;
-                signedInUser =  tempUserAccountInfoHolder;
+                signedInUser = tempUserAccountInfoHolder;
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
                 return;
             }
@@ -533,18 +525,33 @@ public class ByteBazaar {
     }
 
     private static void logout() {
-        if(signedInUser == null){
+        if (signedInUser == null) {
             JOptionPane.showMessageDialog(null, """
                     Please ensure that you are logged in first, before attempting to sign out!
                     """);
             return;
         }
         loggedIn = false;
-        signedInUser =  null;
+        signedInUser = null;
         JOptionPane.showMessageDialog(null, "Successfully logged out!");
     }
 
     // helper methods:
+
+
+    private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {
+        // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I
+        // just thought we could like add this "I don't mind" option at the beginning easily.
+        dropDownItems.addFirst("I don't mind"); // turns out java has an addFirst method, even better!
+        // conversion into String[] in format combo box drop-down likes:
+        String[] stringArr = new String[dropDownItems.size()];
+
+        for (int i = 0; i < dropDownItems.size(); i++) {
+            stringArr[i] = dropDownItems.get(i).toString();
+        }
+        return stringArr;
+    }
+
     /**
      *
      * @param userInput
