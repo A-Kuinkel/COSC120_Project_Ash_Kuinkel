@@ -10,7 +10,7 @@ public class ByteBazaar {
     private static final AllProducts allProducts = new AllProducts();
     public static boolean loggedIn = false; // switch to track if user is logged in or not
     // gets updated on signup/login/logout etc.
-    private static String userStoredHashedPassword; // only one .txt file allowed, so the password will float around
+    private static String userStoredPass; // only one .txt file allowed, so the password will float around
     // as a variable
     private static User tempUserAccountInfoHolder;
     private static User signedInUser;
@@ -264,9 +264,38 @@ public class ByteBazaar {
         String[] brands = processDropDownToStringArr(uniqueBrands);
         JComboBox<String> brandDropDown = new JComboBox<>(brands);
 
+        JTextField minPrice = new JTextField();
+        JTextField maxPrice = new JTextField();
+
+        JSlider minRating =  new JSlider(0, 5, 1);
+        minRating.setMajorTickSpacing(1);
+        minRating.setPaintLabels(true);
+
+        LinkedList<Object> uniqueWarranty = new LinkedList<>(allProducts.getAllUniqueWarrantyYears());
+        for (int i = 0; i < uniqueWarranty.size(); i++) {
+            uniqueWarranty.set(i,uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
+        }
+        String[] warranty = processDropDownToStringArr(uniqueWarranty);
+        JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);
+
+        LinkedList<Object> uniqueColours = new LinkedList<>(allProducts.getAllUniqueColours());
+        String[] colours = processDropDownToStringArr(uniqueColours);
+        JComboBox<String> colourDropDown = new JComboBox<>(colours);
+
+        LinkedList<Object> uniqueTags = new LinkedList<>(allProducts.getAllUniqueTags());
+        String[] tags = processDropDownToStringArr(uniqueTags);
+        JComboBox<String> tagDropDown = new JComboBox<>(tags);
+
+        JCheckBox onSaleCheckBox = new JCheckBox("Product must be on Sale");
+        JCheckBox wirelessCheckBox = new JCheckBox("Product must be wireless");
+
         Object[] componentsOnScreen = {
                 "Search for a product by name:\n",mainSearchBar,
                 "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
+                "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating,
+                "\nColour:", colourDropDown, "\nTags:",  tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
+                "\n",onSaleCheckBox,"\n",wirelessCheckBox
+
         };
 
         int option = JOptionPane.showConfirmDialog(null, componentsOnScreen,
@@ -276,10 +305,6 @@ public class ByteBazaar {
             String searchText = mainSearchBar.getText();
             String category = (String) categoriesDropDown.getSelectedItem();
             String brand = (String) brandDropDown.getSelectedItem();
-
-            System.out.println("Main search text: " + searchText);
-            System.out.println("Selected Category: " + category);
-            System.out.println("Brand: " + brand);
 
         }
 
@@ -300,8 +325,8 @@ public class ByteBazaar {
         // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
         // current session. This is the only way we are able to enable passwords whilst only keeping the one product txt
         // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
-        // save hashed passwords to it... but we can't with just one txt... no way passwords can be stored in a product
-        // db:
+        // save just plain-text passwords to it... but we can't with just one txt... no way passwords can be stored
+        // in a product db:
         String signupFormScreen;
         String lastName;
         String email;
@@ -424,7 +449,7 @@ public class ByteBazaar {
                     """);
         }
         // storing our password:
-        userStoredHashedPassword = hashPassword(password);
+        userStoredPass = password;
 
         phoneNumber = JOptionPane.showInputDialog("""
                  Please enter your phone number (7 chars min, 15 chars max):
@@ -475,7 +500,7 @@ public class ByteBazaar {
                     """);
         }
 
-        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, userStoredHashedPassword,
+        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, userStoredPass,
                 phoneNumber, shippingAddress);
         JOptionPane.showMessageDialog(null, "Successfully signed up!");
     }
@@ -556,7 +581,6 @@ public class ByteBazaar {
 
     // helper methods:
 
-
     private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {
         // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I
         // just thought we could like add this "I don't mind" option at the beginning easily.
@@ -593,87 +617,8 @@ public class ByteBazaar {
         return true;
     }
 
-    // TODO: We should probably just store password in a variable throughout the
-    // lifecycle of the program, it may be better to replicate some security by
-    // introducing a hashing method, although not a super secure one...:
-
-    // note that here I asked google to just give me an extended alphaNumeric array in Java:
-    private static final String extendedAlphaNumericChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            + "abcdefghijklmnopqrstuvwxyz"
-            + "0123456789"
-            + "!@#$%^&*()-_=+[]{}|;:,.<>?/";
-
-
-    public static String hashPassword(String password) {
-        if (password == null || password.trim().isEmpty()) {
-            return "";
-        }
-
-        int hashIntNum = 0;
-
-        /**
-         * important thing here to talk about here is my integer overflow with the nested loop like this:
-         * or even why my original value of 337 was a bad choice....
-         *  for  (int i = 0; i < password.length(); i++) {
-         *             for (int j = 0; j < extendedAlphaNumericChars.length(); j++) {
-         *                 if (j % 2 == 0) {
-         *                     hashIntNum = (hashIntNum * 97) + password.charAt(i) + extendedAlphaNumericChars.charAt(j);
-         *                 }
-         *             }
-         *         }
-         */
-        // also there's a lot to talk about here in regard to this loop; i.e. it uses modulo with the ascii val of
-        // the current char of password, so e.g. if tempUserAccountInfoHolder plaintext pass start with e; ascii of like 101 % 88 = 13....
-        // everything is falling in between the 88 char thing we set out earlier (extAlphaNums)... So then we just use
-        // this index, i.e. index 13 and grab the 12th element from the extAlphNums string.. which would be like 'M'
-        // (also 77 in ascii b10) in this case... then we just get our hashIntNum to do like (for first iteration ofc):
-        // 0 * 97 + 101 + 77 = 178 etc. either way it's good cause the calculation is completely dependent on tempUserAccountInfoHolder's
-        // password choice... it will change for every password letter they enter...
-        for (int i = 0; i < password.length(); i++) {
-
-            int indexForChar = password.charAt(i) % extendedAlphaNumericChars.length();
-            char alphaNumChar = extendedAlphaNumericChars.charAt(indexForChar);
-
-            hashIntNum = (hashIntNum * 97) + password.charAt(i) + alphaNumChar;
-        }
-        System.out.println("FINAL INT HASH: " + hashIntNum);
-
-        StringBuilder hashedPassword = new StringBuilder(Integer.toHexString(hashIntNum).toUpperCase());
-        System.out.println("HASHED PASSWORD: " + hashedPassword);
-
-        for (int i = 0; i < password.length(); i++) {
-            int indexForChar = password.charAt(i) % extendedAlphaNumericChars.length();
-
-            hashedPassword.append(extendedAlphaNumericChars.charAt(indexForChar));
-
-        }
-
-        System.out.println("HASHED PASSWORD v2: " + hashedPassword);
-
-        // convert back to list:
-        List<Character> characters = new ArrayList<>();
-
-        for (char c : hashedPassword.toString().toCharArray()) {
-            characters.add(c);
-        }
-
-        Random random = new Random(238746);
-
-        Collections.shuffle(characters, random);
-
-        StringBuilder finalHashedResult = new StringBuilder();
-        for (Character character : characters) {
-            finalHashedResult.append(character);
-        }
-
-        System.out.println("FINAL HASHED RESULT: " + finalHashedResult);
-
-        return finalHashedResult.toString();
-    }
-
     private static boolean comparePasswords(String userInput) {
-        String hashedPsw = hashPassword(userInput);
-        String storedHashedPsw = userStoredHashedPassword;
-        return hashedPsw.equals(storedHashedPsw);
+        String storedPass = userStoredPass;
+        return storedPass.equals(userInput);
     }
 }

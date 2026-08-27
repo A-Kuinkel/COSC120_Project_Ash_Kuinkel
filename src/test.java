@@ -71,11 +71,18 @@ public static void main(String[] args){
     String[] choices = new String []{"A", "B", "C", "D", "E"};
     JCheckBox[] checkBoxes = new JCheckBox[choices.length];
     for (int i = 0; i < choices.length; i++) { checkBoxes[i] = new JCheckBox(choices[i]); }
+    JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,0);
+    slider.setMajorTickSpacing(20);
+    slider.setMinorTickSpacing(1);
+    slider.setPaintTicks(true);
+    slider.setPaintLabels(true);
 
     Object[] menu = {
             "Letter: ", checkBoxes,
+            "Price: ", slider
     };
 
     JOptionPane.showConfirmDialog(null,menu,"Menu",JOptionPane.OK_CANCEL_OPTION);
+    System.out.println(slider.getValue());
 }
 
