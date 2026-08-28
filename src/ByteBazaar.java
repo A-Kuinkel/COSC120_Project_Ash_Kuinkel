@@ -61,27 +61,22 @@ public class ByteBazaar {
                 switch (userSelectedOption) {
                     case 1:
                         // take to first page
-                        System.out.println("First page!");
                         searchMenu();
                         break;
                     case 2:
                         // take to second page
-                        System.out.println("Second page!");
                         signup();
                         break;
                     case 3:
                         // take to third page
-                        System.out.println("Third page!");
                         login();
                         break;
                     case 4:
                         // take to fourth page
-                        System.out.println("Fourth page!");
                         logout();
                         break;
                     case 5:
                         // take to fifth page
-                        System.out.println("Fifth page!");
                         JOptionPane.showMessageDialog(null, "Thank you for using ByteBazaar!");
                         programRunning = false;
                         break;
@@ -233,7 +228,6 @@ public class ByteBazaar {
                 Product productInstance = new Product(productId, productName, productPrice, productQuantity, productRating,
                         productWarrantyYears, productDescription, productDisplayImage, addDreamFeaturesToExistingProduct);
 
-                System.out.println(productInstance.getProductInfo());
                 // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
                 // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
                 allProducts.addProductsToDataStructure(productInstance);
@@ -267,13 +261,13 @@ public class ByteBazaar {
         JTextField minPrice = new JTextField();
         JTextField maxPrice = new JTextField();
 
-        JSlider minRating =  new JSlider(0, 5, 1);
+        JSlider minRating = new JSlider(0, 5, 1);
         minRating.setMajorTickSpacing(1);
         minRating.setPaintLabels(true);
 
         LinkedList<Object> uniqueWarranty = new LinkedList<>(allProducts.getAllUniqueWarrantyYears());
         for (int i = 0; i < uniqueWarranty.size(); i++) {
-            uniqueWarranty.set(i,uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
+            uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
         }
         String[] warranty = processDropDownToStringArr(uniqueWarranty);
         JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);
@@ -290,11 +284,11 @@ public class ByteBazaar {
         JCheckBox wirelessCheckBox = new JCheckBox("Product must be wireless");
 
         Object[] componentsOnScreen = {
-                "Search for a product by name:\n",mainSearchBar,
+                "Search for a product by name:\n", mainSearchBar,
                 "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
                 "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating,
-                "\nColour:", colourDropDown, "\nTags:",  tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
-                "\n",onSaleCheckBox,"\n",wirelessCheckBox
+                "\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
+                "\n", onSaleCheckBox, "\n", wirelessCheckBox
 
         };
 
@@ -303,9 +297,75 @@ public class ByteBazaar {
 
         if (option == JOptionPane.OK_OPTION) {
             String searchText = mainSearchBar.getText();
+
+            // This is the robustness in action, bad input for these drop-downs are impossible:
             String category = (String) categoriesDropDown.getSelectedItem();
             String brand = (String) brandDropDown.getSelectedItem();
+            String userSelectedWarranty = (String) warrantyDropDown.getSelectedItem();
+            String userSelectedColour = (String) colourDropDown.getSelectedItem();
+            String userSelectedTags = (String) tagDropDown.getSelectedItem();
 
+            Integer userSelectedMinPrice = null;
+            Integer userSelectedMaxPrice = null;
+            // validation logic for the input user may enter:
+            try {
+                String userInputForMinPrice = minPrice.getText().trim();
+                if (!userInputForMinPrice.isEmpty()) {
+                    userSelectedMinPrice = Integer.valueOf(minPrice.getText());
+                }
+
+                String userInputForMaxPrice = maxPrice.getText().trim();
+                if (!userInputForMaxPrice.isEmpty()) {
+                    userSelectedMaxPrice = Integer.valueOf(maxPrice.getText());
+                }
+
+                if ((userSelectedMinPrice != null && userSelectedMinPrice < 0)
+                        || (userSelectedMaxPrice != null && userSelectedMaxPrice < 0)) {
+                    JOptionPane.showMessageDialog(null,
+                            """
+                                    Oops! Invalid Input Detected!
+                                    Please ensure your values for the min & max prices are not negative.
+                                    """);
+                }
+                return;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null,
+                        """
+                                Oops! Invalid Input Detected!
+                                Please ensure you have entered an appropriate value for the min & max prices.
+                                """);
+            }
+
+            // user is only able to slide the slider to whole numbers from 0-5...
+            int userSelectedMinRating = minRating.getValue();
+
+            boolean userSelectedOnSale = onSaleCheckBox.isSelected();
+            boolean userSelectedWireless = wirelessCheckBox.isSelected();
+
+            // holds our matches:
+            Set<Product> matchingProducts = new HashSet<>();
+
+            // if user's product name search doesn't match any products, I guess we can just like say there wasn't
+            // a specific match with the name that you searched for, but here are products that match your other
+            // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
+            // with that specified name or criteria combination, please search again with different terms."
+            if (!searchText.trim().isEmpty()) {
+                for (Product product : allProducts.searchProductByName(searchText)) {
+                    matchingProducts.add(product);
+                }
+            }
+
+            System.out.println("Search Text: " + searchText);
+            System.out.println("Category: " + category);
+            System.out.println("Brand: " + brand);
+            System.out.println("Min Price: " + userSelectedMinPrice);
+            System.out.println("Max Price: " + userSelectedMaxPrice);
+            System.out.println("Minimum Product Rating: " + userSelectedMinRating);
+            System.out.println("Minimum Warranty Period: " + userSelectedWarranty);
+            System.out.println("Colour: " + userSelectedColour);
+            System.out.println("Tags: " + userSelectedTags);
+            System.out.println("Selected on sale: " + userSelectedOnSale);
+            System.out.println("Selected wireless: " + userSelectedWireless);
         }
 
     }
