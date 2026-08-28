@@ -248,54 +248,62 @@ public class ByteBazaar {
     // Used this as a reference for having multiple input fields in one sort of window:
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
     private static void searchMenu() {
-        JTextField mainSearchBar = new JTextField();
+        boolean stopFurtherExecution = false; // it seems as if even when the user enters like bad input, the program
+        // is still running... & that could break the whole flow of this searching, so I need a way to stop it somehow.
+        // So I am just using this as a switch to stop the execution when we receive bad input.
+        while (true) {
+            JTextField mainSearchBar = new JTextField();
 
-        LinkedList<Object> uniqueCategories = new LinkedList<>(allProducts.getAllUniqueCategories());
-        String[] categories = processDropDownToStringArr(uniqueCategories);
-        JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
+            LinkedList<Object> uniqueCategories = new LinkedList<>(allProducts.getAllUniqueCategories());
+            String[] categories = processDropDownToStringArr(uniqueCategories);
+            JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
 
-        LinkedList<Object> uniqueBrands = new LinkedList<>(allProducts.getAllUniqueBrands());
-        String[] brands = processDropDownToStringArr(uniqueBrands);
-        JComboBox<String> brandDropDown = new JComboBox<>(brands);
+            LinkedList<Object> uniqueBrands = new LinkedList<>(allProducts.getAllUniqueBrands());
+            String[] brands = processDropDownToStringArr(uniqueBrands);
+            JComboBox<String> brandDropDown = new JComboBox<>(brands);
 
-        JTextField minPrice = new JTextField();
-        JTextField maxPrice = new JTextField();
+            JTextField minPrice = new JTextField();
+            JTextField maxPrice = new JTextField();
 
-        JSlider minRating = new JSlider(0, 5, 1);
-        minRating.setMajorTickSpacing(1);
-        minRating.setPaintLabels(true);
+            JSlider minRating = new JSlider(0, 5, 1);
+            minRating.setMajorTickSpacing(1);
+            minRating.setPaintLabels(true);
 
-        LinkedList<Object> uniqueWarranty = new LinkedList<>(allProducts.getAllUniqueWarrantyYears());
-        for (int i = 0; i < uniqueWarranty.size(); i++) {
-            uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
-        }
-        String[] warranty = processDropDownToStringArr(uniqueWarranty);
-        JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);
+            LinkedList<Object> uniqueWarranty = new LinkedList<>(allProducts.getAllUniqueWarrantyYears());
+            for (int i = 0; i < uniqueWarranty.size(); i++) {
+                uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
+            }
+            String[] warranty = processDropDownToStringArr(uniqueWarranty);
+            JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);
 
-        LinkedList<Object> uniqueColours = new LinkedList<>(allProducts.getAllUniqueColours());
-        String[] colours = processDropDownToStringArr(uniqueColours);
-        JComboBox<String> colourDropDown = new JComboBox<>(colours);
+            LinkedList<Object> uniqueColours = new LinkedList<>(allProducts.getAllUniqueColours());
+            String[] colours = processDropDownToStringArr(uniqueColours);
+            JComboBox<String> colourDropDown = new JComboBox<>(colours);
 
-        LinkedList<Object> uniqueTags = new LinkedList<>(allProducts.getAllUniqueTags());
-        String[] tags = processDropDownToStringArr(uniqueTags);
-        JComboBox<String> tagDropDown = new JComboBox<>(tags);
+            LinkedList<Object> uniqueTags = new LinkedList<>(allProducts.getAllUniqueTags());
+            String[] tags = processDropDownToStringArr(uniqueTags);
+            JComboBox<String> tagDropDown = new JComboBox<>(tags);
 
-        JCheckBox onSaleCheckBox = new JCheckBox("Product must be on Sale");
-        JCheckBox wirelessCheckBox = new JCheckBox("Product must be wireless");
+            JCheckBox onSaleCheckBox = new JCheckBox("Product must be on Sale");
+            JCheckBox wirelessCheckBox = new JCheckBox("Product must be wireless");
 
-        Object[] componentsOnScreen = {
-                "Search for a product by name:\n", mainSearchBar,
-                "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
-                "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating,
-                "\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
-                "\n", onSaleCheckBox, "\n", wirelessCheckBox
+            Object[] componentsOnScreen = {
+                    "Search for a product by name:\n", mainSearchBar,
+                    "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
+                    "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating,
+                    "\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
+                    "\n", onSaleCheckBox, "\n", wirelessCheckBox
 
-        };
+            };
 
-        int option = JOptionPane.showConfirmDialog(null, componentsOnScreen,
-                "ByteBazaar Search Menu", JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(null, componentsOnScreen,
+                    "ByteBazaar Search Menu", JOptionPane.OK_CANCEL_OPTION);
 
-        if (option == JOptionPane.OK_OPTION) {
+            // if the user didn't click ok just get them out of the search menu...
+            if (option != JOptionPane.OK_OPTION) {
+                return;
+            }
+
             String searchText = mainSearchBar.getText();
 
             // This is the robustness in action, bad input for these drop-downs are impossible:
@@ -326,48 +334,50 @@ public class ByteBazaar {
                                     Oops! Invalid Input Detected!
                                     Please ensure your values for the min & max prices are not negative.
                                     """);
+                    stopFurtherExecution = true;
                 }
-                return;
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null,
                         """
                                 Oops! Invalid Input Detected!
-                                Please ensure you have entered an appropriate value for the min & max prices.
+                                Please ensure you have entered an appropriate integer value for the min & max prices.
                                 """);
+                stopFurtherExecution = true;
             }
 
-            // user is only able to slide the slider to whole numbers from 0-5...
-            int userSelectedMinRating = minRating.getValue();
+            if (!stopFurtherExecution) {
+                // user is only able to slide the slider to whole numbers from 0-5...
+                int userSelectedMinRating = minRating.getValue();
 
-            boolean userSelectedOnSale = onSaleCheckBox.isSelected();
-            boolean userSelectedWireless = wirelessCheckBox.isSelected();
+                boolean userSelectedOnSale = onSaleCheckBox.isSelected();
+                boolean userSelectedWireless = wirelessCheckBox.isSelected();
 
-            // holds our matches:
-            Set<Product> matchingProducts = new HashSet<>();
+                // holds our matches:
+                Set<Product> matchingProducts = new HashSet<>();
 
-            // if user's product name search doesn't match any products, I guess we can just like say there wasn't
-            // a specific match with the name that you searched for, but here are products that match your other
-            // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
-            // with that specified name or criteria combination, please search again with different terms."
-            if (!searchText.trim().isEmpty()) {
-                for (Product product : allProducts.searchProductByName(searchText)) {
-                    matchingProducts.add(product);
+                // if user's product name search doesn't match any products, I guess we can just like say there wasn't
+                // a specific match with the name that you searched for, but here are products that match your other
+                // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
+                // with that specified name or criteria combination, please search again with different terms."
+                if (!searchText.trim().isEmpty()) {
+                    for (Product product : allProducts.searchProductByName(searchText)) {
+                        matchingProducts.add(product);
+                    }
                 }
+
+                System.out.println("Search Text: " + searchText);
+                System.out.println("Category: " + category);
+                System.out.println("Brand: " + brand);
+                System.out.println("Min Price: " + userSelectedMinPrice);
+                System.out.println("Max Price: " + userSelectedMaxPrice);
+                System.out.println("Minimum Product Rating: " + userSelectedMinRating);
+                System.out.println("Minimum Warranty Period: " + userSelectedWarranty);
+                System.out.println("Colour: " + userSelectedColour);
+                System.out.println("Tags: " + userSelectedTags);
+                System.out.println("Selected on sale: " + userSelectedOnSale);
+                System.out.println("Selected wireless: " + userSelectedWireless);
             }
-
-            System.out.println("Search Text: " + searchText);
-            System.out.println("Category: " + category);
-            System.out.println("Brand: " + brand);
-            System.out.println("Min Price: " + userSelectedMinPrice);
-            System.out.println("Max Price: " + userSelectedMaxPrice);
-            System.out.println("Minimum Product Rating: " + userSelectedMinRating);
-            System.out.println("Minimum Warranty Period: " + userSelectedWarranty);
-            System.out.println("Colour: " + userSelectedColour);
-            System.out.println("Tags: " + userSelectedTags);
-            System.out.println("Selected on sale: " + userSelectedOnSale);
-            System.out.println("Selected wireless: " + userSelectedWireless);
         }
-
     }
 
     // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
