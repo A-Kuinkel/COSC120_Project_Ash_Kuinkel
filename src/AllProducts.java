@@ -100,7 +100,6 @@ public class AllProducts {
                 matchingProducts.add(product);
             }
         }
-        matchingProducts = !matchingProducts.isEmpty() ? matchingProducts : null;
         return matchingProducts;
     }
 

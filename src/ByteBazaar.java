@@ -61,7 +61,13 @@ public class ByteBazaar {
                 switch (userSelectedOption) {
                     case 1:
                         // take to first page
-                        DreamProduct userSearchFilters = searchMenu();
+                        Map<String, Object> userSearchFilters = searchMenu();
+                        if (userSearchFilters != null) {
+                            DreamProduct userCriteria = (DreamProduct) userSearchFilters.get("userCriteria");
+                            String searchTerm = (String) userSearchFilters.get("searchTerm");
+
+                            processMatchResults(searchTerm, userCriteria);
+                        }
                         break;
                     case 2:
                         // take to second page
@@ -247,7 +253,9 @@ public class ByteBazaar {
     // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
     // Used this as a reference for having multiple input fields in one sort of window:
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
-    private static DreamProduct searchMenu() {
+    // TODO: Figure out a way to handle "I don't mind" enum values for category/brand... maybe introduce a new field in
+    // the enum called like NA, where choosing "I don't mind" is representative of the NA field.
+    private static Map<String, Object> searchMenu() {
         while (true) {
             JTextField mainSearchBar = new JTextField();
 
@@ -305,13 +313,18 @@ public class ByteBazaar {
 
             // This is the robustness in action, bad input for these drop-downs are impossible:
             String category = (String) categoriesDropDown.getSelectedItem();
+            if ("I don't mind".equals(category)) {
+                category = null;
+            }
             String brand = (String) brandDropDown.getSelectedItem();
+            if ("I don't mind".equals(brand)) {
+                brand = null;
+            }
 
             String userSelectedWarranty = (String) warrantyDropDown.getSelectedItem();
             Integer userSelectedMinWarrantyYears = null;
 
-            if (userSelectedWarranty != null && !userSelectedWarranty.equalsIgnoreCase("I don't mind")) {
-                userSelectedWarranty = userSelectedWarranty.trim().replace("years", "");
+            if (userSelectedWarranty != null && !("I don't mind".equals(userSelectedWarranty))) {
                 try {
                     // so here we remove the year/years that we previously added for the user to see...
                     userSelectedWarranty = userSelectedWarranty.replace("year", "")
@@ -326,7 +339,13 @@ public class ByteBazaar {
             }
 
             String userSelectedColour = (String) colourDropDown.getSelectedItem();
+            if ("I don't mind".equals(userSelectedColour)) {
+                userSelectedColour = null;
+            }
             String userSelectedTags = (String) tagDropDown.getSelectedItem();
+            if ("I don't mind".equals(userSelectedTags)) {
+                userSelectedTags = null;
+            }
 
             Double userSelectedMinPrice = null;
             Double userSelectedMaxPrice = null;
@@ -363,8 +382,8 @@ public class ByteBazaar {
             // user is only able to slide the slider to whole numbers from 0-5...
             int userSelectedMinRating = minRating.getValue();
 
-            boolean userSelectedOnSale = onSaleCheckBox.isSelected();
-            boolean userSelectedWireless = wirelessCheckBox.isSelected();
+            Boolean userSelectedOnSale = onSaleCheckBox.isSelected() ? Boolean.TRUE : null;
+            Boolean userSelectedWireless = wirelessCheckBox.isSelected()  ? Boolean.TRUE : null;
 
             System.out.println("Search Text: " + searchText);
             System.out.println("Category: " + category);
@@ -385,12 +404,22 @@ public class ByteBazaar {
             userChosenProductAttributes.put(ProductAttributes.ON_SALE, userSelectedOnSale);
             userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
 
-            return new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
+            Map<String, Object> userCompleteSearch = new HashMap<>();
+            DreamProduct userDreamProductFeatures = new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
                     userSelectedMinRating, userSelectedMinWarrantyYears, userChosenProductAttributes);
+            userCompleteSearch.put("searchTerm", searchText);
+            userCompleteSearch.put("userCriteria", userDreamProductFeatures);
+            return userCompleteSearch;
         }
     }
 
-    private static void processMatchResults() {
+    // I actually now think we should return like a map from the searchMenu() method.. like a hashmap that
+    // contains like:
+    //    Key:                      Value:
+    // searchTerm -> Stores the search term that must match.
+    // userCriteria -> Stores instance of dream product class (representing users wish for like minPrice etc.)
+
+    private static void processMatchResults(String userSearchByName, DreamProduct userCriteria) {
         // if user's product name search doesn't match any products, I guess we can just like say there wasn't
         // a specific match with the name that you searched for, but here are products that match your other
         // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
@@ -399,11 +428,41 @@ public class ByteBazaar {
         // holds matches:
         Set<Product> matchingProducts = new HashSet<>();
 
-//        if (!searchText.trim().isEmpty() && (allProducts.searchProductByName(searchText) != null)) {
-//            for (Product product : allProducts.searchProductByName(searchText)) {
-//                matchingProducts.add(product);
-//            }
-//        }
+        // if the user hasn't specified a name, we can just filter by criteria only:
+        if (userSearchByName.trim().isEmpty()) {
+            matchingProducts.addAll(allProducts.compareProductToUserDreamProduct(userCriteria));
+        } else {
+            List<Product> matchingNameProducts = allProducts.searchProductByName(userSearchByName);
+            List<Product> matchingCriteriaProducts = allProducts.compareProductToUserDreamProduct(userCriteria);
+            Set<Product> intersect = new HashSet<>(matchingNameProducts);
+            intersect.retainAll(matchingCriteriaProducts);
+            matchingProducts.addAll(intersect);
+        }
+
+        if (matchingProducts.isEmpty()) {
+            if (loggedIn) {
+                JOptionPane.showConfirmDialog(null, """
+                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙.
+                        Since you are a member of ByteBazaar, we may be able to request this item from
+                        our manufacturer... We will inform you by phone as soon as this item is in stock.
+                        Thanks for understanding!
+                        
+                        Would you like us to request this item & contact you once it is available?
+                        ""","ByteBazaar",JOptionPane.YES_NO_OPTION);
+            } else {
+                JOptionPane.showMessageDialog(null, """
+                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙.
+                        
+                        Because you are not a member of ByteBazaar, we aren't able to request this item
+                        from our manufacturer for you. If you do wish for it to be requested, please ensure
+                        you sign up & become a member with us.
+                        
+                        Thanks for understanding!
+                        """);
+            }
+        } else {
+
+        }
     }
 
 // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
@@ -602,7 +661,6 @@ public class ByteBazaar {
     }
 
     private static void login() {
-        // TODO
         // im thinking  call the tempUserAccountInfoHolder record save info to it for a data structure to hold...
         String email;
         String password;
@@ -610,7 +668,7 @@ public class ByteBazaar {
         // note that a validation to check for like @ or . in the email isn't really needed for login
         // method, as this is validated during the signin & for login, we can just check if email exists
         // only:
-        // TODO: I need to guard against people trying to login before signing up; because right
+        // Also I need to guard against people trying to log in before signing up; because right
         // now it will just throw an error saying like Cannot invoke User.email() because
         // ByteBazaar.tempUserAccountInfoHolder is null....
         if (tempUserAccountInfoHolder == null) {
