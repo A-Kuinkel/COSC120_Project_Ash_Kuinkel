@@ -61,7 +61,7 @@ public class ByteBazaar {
                 switch (userSelectedOption) {
                     case 1:
                         // take to first page
-                        searchMenu();
+                        DreamProduct userSearchFilters = searchMenu();
                         break;
                     case 2:
                         // take to second page
@@ -247,10 +247,7 @@ public class ByteBazaar {
     // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
     // Used this as a reference for having multiple input fields in one sort of window:
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
-    private static void searchMenu() {
-        boolean stopFurtherExecution = false; // it seems as if even when the user enters like bad input, the program
-        // is still running... & that could break the whole flow of this searching, so I need a way to stop it somehow.
-        // So I am just using this as a switch to stop the execution when we receive bad input.
+    private static DreamProduct searchMenu() {
         while (true) {
             JTextField mainSearchBar = new JTextField();
 
@@ -301,7 +298,7 @@ public class ByteBazaar {
 
             // if the user didn't click ok just get them out of the search menu...
             if (option != JOptionPane.OK_OPTION) {
-                return;
+                continue;
             }
 
             String searchText = mainSearchBar.getText();
@@ -309,22 +306,40 @@ public class ByteBazaar {
             // This is the robustness in action, bad input for these drop-downs are impossible:
             String category = (String) categoriesDropDown.getSelectedItem();
             String brand = (String) brandDropDown.getSelectedItem();
+
             String userSelectedWarranty = (String) warrantyDropDown.getSelectedItem();
+            Integer userSelectedMinWarrantyYears = null;
+
+            if (userSelectedWarranty != null && !userSelectedWarranty.equalsIgnoreCase("I don't mind")) {
+                userSelectedWarranty = userSelectedWarranty.trim().replace("years", "");
+                try {
+                    // so here we remove the year/years that we previously added for the user to see...
+                    userSelectedWarranty = userSelectedWarranty.replace("year", "")
+                            .replace("years", "").trim();
+
+                    userSelectedMinWarrantyYears = Integer.parseInt(userSelectedWarranty);
+
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Oops... Invalid Warranty Period Detected!");
+                }
+            }
+
             String userSelectedColour = (String) colourDropDown.getSelectedItem();
             String userSelectedTags = (String) tagDropDown.getSelectedItem();
 
-            Integer userSelectedMinPrice = null;
-            Integer userSelectedMaxPrice = null;
+            Double userSelectedMinPrice = null;
+            Double userSelectedMaxPrice = null;
             // validation logic for the input user may enter:
             try {
                 String userInputForMinPrice = minPrice.getText().trim();
                 if (!userInputForMinPrice.isEmpty()) {
-                    userSelectedMinPrice = Integer.valueOf(minPrice.getText());
+                    userSelectedMinPrice = Double.valueOf(minPrice.getText());
                 }
 
                 String userInputForMaxPrice = maxPrice.getText().trim();
                 if (!userInputForMaxPrice.isEmpty()) {
-                    userSelectedMaxPrice = Integer.valueOf(maxPrice.getText());
+                    userSelectedMaxPrice = Double.valueOf(maxPrice.getText());
                 }
 
                 if ((userSelectedMinPrice != null && userSelectedMinPrice < 0)
@@ -334,7 +349,7 @@ public class ByteBazaar {
                                     Oops! Invalid Input Detected!
                                     Please ensure your values for the min & max prices are not negative.
                                     """);
-                    stopFurtherExecution = true;
+                    continue;
                 }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null,
@@ -342,53 +357,64 @@ public class ByteBazaar {
                                 Oops! Invalid Input Detected!
                                 Please ensure you have entered an appropriate integer value for the min & max prices.
                                 """);
-                stopFurtherExecution = true;
+                continue;
             }
 
-            if (!stopFurtherExecution) {
-                // user is only able to slide the slider to whole numbers from 0-5...
-                int userSelectedMinRating = minRating.getValue();
+            // user is only able to slide the slider to whole numbers from 0-5...
+            int userSelectedMinRating = minRating.getValue();
 
-                boolean userSelectedOnSale = onSaleCheckBox.isSelected();
-                boolean userSelectedWireless = wirelessCheckBox.isSelected();
+            boolean userSelectedOnSale = onSaleCheckBox.isSelected();
+            boolean userSelectedWireless = wirelessCheckBox.isSelected();
 
-                // holds our matches:
-                Set<Product> matchingProducts = new HashSet<>();
+            System.out.println("Search Text: " + searchText);
+            System.out.println("Category: " + category);
+            System.out.println("Brand: " + brand);
+            System.out.println("Min Price: " + userSelectedMinPrice);
+            System.out.println("Max Price: " + userSelectedMaxPrice);
+            System.out.println("Minimum Product Rating: " + userSelectedMinRating);
+            System.out.println("Minimum Warranty Period: " + userSelectedMinWarrantyYears);
+            System.out.println("Colour: " + userSelectedColour);
+            System.out.println("Tags: " + userSelectedTags);
+            System.out.println("Selected on sale: " + userSelectedOnSale);
+            System.out.println("Selected wireless: " + userSelectedWireless);
+            Map<ProductAttributes, Object> userChosenProductAttributes = new LinkedHashMap<>();
+            userChosenProductAttributes.put(ProductAttributes.CATEGORY, category);
+            userChosenProductAttributes.put(ProductAttributes.BRAND, brand);
+            userChosenProductAttributes.put(ProductAttributes.TAGS, userSelectedTags);
+            userChosenProductAttributes.put(ProductAttributes.COLOUR, userSelectedColour);
+            userChosenProductAttributes.put(ProductAttributes.ON_SALE, userSelectedOnSale);
+            userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
 
-                // if user's product name search doesn't match any products, I guess we can just like say there wasn't
-                // a specific match with the name that you searched for, but here are products that match your other
-                // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
-                // with that specified name or criteria combination, please search again with different terms."
-                if (!searchText.trim().isEmpty() && (allProducts.searchProductByName(searchText) != null)) {
-                    for (Product product : allProducts.searchProductByName(searchText)) {
-                        matchingProducts.add(product);
-                    }
-                }
-
-                System.out.println("Search Text: " + searchText);
-                System.out.println("Category: " + category);
-                System.out.println("Brand: " + brand);
-                System.out.println("Min Price: " + userSelectedMinPrice);
-                System.out.println("Max Price: " + userSelectedMaxPrice);
-                System.out.println("Minimum Product Rating: " + userSelectedMinRating);
-                System.out.println("Minimum Warranty Period: " + userSelectedWarranty);
-                System.out.println("Colour: " + userSelectedColour);
-                System.out.println("Tags: " + userSelectedTags);
-                System.out.println("Selected on sale: " + userSelectedOnSale);
-                System.out.println("Selected wireless: " + userSelectedWireless);
-            }
+            return new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
+                    userSelectedMinRating, userSelectedMinWarrantyYears, userChosenProductAttributes);
         }
     }
 
-    // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
-    // credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
-    // validating that the password/username they entered is correct, if correct we can just flip a boolean variable
-    // called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
-    // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
+    private static void processMatchResults() {
+        // if user's product name search doesn't match any products, I guess we can just like say there wasn't
+        // a specific match with the name that you searched for, but here are products that match your other
+        // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
+        // with that specified name or criteria combination, please search again with different terms."
 
-    // TODO: Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
-    // for every input... just looks much nicer that way. I will have to see if this is possible first.
-    // Use this as reference: https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
+        // holds matches:
+        Set<Product> matchingProducts = new HashSet<>();
+
+//        if (!searchText.trim().isEmpty() && (allProducts.searchProductByName(searchText) != null)) {
+//            for (Product product : allProducts.searchProductByName(searchText)) {
+//                matchingProducts.add(product);
+//            }
+//        }
+    }
+
+// with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
+// credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
+// validating that the password/username they entered is correct, if correct we can just flip a boolean variable
+// called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
+// the program, or decides to log out manually (in which case the loggedIn value will be set to false).
+
+// TODO: Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
+// for every input... just looks much nicer that way. I will have to see if this is possible first.
+// Use this as reference: https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
 
     private static void signup() {
         // get the tempUserAccountInfoHolder to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
@@ -649,7 +675,7 @@ public class ByteBazaar {
         JOptionPane.showMessageDialog(null, "Successfully logged out!");
     }
 
-    // helper methods:
+// helper methods:
 
     private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {
         // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I

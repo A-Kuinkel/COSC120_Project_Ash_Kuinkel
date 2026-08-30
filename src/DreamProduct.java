@@ -8,8 +8,8 @@ import java.util.*;
  */
 public class DreamProduct {
 
-    private final double minPrice;
-    private final double maxPrice;
+    private final Double minPrice;
+    private final Double maxPrice;
     private final float minRating;
     private final Integer minWarrantyYears;
     private final Map<ProductAttributes, Object> productAttributesMap;
@@ -24,7 +24,7 @@ public class DreamProduct {
      * @param productAttributesMap -> Map containing the additional attributes that user may search by including, e.g.
      *                                colour, brand, category etc.
      */
-    public DreamProduct(double minPrice, double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
+    public DreamProduct(Double minPrice, Double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
@@ -39,8 +39,8 @@ public class DreamProduct {
      * @param productAttributesMap -> A map of the product's comparable attributes, e.g. brand, category etc.
      */
     public DreamProduct(Map<ProductAttributes, Object> productAttributesMap) {
-        this.minPrice = -1;
-        this.maxPrice = -1;
+        this.minPrice = (double) -1;
+        this.maxPrice = (double) -1;
         this.minRating = -1;
         this.minWarrantyYears = -1;
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
@@ -51,7 +51,7 @@ public class DreamProduct {
      *
      * @return the minimum price.
      */
-    public double getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
 
@@ -60,7 +60,7 @@ public class DreamProduct {
      *
      * @return the maximum price.
      */
-    public double getMaxPrice() {
+    public Double getMaxPrice() {
         return maxPrice;
     }
 
