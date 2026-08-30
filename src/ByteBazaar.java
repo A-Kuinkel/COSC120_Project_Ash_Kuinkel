@@ -298,7 +298,7 @@ public class ByteBazaar {
 
             // if the user didn't click ok just get them out of the search menu...
             if (option != JOptionPane.OK_OPTION) {
-                continue;
+                return null;
             }
 
             String searchText = mainSearchBar.getText();
