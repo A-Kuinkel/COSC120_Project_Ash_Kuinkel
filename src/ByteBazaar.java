@@ -359,7 +359,7 @@ public class ByteBazaar {
                 // a specific match with the name that you searched for, but here are products that match your other
                 // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
                 // with that specified name or criteria combination, please search again with different terms."
-                if (!searchText.trim().isEmpty()) {
+                if (!searchText.trim().isEmpty() && (allProducts.searchProductByName(searchText) != null)) {
                     for (Product product : allProducts.searchProductByName(searchText)) {
                         matchingProducts.add(product);
                     }
