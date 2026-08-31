@@ -15,6 +15,7 @@ public class ByteBazaar {
     private static User tempUserAccountInfoHolder;
     private static User signedInUser;
     private static Cart cart;
+    private static Order order;
 
     public static void main(String[] args) throws IOException {
 
@@ -41,11 +42,11 @@ public class ByteBazaar {
                     2. Signup for an account with ByteBazaar to become a member and order online.
                     3. Login to my ByteBazaar account.
                     4. Logout of my ByteBazaar account.
-                    5. View cart.
+                    5. View cart & Orders.
                     6. Exit program.
                     
                     If you would like to place orders, see your cart or maybe even
-                    update your information, you must first login to your account.
+                    request products for us to sell, you must first login to your account.
                     
                     Please enter an integer, i.e. 1,2,3 etc. reflective of your intended choice.
                     
@@ -84,7 +85,7 @@ public class ByteBazaar {
                         logout();
                         break;
                     case 5:
-                        cartScreen();
+                        cartAndOrderScreen();
                         break;
                     case 6:
                         // take to fifth page
@@ -789,23 +790,73 @@ public class ByteBazaar {
         JOptionPane.showMessageDialog(null, "Successfully logged out!");
     }
 
-    private static void cartScreen() {
+    private static void cartAndOrderScreen() {
         if (signedInUser == null) {
             JOptionPane.showMessageDialog(null, """
-                    Please ensure that you are logged in first, before attempting to view cart!
+                    Please ensure that you are logged in first, before attempting to view cart & orders!
                     """);
             return;
         }
 
-        if (cart.isEmpty()) {
-            JOptionPane.showMessageDialog(null, """
-                    Nothing to see here, please add some products to cart & come back.
-                    """);
-            return;
+        int cartScreenSelectedOption = 0;
+        String mainScreen = JOptionPane.showInputDialog(null, """
+                This is where you are able to access your cart & place orders!
+                
+                Please select one of the following options:
+                1. View my Cart
+                2. Clear my Cart
+                3. View my Orders
+                
+                Please enter an integer, i.e. 1,2,3 reflective of your intended choice:
+                
+                """);
+        if (mainScreen == null) {
+            System.exit(0);
         }
+        try {
+            cartScreenSelectedOption = Integer.parseInt(mainScreen);
+            switch (cartScreenSelectedOption) {
+                case 1:
+                    if (cart.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, """
+                                Nothing to see here, please add some products to cart & come back.
+                                """);
+                        return;
+                    }
+                    String cartOverview = cart.toString() + "\n TOTAL: $" + cart.getTotalPrice() +
+                            "\n Would you like to checkout & place an order?\n";
+                    int orderInput = JOptionPane.showConfirmDialog(null,cartOverview,"Cart",
+                            JOptionPane.YES_NO_OPTION);
+                    if (JOptionPane.YES_OPTION == orderInput) {
+                        new Order(signedInUser,cart.getProducts());
+                        JOptionPane.showMessageDialog(null, """
+                                Order successfully placed! Items will be dispatched & you will be notified.
+                                We deeply thank you for choosing us, ByteBazaar.
+                                ""","Order Confirmed",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    break;
+                case 2:
+                    if (cart.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, """
+                                Nothing to see here, please add some products to cart & come back.
+                                """);
+                        return;
+                    }
+                    int clearCartOption = JOptionPane.showConfirmDialog(null, """
+                            Are you sure you want to clear your cart?
+                            """, "Clear Cart",JOptionPane.YES_NO_OPTION);
+                    if (JOptionPane.YES_OPTION == clearCartOption) {
+                        cart.clearCart();
+                    }
+                    JOptionPane.showMessageDialog(null,"Cart successfully cleared!");
+                    break;
+                case 3:
 
-        String currCart = cart.toString();
-        JOptionPane.showInputDialog(null,currCart);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +
+                    " Please enter an integer from the following options provided!");
+        }
     }
 
 // helper methods:

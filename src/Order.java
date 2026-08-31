@@ -30,7 +30,7 @@ public class Order {
         return "\n**ORDER OVERVIEW**\n" + "\n" + "**BUYER INFORMATION**\n" + "Buyer Full Name: "
                 + userInfo.fullName() + "\n" + "Buyer Email: " + userInfo.email() + "\n" + "Buyer Phone Number: "
                 + userInfo.phoneNumber() + "\n" + "Buyer Shipping Address: " + userInfo.shippingAddress() + "\n" +
-                "\n**PRODUCT INFORMATION**\n" + holdFormattedItemsInfo;
+                "\n**No. of Items: **\n" + holdFormattedItemsInfo;
     }
 
 
