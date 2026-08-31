@@ -259,8 +259,6 @@ public class ByteBazaar {
     // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
     // Used this as a reference for having multiple input fields in one sort of window:
     // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
-    // TODO: Figure out a way to handle "I don't mind" enum values for category/brand... maybe introduce a new field in
-    // the enum called like NA, where choosing "I don't mind" is representative of the NA field.
     private static Map<String, Object> searchMenu() {
         while (true) {
             JTextField mainSearchBar = new JTextField();
@@ -401,17 +399,6 @@ public class ByteBazaar {
             Boolean userSelectedOnSale = onSaleCheckBox.isSelected() ? Boolean.TRUE : null;
             Boolean userSelectedWireless = wirelessCheckBox.isSelected() ? Boolean.TRUE : null;
 
-            System.out.println("Search Text: " + searchText);
-            System.out.println("Category: " + category);
-            System.out.println("Brand: " + brand);
-            System.out.println("Min Price: " + userSelectedMinPrice);
-            System.out.println("Max Price: " + userSelectedMaxPrice);
-            System.out.println("Minimum Product Rating: " + userSelectedMinRating);
-            System.out.println("Minimum Warranty Period: " + userSelectedMinWarrantyYears);
-            System.out.println("Colour: " + userSelectedColour);
-            System.out.println("Tags: " + userSelectedTags);
-            System.out.println("Selected on sale: " + userSelectedOnSale);
-            System.out.println("Selected wireless: " + userSelectedWireless);
             Map<ProductAttributes, Object> userChosenProductAttributes = new LinkedHashMap<>();
             if (category != null) {
                 userChosenProductAttributes.put(ProductAttributes.CATEGORY, category);
@@ -533,7 +520,7 @@ public class ByteBazaar {
 // called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
 // the program, or decides to log out manually (in which case the loggedIn value will be set to false).
 
-// TODO: Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
+// Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
 // for every input... just looks much nicer that way. I will have to see if this is possible first.
 // Use this as reference: https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
 
@@ -544,188 +531,123 @@ public class ByteBazaar {
         // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
         // save just plain-text passwords to it... but we can't with just one txt... no way passwords can be stored
         // in a product db:
-        String signupFormScreen;
-        String lastName;
-        String email;
-        String password;
-        String phoneNumber;
-        String shippingAddress;
+        while (true) {
+            JTextField fNameInput = new JTextField();
+            JTextField lNameInput = new JTextField();
+            JTextField eMailInput = new JTextField();
+            JPasswordField passInput = new JPasswordField();
+            JTextField pNumInput = new JTextField();
+            JTextField sAddrInput = new JTextField();
+            String introText = """
+                    **SIGNUP FORM**
+                    
+                      Thank you for signing up & becoming a member with ByteBazaar.
+                      By creating an account, you are able to order our products online!
+                      Please fill out the form on the next page appropriately.
+                    """;
 
-        signupFormScreen = JOptionPane.showInputDialog("""
-                 **SIGNUP FORM**
-                 Thank you for signing up & becoming a member with ByteBazaar.
-                 By creating an account, you are able to order our products online!
-                 Please fill out the form, one question at a time appropriately:
-                \s
-                 What is your first name?\s
-                \s""");
+            Object[] options = {introText, "\n", " First Name:\n", fNameInput, "\n", "Last Name:\n", lNameInput, "\n", "Email:\n", eMailInput,
+                    "\n", "Password (Must be 8-30 chars long):\n", passInput, "\n",
+                    "Phone Number (Must be 7-15 digits long):\n", pNumInput, "\n", "Shipping Address:\n", sAddrInput};
 
-        // don't skip past this until the user enters a valid first name, or closes program/cancels:
-        while (signupFormScreen == null || signupFormScreen.trim().isEmpty() ||
-                !checkIfLettersOnly(signupFormScreen)) {
+            int option = JOptionPane.showConfirmDialog(null, options, "Signup",
+                    JOptionPane.OK_CANCEL_OPTION);
 
-            // user has pressed cancel/x so just get them out:
-            if (signupFormScreen == null) {
+            if (option != JOptionPane.OK_OPTION) {
                 return;
             }
 
-            if (signupFormScreen.trim().isEmpty()) {
+            String firstName = fNameInput.getText().trim();
+            String lastName = lNameInput.getText().trim();
+            String email = eMailInput.getText().trim();
+            String password = new String(passInput.getPassword());// lets not trim password..
+            String phoneNumber = pNumInput.getText().trim();
+            String shippingAddress = sAddrInput.getText().trim();
+
+            // validation logic to make sure we don't get bad input from user:
+            if (firstName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid first name.");
-            } else if (!checkIfLettersOnly(signupFormScreen)) {
+                continue;
+            } else if (!checkIfLettersOnly(firstName)) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input, please enter your first name in letters only.
                         """);
+                continue;
             }
 
-            signupFormScreen = JOptionPane.showInputDialog("""
-                     **SIGNUP FORM**
-                     Thank you for signing up & becoming a member with ByteBazaar.
-                     By creating an account, you are able to order our products online!
-                     Please fill out the form, one question at a time appropriately:
-                    \s
-                     What is your first name?\s
-                    \s""");
-        }
-
-        // further validation logic for each field:
-        lastName = JOptionPane.showInputDialog("""
-                What is your last name?
-                """);
-
-        while (lastName == null || lastName.trim().isEmpty()
-                || !checkIfLettersOnly(lastName)) {
-
-            if (lastName == null) {
-                return;
-            }
-
-            if (lastName.trim().isEmpty()) {
+            if (lastName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid last name.");
+                continue;
             } else if (!checkIfLettersOnly(lastName)) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input, please enter your last name in letters only.
                         """);
+                continue;
             }
 
-            lastName = JOptionPane.showInputDialog("""
-                    What is your last name?
-                    """);
-        }
-
-        email = JOptionPane.showInputDialog("""
-                       What is your email?
-                """);
-
-        while (email == null || email.trim().isEmpty() || !email.contains("@") || !email.contains(".")) {
-
-            if (email == null) {
-                return;
-            }
-
-            if (email.trim().isEmpty()) {
+            if (email.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid email.");
+                continue;
             } else if (!email.contains("@") || !email.contains(".")) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input; Email must contain '@' & '.' symbols.
                         """);
+                continue;
             }
 
-            email = JOptionPane.showInputDialog("""
-                           What is your email?
-                    """);
-        }
-
-        password = JOptionPane.showInputDialog("""
-                (Note that your info will not be saved after the program is closed, so you
-                will need to signup again with your information).
-                
-                Please enter a password for your account (8 chars min, 30 chars max):
-                """);
-
-        while (password == null || password.trim().isEmpty() || password.length() < 8 || password.length() > 30) {
-            if (password == null) {
-                return;
-            }
-
-            if (password.trim().isEmpty()) {
+            if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Please enter a valid password for your account.");
+                continue;
             } else if (password.length() < 8) {
                 JOptionPane.showMessageDialog(null,
                         "Password must be at least 8 characters long.");
-            } else {
+                continue;
+            } else if (password.length() > 30) {
                 JOptionPane.showMessageDialog(null,
                         "Password must be at most 30 characters long.");
+                continue;
             }
 
-            password = JOptionPane.showInputDialog("""
-                    (Note that your info will not be saved after the program is closed, so you
-                    will need to signup again with your information).
-                    
-                    Please enter a password for your account (8 chars min, 30 chars max):
-                    """);
-        }
-        // storing our password:
-        userStoredPass = password;
+            // storing our password:
+            userStoredPass = password;
 
-        phoneNumber = JOptionPane.showInputDialog("""
-                 Please enter your phone number (7 chars min, 15 chars max):
-                """);
-
-        while (phoneNumber == null || phoneNumber.trim().isEmpty()
-                || !checkIfDigitsOnly(phoneNumber) || phoneNumber.length() < 7 || phoneNumber.length() > 15) {
-            if (phoneNumber == null) {
-                return;
-            }
-
-            if (phoneNumber.trim().isEmpty()) {
+            if (phoneNumber.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid phone number, please enter a valid phone number.");
+                continue;
             } else if (!checkIfDigitsOnly(phoneNumber)) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid phone number; Phone number must contain digits only.");
                         """);
+                continue;
             } else if (phoneNumber.length() < 7) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input; Phone number must be at least 7 characters long.");
                         """);
+                continue;
             } else if (phoneNumber.length() > 15) {
                 JOptionPane.showMessageDialog(null, """
                         Oops! Found invalid input; Phone number must be at most 15 characters long.");
                         """);
+                continue;
             }
 
-            phoneNumber = JOptionPane.showInputDialog("""
-                     Please enter your phone number (7 chars min, 15 chars max):
-                    """);
-        }
-
-        shippingAddress = JOptionPane.showInputDialog("""
-                Please enter your shipping address:
-                """);
-
-        while (shippingAddress == null || shippingAddress.trim().isEmpty()) {
-            if (shippingAddress == null) {
-                return;
+            if (shippingAddress.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid shipping address");
+                continue;
             }
 
-            JOptionPane.showMessageDialog(null,
-                    "Please enter a valid shipping address");
-
-            shippingAddress = JOptionPane.showInputDialog("""
-                    Please enter your shipping address:
-                    """);
+            tempUserAccountInfoHolder = new User(firstName, lastName, email, userStoredPass,
+                    phoneNumber, shippingAddress);
+            JOptionPane.showMessageDialog(null, "Successfully signed up!");
+            return;
         }
-
-        tempUserAccountInfoHolder = new User(signupFormScreen, lastName, email, userStoredPass,
-                phoneNumber, shippingAddress);
-        JOptionPane.showMessageDialog(null, "Successfully signed up!");
     }
 
     private static void login() {
         // im thinking  call the tempUserAccountInfoHolder record save info to it for a data structure to hold...
-        String email;
-        String password;
 
         // note that a validation to check for like @ or . in the email isn't really needed for login
         // method, as this is validated during the signin & for login, we can just check if email exists
@@ -743,9 +665,11 @@ public class ByteBazaar {
         }
 
         while (true) {
-
-            email = JOptionPane.showInputDialog(null, """
-                    **LOGIN FORM**
+            JTextField eMailInput = new JTextField();
+            JPasswordField passInput = new JPasswordField();
+            String introText = """
+                    ** LOGIN FORM **
+                    
                     After logging in, you will be able to place orders,
                     view cart and update your information.
                     
@@ -754,17 +678,23 @@ public class ByteBazaar {
                     the program. Upon reopening, you will need to sign
                     up for an account & log in again. Thanks for under-
                     standing :)
-                    
-                    Please enter the email for your account:
-                    """);
-            if (email == null) {
-                return;
-            }
+                    """;
 
-            password = JOptionPane.showInputDialog(null,
-                    "Please enter the password for your account:");
-            if (password == null) {
-                return;
+            Object[] components = {
+                    introText,"\n","Email:\n",eMailInput,"\n","Password:\n",passInput,"\n"
+            };
+
+            int option = JOptionPane.showConfirmDialog(null, components,"Login",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (option != JOptionPane.OK_OPTION) {return;}
+
+            String email = eMailInput.getText().trim();
+            String password = new String(passInput.getPassword());
+
+            if (email.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Please enter a valid email + password combination.");
+                continue;
             }
 
             // checking the password & email... note this is also a security concept, here... we shouldn't inform the
@@ -796,6 +726,7 @@ public class ByteBazaar {
         loggedIn = false;
         signedInUser = null;
         cart = null;
+        order = null;
         JOptionPane.showMessageDialog(null, "Successfully logged out!");
     }
 
@@ -850,7 +781,7 @@ public class ByteBazaar {
                 case 2:
                     if (cart.isEmpty()) {
                         JOptionPane.showMessageDialog(null, """
-                                You cannot clear an empty cart, please ensure that you have some products in your cart,
+                                You cannot clear an empty cart, please ensure that you have products in your cart,
                                 before attempting to clear the cart.
                                 """);
                         return;
