@@ -471,7 +471,7 @@ public class ByteBazaar {
 
         if (matchingProducts.isEmpty()) {
             if (loggedIn) {
-                JOptionPane.showConfirmDialog(null, """
+                int requestItem = JOptionPane.showConfirmDialog(null, """
                         Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙
                         Since you are a member of ByteBazaar, we may be able to request this item from
                         our manufacturer... We will inform you by phone as soon as this item is in stock.
@@ -479,6 +479,13 @@ public class ByteBazaar {
                         
                         Would you like us to request this item & contact you once it is available?
                         """, "ByteBazaar", JOptionPane.YES_NO_OPTION);
+                if (requestItem == JOptionPane.YES_OPTION) {
+                    JOptionPane.showMessageDialog(null, """
+                                    Thank you, your request has been processed & we will inform you by mobile
+                                    for any further updates on your request.
+                                    """,
+                            "Success", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(null, """
                         Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙
@@ -767,7 +774,9 @@ public class ByteBazaar {
                     comparePasswords(password)) {
                 loggedIn = true;
                 signedInUser = tempUserAccountInfoHolder;
+                // creating a cart/order for the session:
                 cart = new Cart(signedInUser);
+                order = new Order(signedInUser);
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
                 return;
             }
@@ -798,7 +807,7 @@ public class ByteBazaar {
             return;
         }
 
-        int cartScreenSelectedOption = 0;
+        int cartScreenSelectedOption;
         String mainScreen = JOptionPane.showInputDialog(null, """
                 This is where you are able to access your cart & place orders!
                 
@@ -825,33 +834,45 @@ public class ByteBazaar {
                     }
                     String cartOverview = cart.toString() + "\n TOTAL: $" + cart.getTotalPrice() +
                             "\n Would you like to checkout & place an order?\n";
-                    int orderInput = JOptionPane.showConfirmDialog(null,cartOverview,"Cart",
+                    int orderInput = JOptionPane.showConfirmDialog(null, cartOverview, "Cart",
                             JOptionPane.YES_NO_OPTION);
                     if (JOptionPane.YES_OPTION == orderInput) {
-                        new Order(signedInUser,cart.getProducts());
+                        for (Product product : cart.getProducts()) {
+                            order.addItemsToOrder(product);
+                        }
+
                         JOptionPane.showMessageDialog(null, """
                                 Order successfully placed! Items will be dispatched & you will be notified.
                                 We deeply thank you for choosing us, ByteBazaar.
-                                ""","Order Confirmed",JOptionPane.INFORMATION_MESSAGE);
+                                """, "Order Confirmed", JOptionPane.INFORMATION_MESSAGE);
                     }
                     break;
                 case 2:
                     if (cart.isEmpty()) {
                         JOptionPane.showMessageDialog(null, """
-                                Nothing to see here, please add some products to cart & come back.
+                                You cannot clear an empty cart, please ensure that you have some products in your cart,
+                                before attempting to clear the cart.
                                 """);
                         return;
                     }
                     int clearCartOption = JOptionPane.showConfirmDialog(null, """
                             Are you sure you want to clear your cart?
-                            """, "Clear Cart",JOptionPane.YES_NO_OPTION);
+                            """, "Clear Cart", JOptionPane.YES_NO_OPTION);
                     if (JOptionPane.YES_OPTION == clearCartOption) {
                         cart.clearCart();
                     }
-                    JOptionPane.showMessageDialog(null,"Cart successfully cleared!");
+                    JOptionPane.showMessageDialog(null, "Cart successfully cleared!");
                     break;
                 case 3:
-
+                    if (order.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, """
+                                Nothing to see here, please confirm an order & come back.
+                                """);
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(null, order.toString(), "My Orders",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    break;
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +

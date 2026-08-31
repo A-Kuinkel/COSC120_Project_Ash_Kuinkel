@@ -5,18 +5,16 @@ public class Order {
 
     // fields:
     private final User userInfo;
-    private final List<Product> itemsInfo;
+    private final List<Product> itemsInfo = new ArrayList<>();
 
-    Order(User userInfo, List<Product> itemsInfo) {
+    Order(User userInfo) {
         this.userInfo = userInfo;
-        this.itemsInfo = itemsInfo;
     }
 
-    // getters/setters:
     public User getUserInfo() {return userInfo;}
-    public List<Product> getItemsInfo() {return itemsInfo;}
+    public void addItemsToOrder(Product product) {itemsInfo.add(product);}
 
-    // methods:
+    public boolean isEmpty() {return itemsInfo.isEmpty();}
 
     @Override
     public String toString() {
@@ -24,13 +22,13 @@ public class Order {
         StringBuilder holdFormattedItemsInfo = new StringBuilder();
 
         for (Product product : itemsInfo){
-            holdFormattedItemsInfo.append(product.getProductInfo());
+            holdFormattedItemsInfo.append(product.getName()).append(",\n ");
         }
 
         return "\n**ORDER OVERVIEW**\n" + "\n" + "**BUYER INFORMATION**\n" + "Buyer Full Name: "
                 + userInfo.fullName() + "\n" + "Buyer Email: " + userInfo.email() + "\n" + "Buyer Phone Number: "
                 + userInfo.phoneNumber() + "\n" + "Buyer Shipping Address: " + userInfo.shippingAddress() + "\n" +
-                "\n**No. of Items: **\n" + holdFormattedItemsInfo;
+                "\n**Items: **\n";
     }
 
 
