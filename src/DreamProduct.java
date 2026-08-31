@@ -10,7 +10,7 @@ public class DreamProduct {
 
     private final Double minPrice;
     private final Double maxPrice;
-    private final float minRating;
+    private final Float minRating;
     private final Integer minWarrantyYears;
     private final Map<ProductAttributes, Object> productAttributesMap;
 
@@ -39,10 +39,10 @@ public class DreamProduct {
      * @param productAttributesMap -> A map of the product's comparable attributes, e.g. brand, category etc.
      */
     public DreamProduct(Map<ProductAttributes, Object> productAttributesMap) {
-        this.minPrice = (double) -1;
-        this.maxPrice = (double) -1;
-        this.minRating = -1;
-        this.minWarrantyYears = -1;
+        this.minPrice = null;
+        this.maxPrice = null;
+        this.minRating = null;
+        this.minWarrantyYears = null;
         this.productAttributesMap = new LinkedHashMap<>(productAttributesMap);
     }
 
@@ -69,7 +69,7 @@ public class DreamProduct {
      *
      * @return the minimum rating.
      */
-    public float getMinRating() {
+    public Float getMinRating() {
         return minRating;
     }
 
@@ -217,11 +217,11 @@ public class DreamProduct {
      * attributes. If the user's specifications match some product/products exactly then we know
      * that these are most likely the user's dream products.
      *
-     * @param aRealProductCharacteristics -> the real characteristics/attributes an existing product holds.
+     * @param dreamProduct -> the real characteristics/attributes an existing product holds.
      *
      * @return true if all the user's dream attributes is indeed matching with the real products characteristics/attributes.
      */
-    public boolean productMatchesDreamProductFeatures(DreamProduct aRealProductCharacteristics) {
+    public boolean productMatchesDreamProductFeatures(DreamProduct dreamProduct) {
         // if both happen to be a Collection e.g. set, list etc. (e.g. for tags) then check if the user dream & product
         // contain any same keywords & show the user that product, e.g. if user dream product has the word "Gaming" then
         // we check for our tags only since that's the one that features the collection dataset type & go through all
@@ -229,12 +229,12 @@ public class DreamProduct {
         // we return false to indicate that the current product does not match....
 
         // first comparing the two product attributes:
-        for (ProductAttributes mapKeys : aRealProductCharacteristics.getAllProductAttributes().keySet()){
+        for (ProductAttributes mapKeys : dreamProduct.getAllProductAttributes().keySet()){
             // is this map Key something the user specified in their search? If yes then proceed else just return product matches:
             if(this.productAttributesMap.containsKey(mapKeys)){
                 // check if tags/brands etc. match:
                 Object userWantedProduct = getProductAttribute(mapKeys);
-                Object actualProduct = aRealProductCharacteristics.getProductAttribute(mapKeys);
+                Object actualProduct = dreamProduct.getProductAttribute(mapKeys);
 
                 // we only ever go to this if block, if we are comparing the tags since that's the only attribute in the
                 // format of Collection:

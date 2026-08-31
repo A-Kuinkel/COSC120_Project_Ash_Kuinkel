@@ -195,9 +195,6 @@ public class Product {
                 "\nColour: " + colour +
                 "\nCategory: " + category +
                 "\nBrand: " + brand +
-                "\nGet similar results to this product by searching tags: " + tags + "\n" +
-                // giving the output some room to breathe:
-                "\n======================================================================" +
-                "\n======================================================================\n";
+                "\nGet similar results to this product by searching tags: " + tags + "\n";
     }
 }

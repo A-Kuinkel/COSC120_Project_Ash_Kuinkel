@@ -14,6 +14,7 @@ public class ByteBazaar {
     // as a variable
     private static User tempUserAccountInfoHolder;
     private static User signedInUser;
+    private static Cart cart;
 
     public static void main(String[] args) throws IOException {
 
@@ -40,12 +41,13 @@ public class ByteBazaar {
                     2. Signup for an account with ByteBazaar to become a member and order online.
                     3. Login to my ByteBazaar account.
                     4. Logout of my ByteBazaar account.
-                    5. Exit program.
+                    5. View cart.
+                    6. Exit program.
                     
                     If you would like to place orders, see your cart or maybe even
                     update your information, you must first login to your account.
                     
-                    Please enter an integer, i.e. 1,2 or 3 reflective of your intended choice.
+                    Please enter an integer, i.e. 1,2,3 etc. reflective of your intended choice.
                     
                     """);
 
@@ -82,6 +84,9 @@ public class ByteBazaar {
                         logout();
                         break;
                     case 5:
+                        cartScreen();
+                        break;
+                    case 6:
                         // take to fifth page
                         JOptionPane.showMessageDialog(null, "Thank you for using ByteBazaar!");
                         programRunning = false;
@@ -370,6 +375,16 @@ public class ByteBazaar {
                                     """);
                     continue;
                 }
+
+                if ((userSelectedMinPrice != null && userSelectedMaxPrice != null) &&
+                        (userSelectedMinPrice > userSelectedMaxPrice)) {
+                    JOptionPane.showMessageDialog(null,
+                            """
+                                    Oops! Invalid Input Detected!
+                                    Please ensure your value for min price is less than your value for max price.
+                                    """);
+                    continue;
+                }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null,
                         """
@@ -383,7 +398,7 @@ public class ByteBazaar {
             int userSelectedMinRating = minRating.getValue();
 
             Boolean userSelectedOnSale = onSaleCheckBox.isSelected() ? Boolean.TRUE : null;
-            Boolean userSelectedWireless = wirelessCheckBox.isSelected()  ? Boolean.TRUE : null;
+            Boolean userSelectedWireless = wirelessCheckBox.isSelected() ? Boolean.TRUE : null;
 
             System.out.println("Search Text: " + searchText);
             System.out.println("Category: " + category);
@@ -397,12 +412,26 @@ public class ByteBazaar {
             System.out.println("Selected on sale: " + userSelectedOnSale);
             System.out.println("Selected wireless: " + userSelectedWireless);
             Map<ProductAttributes, Object> userChosenProductAttributes = new LinkedHashMap<>();
-            userChosenProductAttributes.put(ProductAttributes.CATEGORY, category);
-            userChosenProductAttributes.put(ProductAttributes.BRAND, brand);
-            userChosenProductAttributes.put(ProductAttributes.TAGS, userSelectedTags);
-            userChosenProductAttributes.put(ProductAttributes.COLOUR, userSelectedColour);
-            userChosenProductAttributes.put(ProductAttributes.ON_SALE, userSelectedOnSale);
-            userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
+            if (category != null) {
+                userChosenProductAttributes.put(ProductAttributes.CATEGORY, category);
+            }
+            if (brand != null) {
+                userChosenProductAttributes.put(ProductAttributes.BRAND, brand);
+
+            }
+            if (userSelectedTags != null) {
+                userChosenProductAttributes.put(ProductAttributes.TAGS, userSelectedTags);
+            }
+            if (userSelectedColour != null) {
+                userChosenProductAttributes.put(ProductAttributes.COLOUR, userSelectedColour);
+            }
+            if (userSelectedOnSale != null) {
+                userChosenProductAttributes.put(ProductAttributes.ON_SALE, userSelectedOnSale);
+            }
+            if (userSelectedWireless != null) {
+                userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
+
+            }
 
             Map<String, Object> userCompleteSearch = new HashMap<>();
             DreamProduct userDreamProductFeatures = new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
@@ -442,16 +471,16 @@ public class ByteBazaar {
         if (matchingProducts.isEmpty()) {
             if (loggedIn) {
                 JOptionPane.showConfirmDialog(null, """
-                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙.
+                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙
                         Since you are a member of ByteBazaar, we may be able to request this item from
                         our manufacturer... We will inform you by phone as soon as this item is in stock.
                         Thanks for understanding!
                         
                         Would you like us to request this item & contact you once it is available?
-                        ""","ByteBazaar",JOptionPane.YES_NO_OPTION);
+                        """, "ByteBazaar", JOptionPane.YES_NO_OPTION);
             } else {
                 JOptionPane.showMessageDialog(null, """
-                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙.
+                        Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙
                         
                         Because you are not a member of ByteBazaar, we aren't able to request this item
                         from our manufacturer for you. If you do wish for it to be requested, please ensure
@@ -461,7 +490,32 @@ public class ByteBazaar {
                         """);
             }
         } else {
-
+            System.out.println(matchingProducts.size() + " matching products found!");
+            String msg = " We found " + matchingProducts.size() + " products matching your search criteria!\n"
+                    + " You will be shown each product in a new window.\n To exit the view, please press the 'X' cancel" +
+                    " button on the top right of the window.\n";
+            JOptionPane.showMessageDialog(null, msg, "ByteBazaar", JOptionPane.PLAIN_MESSAGE);
+            for (Product product : matchingProducts) {
+                String productInfo = product.getProductInfo() + "\n **Please Click the 'X' if you would like to exit**"
+                        + "\n Would you like to add this item to your cart?";
+                int userSelectedOption = JOptionPane.showConfirmDialog(null, productInfo,
+                        "ByteBazaar", JOptionPane.YES_NO_OPTION);
+                if (userSelectedOption == JOptionPane.CLOSED_OPTION) {
+                    break;
+                }
+                if (userSelectedOption == JOptionPane.YES_OPTION) {
+                    if (loggedIn) {
+                        cart.addProductToCart(product);
+                        JOptionPane.showMessageDialog(null, """
+                                Product has been added to cart! You can checkout & order from the cart screen.
+                                """);
+                    } else {
+                        JOptionPane.showMessageDialog(null, """
+                                You must be logged in to add products to your cart, please log in now!
+                                """);
+                    }
+                }
+            }
         }
     }
 
@@ -712,6 +766,7 @@ public class ByteBazaar {
                     comparePasswords(password)) {
                 loggedIn = true;
                 signedInUser = tempUserAccountInfoHolder;
+                cart = new Cart(signedInUser);
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
                 return;
             }
@@ -730,7 +785,27 @@ public class ByteBazaar {
         }
         loggedIn = false;
         signedInUser = null;
+        cart = null;
         JOptionPane.showMessageDialog(null, "Successfully logged out!");
+    }
+
+    private static void cartScreen() {
+        if (signedInUser == null) {
+            JOptionPane.showMessageDialog(null, """
+                    Please ensure that you are logged in first, before attempting to view cart!
+                    """);
+            return;
+        }
+
+        if (cart.isEmpty()) {
+            JOptionPane.showMessageDialog(null, """
+                    Nothing to see here, please add some products to cart & come back.
+                    """);
+            return;
+        }
+
+        String currCart = cart.toString();
+        JOptionPane.showInputDialog(null,currCart);
     }
 
 // helper methods:

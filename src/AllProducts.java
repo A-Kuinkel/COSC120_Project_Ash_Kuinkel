@@ -47,18 +47,23 @@ public class AllProducts {
         // that I may return like a boolean for this method... but reading the rubric again it does explicitly mention
         // that we need to return a collection of our products...
         List<Product> matchingProducts = new ArrayList<>();
+        System.out.println("Number of total products available:" + productMap.size());
+        System.out.println("User dream attributes searched: " + dreamProduct.getAllProductAttributes());
         for (Product product : productMap.values()){
             // checking for match against the user's searchable attribute requirements:
+            // printing out the user dream attributes first to make sure it matches what we'd expect:
+            // i.e. if user selects "I don't mind" for everything & doesn't enter anything, we'd expect just like '{}'
+            // of course, that's if everything is working as expected
             if(product.getProductSearchableCharacteristics().productMatchesDreamProductFeatures(dreamProduct)){
                 // checking to ensure that the product fits within the user's budget, minRating, warranty wishes etc.
                 // also note that we don't check for the attributes inside the ProductAttributes Map, as those have
                 // already been handled within the .productMatchesDreamProductFeatures() method in DreamProduct class.
-                boolean matchesBudget = (dreamProduct.getMinPrice() == -1 || product.getPrice() >= dreamProduct.getMinPrice()) &&
-                        (dreamProduct.getMaxPrice() == -1 || product.getPrice() <= dreamProduct.getMaxPrice()); // if the dream product
-                // min/max price is -1, that means user skipped the price selection, so just return everything to them.
-                // if the dreamProduct rating is -1, that means user doesn't care about the rating, so again, we return
+                boolean matchesBudget = (dreamProduct.getMinPrice() == null || product.getPrice() >= dreamProduct.getMinPrice()) &&
+                        (dreamProduct.getMaxPrice() == null || product.getPrice() <= dreamProduct.getMaxPrice()); // if the dream product
+                // min/max price is null, that means user skipped the price selection, so just return everything to them.
+                // if the dreamProduct rating is null, that means user doesn't care about the rating, so again, we return
                 // everything back to them:
-                boolean matchesRating = dreamProduct.getMinRating() == -1 || product.getRating() >= dreamProduct.getMinRating();
+                boolean matchesRating = dreamProduct.getMinRating() == null || product.getRating() >= dreamProduct.getMinRating();
                 boolean matchesWarranty = dreamProduct.getMinWarrantyYears() == null
                         || (product.getWarrantyYears() != null
                         && product.getWarrantyYears() >= dreamProduct.getMinWarrantyYears()); // Some warranty values in
@@ -168,7 +173,7 @@ public class AllProducts {
             // sure we'll get like one tag saying ['rgb','Gaming','Wireless'] & maybe like ['rgb','Gaming', 'High performance']
             // and to avoid that we only add like rgb,gaming,high performance,wireless within the set:
             for (String thisProductsTags : product.getProductSearchableCharacteristics().getTags()){
-                uniqueTags.add(thisProductsTags);
+                uniqueTags.add(thisProductsTags.trim());
             }
             // also IntelliJ suggests that we can write this second for loop logic in one line using:
             // uniqueTags.addAll(product.getProductSearchableCharacteristics().getTags());

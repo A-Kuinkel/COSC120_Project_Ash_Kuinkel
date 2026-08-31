@@ -9,11 +9,10 @@ public class Cart {
     // another .txt db file.
 
     // fields
-    List<Product> products;
-    User user;
+    private final List<Product> products = new ArrayList<>();
+    private final User user;
 
-    Cart (List<Product> products, User user) {
-        this.products = new ArrayList<>(products);
+    Cart (User user) {
         this.user = user;
     }
 
@@ -26,10 +25,6 @@ public class Cart {
         products.add(product);
     }
 
-    public void removeProductFromCart(Product product) {
-        products.remove(product);
-    }
-
     public void clearCart() {
         products.clear();
     }
@@ -40,16 +35,24 @@ public class Cart {
         return total;
     }
 
+    public boolean isEmpty(){
+        return products.isEmpty();
+    }
+
     @Override
     public String toString() {
 
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Product  product : products) {
-            stringBuilder.append(product.getProductInfo());
+            String productName =  product.getName();
+            double productPrice = product.getPrice();
+            String msg = " Product: " + productName + "\n Cost:" + productPrice
+                    + "\n =======================================================";
+            stringBuilder.append(msg);
         }
 
-        return "\n**CART OVERVIEW**\n" + stringBuilder;
+        return "**CART OVERVIEW**\n" + stringBuilder;
     }
 
 }
