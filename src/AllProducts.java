@@ -145,21 +145,16 @@ public class AllProducts {
         return uniqueBrands;
     }
 
-    /**
-     * Method to retrieve all the unique categories that our products belong to.
-     *
-     * @return the unique categories within the HashMap.
-     */
-    public Set<Category> getAllUniqueCategories(){
-        Set<Category> uniqueCategories = new HashSet<>();
-        // same with categories, our dataset doesn't have like null or anything for categories, so no need for an explicit
-        // check here.
-        for (Product product : productMap.values()){
-            uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
-        }
-        uniqueCategories = uniqueCategories.isEmpty() ? null : uniqueCategories;
-        return uniqueCategories;
-    }
+    //    public Set<Category> getAllUniqueCategories(){
+//        Set<Category> uniqueCategories = new HashSet<>();
+//        // same with categories, our dataset doesn't have like null or anything for categories, so no need for an explicit
+//        // check here.
+//        for (Product product : productMap.values()){
+//            uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
+//        }
+//        uniqueCategories = uniqueCategories.isEmpty() ? null : uniqueCategories;
+//        return uniqueCategories;
+//    }
 
     /**
      * Method to retrieve all the unique tags that our products are listed with.

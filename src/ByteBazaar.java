@@ -109,6 +109,7 @@ public class ByteBazaar {
     // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
     // the current product row/line... because I think having one row break the entire flow of the
     // program may not be so good.
+    // TODO
     private static void loadAllProducts() throws IOException {
         System.out.println("Loading ByteBazaar products...\n");
         Path productsFile = Path.of(productsFilePath);
@@ -181,6 +182,7 @@ public class ByteBazaar {
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null,
                             "Product with an invalid number detected: " + line + "... skipping.");
+                    continue;
                 }
 
                 boolean productIsWireless = productInfo[7].trim().equalsIgnoreCase("yes");
@@ -201,11 +203,13 @@ public class ByteBazaar {
                             JOptionPane.showMessageDialog(null,
                                     "Product with an invalid warranty detected: "
                                             + line + "... skipping.");
+                            continue;
                         }
                     } catch (NumberFormatException e) {
                         JOptionPane.showMessageDialog(null,
                                 "Product with an invalid warranty detected: "
                                         + productWarranty + "... skipping.");
+                        continue;
                     }
                 }
 
@@ -214,14 +218,10 @@ public class ByteBazaar {
                 String formattedTagFromFile = productInfo[11].replace("[", "")
                         .replace("]", "");
 
-                // the Arrays.asList logic is doing the same thing as this:
-                // for (String tag : formattedTagFromFile.split(",")) {
-                //   productTags.add(tag);
-                // }
-                /** May need to change this to set to remove any possible duplicates e.g. a product may have
-                 * [rgb,rgb] (twice):
-                 */
-                List<String> productTags = new ArrayList<>(Arrays.asList(formattedTagFromFile.split(",")));
+                List<String> productTags = new ArrayList<>();
+                for (String tag: formattedTagFromFile.split(",")) {
+                    productTags.add(tag.trim());
+                }
 
                 String productDescription = productInfo[12].trim();
                 String productDisplayImage = productInfo[13].trim();
@@ -263,13 +263,17 @@ public class ByteBazaar {
         while (true) {
             JTextField mainSearchBar = new JTextField();
 
-            LinkedList<Object> uniqueCategories = new LinkedList<>(allProducts.getAllUniqueCategories());
-            String[] categories = processDropDownToStringArr(uniqueCategories);
-            JComboBox<String> categoriesDropDown = new JComboBox<>(categories);
+            JComboBox<Object> categoriesDropDown = new JComboBox<>();
+            categoriesDropDown.addItem("I don't mind");
+            for (Category category : Category.values()) {
+                categoriesDropDown.addItem(category);
+            }
 
-            LinkedList<Object> uniqueBrands = new LinkedList<>(allProducts.getAllUniqueBrands());
-            String[] brands = processDropDownToStringArr(uniqueBrands);
-            JComboBox<String> brandDropDown = new JComboBox<>(brands);
+            JComboBox<Object> brandDropDown = new JComboBox<>();
+            brandDropDown.addItem("I don't mind");
+            for (Brand brand : Brand.values()) {
+                brandDropDown.addItem(brand);
+            }
 
             JTextField minPrice = new JTextField();
             JTextField maxPrice = new JTextField();
@@ -316,13 +320,18 @@ public class ByteBazaar {
             String searchText = mainSearchBar.getText();
 
             // This is the robustness in action, bad input for these drop-downs are impossible:
-            String category = (String) categoriesDropDown.getSelectedItem();
+            Object category = categoriesDropDown.getSelectedItem();
             if ("I don't mind".equals(category)) {
                 category = null;
+            } else {
+                category = (Category) categoriesDropDown.getSelectedItem();
             }
-            String brand = (String) brandDropDown.getSelectedItem();
+
+            Object brand = brandDropDown.getSelectedItem();
             if ("I don't mind".equals(brand)) {
                 brand = null;
+            } else {
+                brand = (Brand) brandDropDown.getSelectedItem();
             }
 
             String userSelectedWarranty = (String) warrantyDropDown.getSelectedItem();
@@ -331,12 +340,16 @@ public class ByteBazaar {
             if (userSelectedWarranty != null && !("I don't mind".equals(userSelectedWarranty))) {
                 try {
                     // so here we remove the year/years that we previously added for the user to see...
-                    userSelectedWarranty = userSelectedWarranty.replace("year", "")
-                            .replace("years", "").trim();
+                    if (userSelectedWarranty.contains("years")) {
+                        userSelectedWarranty = userSelectedWarranty.replace("years", "").trim();
+                    } else if (userSelectedWarranty.contains("year")) {
+                        userSelectedWarranty = userSelectedWarranty.replace("year", "").trim();
+                    }
 
                     userSelectedMinWarrantyYears = Integer.parseInt(userSelectedWarranty);
 
                 } catch (NumberFormatException e) {
+                    System.out.println("FAILED VALUE: [" + userSelectedWarranty + "]");
                     JOptionPane.showMessageDialog(null,
                             "Oops... Invalid Warranty Period Detected!");
                 }
@@ -347,9 +360,14 @@ public class ByteBazaar {
                 userSelectedColour = null;
             }
             String userSelectedTags = (String) tagDropDown.getSelectedItem();
+            Set<String> selectedTags = new HashSet<>();
             if ("I don't mind".equals(userSelectedTags)) {
                 userSelectedTags = null;
             }
+            if (userSelectedTags != null){ selectedTags = Set.of(userSelectedTags);} // this is needed to turn our
+            // selected tags into a collection element instead of just a single string...we need this because
+            // we process the tags as a collection element + our tags should go into the condition that requires
+            // collections of our DreamProduct matches class.
 
             Double userSelectedMinPrice = null;
             Double userSelectedMaxPrice = null;
@@ -408,7 +426,7 @@ public class ByteBazaar {
 
             }
             if (userSelectedTags != null) {
-                userChosenProductAttributes.put(ProductAttributes.TAGS, userSelectedTags);
+                userChosenProductAttributes.put(ProductAttributes.TAGS, selectedTags);
             }
             if (userSelectedColour != null) {
                 userChosenProductAttributes.put(ProductAttributes.COLOUR, userSelectedColour);
@@ -489,7 +507,10 @@ public class ByteBazaar {
             String msg = " We found " + matchingProducts.size() + " products matching your search criteria!\n"
                     + " You will be shown each product in a new window.\n To exit the view, please press the 'X' cancel" +
                     " button on the top right of the window.\n";
-            JOptionPane.showMessageDialog(null, msg, "ByteBazaar", JOptionPane.PLAIN_MESSAGE);
+            int option = JOptionPane.showConfirmDialog(null, msg, "ByteBazaar",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (option != JOptionPane.OK_OPTION) {return;}
+
             for (Product product : matchingProducts) {
                 String productInfo = product.getProductInfo() + "\n **Please Click the 'X' if you would like to exit**"
                         + "\n Would you like to add this item to your cart?";
@@ -681,12 +702,14 @@ public class ByteBazaar {
                     """;
 
             Object[] components = {
-                    introText,"\n","Email:\n",eMailInput,"\n","Password:\n",passInput,"\n"
+                    introText, "\n", "Email:\n", eMailInput, "\n", "Password:\n", passInput, "\n"
             };
 
-            int option = JOptionPane.showConfirmDialog(null, components,"Login",
+            int option = JOptionPane.showConfirmDialog(null, components, "Login",
                     JOptionPane.OK_CANCEL_OPTION);
-            if (option != JOptionPane.OK_OPTION) {return;}
+            if (option != JOptionPane.OK_OPTION) {
+                return;
+            }
 
             String email = eMailInput.getText().trim();
             String password = new String(passInput.getPassword());
@@ -826,11 +849,6 @@ public class ByteBazaar {
         return stringArr;
     }
 
-    /**
-     *
-     * @param userInput
-     * @return
-     */
     private static boolean checkIfLettersOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
             if (!Character.isLetter(userInput.charAt(i))) {
