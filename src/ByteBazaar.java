@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ByteBazaar {
@@ -109,7 +110,6 @@ public class ByteBazaar {
     // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
     // the current product row/line... because I think having one row break the entire flow of the
     // program may not be so good.
-    // TODO
     private static void loadAllProducts() throws IOException {
         System.out.println("Loading ByteBazaar products...\n");
         Path productsFile = Path.of(productsFilePath);
@@ -485,6 +485,7 @@ public class ByteBazaar {
                         Would you like us to request this item & contact you once it is available?
                         """, "ByteBazaar", JOptionPane.YES_NO_OPTION);
                 if (requestItem == JOptionPane.YES_OPTION) {
+                    saveCustomProductRequestsToFile(userCriteria,userSearchByName);
                     JOptionPane.showMessageDialog(null, """
                                     Thank you, your request has been processed & we will inform you by mobile
                                     for any further updates on your request.
@@ -794,7 +795,8 @@ public class ByteBazaar {
                         for (Product product : cart.getProducts()) {
                             order.addItemsToOrder(product);
                         }
-
+                        //TODO: ADD THE WRITE TO FILE METHOD
+                        saveOrderToFile(order);
                         JOptionPane.showMessageDialog(null, """
                                 Order successfully placed! Items will be dispatched & you will be notified.
                                 We deeply thank you for choosing us, ByteBazaar.
@@ -834,6 +836,55 @@ public class ByteBazaar {
         }
     }
 
+    // I spent quite a bit of time, but I don't see any way we can just feed custom request to this method...
+    // so if the user enters a custom request, my thought is to just have another method which handles the
+    // writing of custom requests to the file...
+    public static void saveOrderToFile(Order order) {
+        // let's append the exact time/date now to the fileName, once again... not that it matters here, but
+        // I would classify it as good practice... because it makes sure we avoid duplicates.
+        LocalDate now = LocalDate.now();
+        String date = now.toString().replace("-","").replace(":","")
+                .replace(".","");
+
+        String filePath = (order.getUserInfo().fullName().replace(" ","-")) + date + ".txt";
+        Path path = Path.of(filePath);
+
+        String orderString = order.toString();
+
+        try {
+            Files.writeString(path,orderString);
+        } catch (IOException e) {
+            String msg = " Oops... we couldn't place your order.\n" + " Error: " + e.getMessage();
+            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void saveCustomProductRequestsToFile(DreamProduct requestedProduct,String search) {
+        System.out.println("User requested features:\n" + requestedProduct.getAllDreamProductFeatures());
+
+        String userRequests = requestedProduct.getAllDreamProductFeatures().trim().isEmpty()
+                ? ("User skipped all selections! Contacting them may help clarify any ambiguity.")
+                : requestedProduct.getAllDreamProductFeatures();
+        String searchTerm = search.trim();
+        String userCustomRequest = "** Custom Request **\n" + "\nName: " + signedInUser.fullName() +
+                "\nPhone: " + signedInUser.phoneNumber() + "\nSearch term: " + searchTerm + "\n"
+                + userRequests;
+
+        LocalDate now = LocalDate.now();
+        String date = now.toString().replace("-","").replace(":","")
+                .replace(".","");
+
+        String filePath = (signedInUser.fullName().replace(" ","-")) + date + ".txt";
+        Path path = Path.of(filePath);
+
+        try{
+            Files.writeString(path,userCustomRequest);
+        } catch (IOException e) {
+            String msg = " Oops... we couldn't process your request.\n" + " Error: " + e.getMessage();
+            JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
 // helper methods:
 
     private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {

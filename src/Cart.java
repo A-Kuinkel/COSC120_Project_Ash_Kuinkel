@@ -17,7 +17,7 @@ public class Cart {
     }
 
     // getters/setters
-    public List<Product> getProducts() {return products;}
+    public List<Product> getProducts() {return new ArrayList<>(products);}
     public User getUser() {return user;}
 
     // methods
@@ -47,7 +47,7 @@ public class Cart {
         for (Product  product : products) {
             String productName =  product.getName();
             double productPrice = product.getPrice();
-            String msg = " Product: " + productName + "\n Cost:" + productPrice
+            String msg = " Product: " + productName + "\n Cost: " + productPrice
                     + "\n =======================================================";
             stringBuilder.append(msg);
         }

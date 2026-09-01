@@ -186,6 +186,7 @@ public class Product {
         List<String> tags = this.getProductSearchableCharacteristics().getTags();
 
         return "\nProduct ID: " + productId +
+                "\nName: " + name +
                 "\nOnSale: " + (onSale ? "ON SALE!" : "not on sale") +
                 "\nPrice: " + "$" +price +
                 "\nWireless: " + (wireless ? "WIRELESS!" : "not wireless") +

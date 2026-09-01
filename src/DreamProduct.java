@@ -193,19 +193,33 @@ public class DreamProduct {
 
     /**
      * Allows for a well formatted and easily readable string containing a dream product's features/attributes.
-     * Lists all features/attributes of the product on their own separate lines.
+     * Lists all features/attributes of the product on their own separate lines. This method is particularly
+     * helpful when writing a product that doesn't exist as a request to txt file.
      *
-     * @return the product attributes
+     * @return the attributes a user is looking for in their dream product.
      */
     public String getAllDreamProductFeatures() {
         // here we have to return in a nice format,the desirable/dream characteristics of our products...
-        StringBuilder  allDreamProductFeatures = new StringBuilder();
+        StringBuilder allDreamProductFeatures = new StringBuilder();
 
         // looping through all the keys within the map
         for (ProductAttributes productAttributes : productAttributesMap.keySet()) {
             allDreamProductFeatures.append("\n").append(productAttributes).append(":")
                     .append(productAttributesMap.get(productAttributes));
         }
+        if (getMinPrice() != null) {
+            String minPrice = "\nMin Price: " + getMinPrice().toString();
+            allDreamProductFeatures.append(minPrice);
+        }
+        if (getMaxPrice() != null) {
+            String maxPrice = "\nMax Price: " + getMaxPrice().toString();
+            allDreamProductFeatures.append(maxPrice);
+        }
+        if (getMinWarrantyYears() != null) {
+            String minWarranty = "\nMin Warranty: " + getMinWarrantyYears().toString();
+            allDreamProductFeatures.append(minWarranty);
+        }
+
         return allDreamProductFeatures.toString();
         // so this will return the products Dream features e.g.
         // BRAND : SAMSUNG
