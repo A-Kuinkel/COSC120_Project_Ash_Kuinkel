@@ -2,28 +2,20 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class ByteBazaar {
 
     private static final String productsFilePath = "src/allProducts.txt";
-    private static final AllProducts allProducts = new AllProducts();
+    private static AllProducts allProducts;
     private static final Authentication authentication = new Authentication();
 
     public static void main(String[] args) throws IOException {
-
-        // our load all should be right here... we need the product dataset for almost all cases:
-        // i.e. allProducts = loadAllProducts();
-        try {
-            loadAllProducts();
-        } catch (IOException e) {
-            System.out.println("The page requested could not be loaded. **ERROR**: \n" + e);
-        }
+        allProducts = loadAllProducts();
 
         // boolean to track if tempUserAccountInfoHolder logged in or not throughout the entire program:
-        int userSelectedOption = 0;
+        int userSelectedOption;
         boolean programRunning = true;
 
         do {
@@ -92,7 +84,6 @@ public class ByteBazaar {
                                 "Please select an integer from the following options provided!");
                         break;
                 }
-                ;
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +
                         " Please enter an integer from the following options provided!");
@@ -104,7 +95,8 @@ public class ByteBazaar {
     // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
     // the current product row/line... because I think having one row break the entire flow of the
     // program may not be so good.
-    private static void loadAllProducts() throws IOException {
+    private static AllProducts loadAllProducts() throws IOException {
+        AllProducts currLoadedProducts = new AllProducts();
         System.out.println("Loading ByteBazaar products...\n");
         Path productsFile = Path.of(productsFilePath);
 
@@ -119,6 +111,11 @@ public class ByteBazaar {
                 // brackets.... & gemini provided me with this regex:
                 String[] productInfo = line.split(",(?![^\\[\\]]*+\\])");
 
+                if (productInfo.length != 14){
+                    String msg = "Invalid row in database file...skipping:\n " + line;
+                    JOptionPane.showMessageDialog(null, msg);
+                    continue;
+                }
                 String productId = productInfo[0].trim();
                 String productName = productInfo[1].trim();
                 // our dataset contains valid categories, but if we ever get an entry that say doesn't contain an
@@ -135,7 +132,7 @@ public class ByteBazaar {
 
                 Brand productBrand;
                 try {
-                    productBrand = Brand.valueOf(productInfo[3]);
+                    productBrand = Brand.valueOf(productInfo[3].trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     JOptionPane.showMessageDialog(null,
                             "Product with an invalid brand detected: "
@@ -179,17 +176,31 @@ public class ByteBazaar {
                     continue;
                 }
 
-                boolean productIsWireless = productInfo[7].trim().equalsIgnoreCase("yes");
+                String wireless = productInfo[7].trim();
+                if (!wireless.equalsIgnoreCase("yes") && !wireless.equalsIgnoreCase("no")) {
+                    String msg = "Product with invalid wireless value detected: " + wireless + "... skipping.";
+                    JOptionPane.showMessageDialog(null,msg);
+                    continue;
+                }
+                boolean productIsWireless = wireless.equalsIgnoreCase("yes");
+
+                String productSaleValue = productInfo[8].trim();
+                if (!productSaleValue.equalsIgnoreCase("yes") &&
+                        !productSaleValue.equalsIgnoreCase("no")) {
+                    String msg = "Product with invalid sale value detected: " + productSaleValue + "... skipping.";
+                    JOptionPane.showMessageDialog(null,msg);
+                    continue;
+                }
                 boolean productOnSale = productInfo[8].trim().equalsIgnoreCase("yes");
 
                 // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
                 Integer productWarrantyYears = null;
                 String productWarranty = productInfo[9].trim();
 
-                boolean CheckWarrantyForNA = productWarranty.equalsIgnoreCase("NA")
+                boolean checkWarrantyForNA = productWarranty.equalsIgnoreCase("NA")
                         || productWarranty.equalsIgnoreCase("N/A");
 
-                if (!CheckWarrantyForNA && !productWarranty.isEmpty()) {
+                if (!checkWarrantyForNA && !productWarranty.isEmpty()) {
                     try {
                         productWarrantyYears = Integer.parseInt(productWarranty);
 
@@ -236,13 +247,13 @@ public class ByteBazaar {
 
                 // & now we can finally add our product fetched from the file (& formatted) to our HashMap data structure
                 // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
-                allProducts.addProductsToDataStructure(productInstance);
+                currLoadedProducts.addProductsToDataStructure(productInstance);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Error whilst attempting to load products: " + e);
             }
         }
-
+        return currLoadedProducts;
     }
 
     // How I'm envisioning this right now is that we will have the user press option '1' on the main screen to go into
@@ -530,8 +541,6 @@ public class ByteBazaar {
         }
     }
 
-
-
     private static void cartAndOrderScreen() {
         if (authentication.getSignedInUser() == null) {
             JOptionPane.showMessageDialog(null, """
@@ -553,7 +562,7 @@ public class ByteBazaar {
                 
                 """);
         if (mainScreen == null) {
-            System.exit(0);
+            return;
         }
         try {
             cartScreenSelectedOption = Integer.parseInt(mainScreen);
@@ -573,7 +582,6 @@ public class ByteBazaar {
                         for (Product product : authentication.getCart().getProducts()) {
                             authentication.getOrder().addItemsToOrder(product);
                         }
-                        //TODO: ADD THE WRITE TO FILE METHOD
                         saveOrderToFile(authentication.getOrder());
                         JOptionPane.showMessageDialog(null, """
                                 Order successfully placed! Items will be dispatched & you will be notified.
@@ -595,8 +603,8 @@ public class ByteBazaar {
                             """, "Clear Cart", JOptionPane.YES_NO_OPTION);
                     if (JOptionPane.YES_OPTION == clearCartOption) {
                         authentication.getCart().clearCart();
+                        JOptionPane.showMessageDialog(null, "Cart successfully cleared!");
                     }
-                    JOptionPane.showMessageDialog(null, "Cart successfully cleared!");
                     break;
                 case 3:
                     if (authentication.getOrder().isEmpty()) {
