@@ -1,3 +1,10 @@
+/**
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ *
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ */
+
 public enum Category {
     // categories, i.e. laptop, mouse, keyboards etc
     LAPTOPS, MOUSE, KEYBOARD, MONITOR, DESKTOP, GPU, CPU, RAM, PSU, CASE, COOLING;

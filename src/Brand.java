@@ -1,3 +1,10 @@
+/**
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ *
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ */
+
 public enum Brand {
     // our list of brands:
     AMD, ASUS, APPLE, COOLERMASTER, DELL, HP, INTEL, LENOVO, LG, LOGITECH, MSI, NVIDIA, SAMSUNG;

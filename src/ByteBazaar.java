@@ -1,5 +1,13 @@
+/**
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ *
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ */
+
 import javax.swing.*;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -19,7 +27,7 @@ public class ByteBazaar {
         boolean programRunning = true;
 
         do {
-            String onboardingScreenUserInput = JOptionPane.showInputDialog("""
+            String onboardingScreenUserInput = JOptionPane.showInputDialog(null,"""
                     Welcome to ByteBazaar!
                     The home of affordable computer hardware parts & accessories
                     from all your favourite brands.
@@ -37,11 +45,10 @@ public class ByteBazaar {
                     
                     Please enter an integer, i.e. 1,2,3 etc. reflective of your intended choice.
                     
-                    """);
+                    ""","ByteBazaar",JOptionPane.PLAIN_MESSAGE);
 
             if (onboardingScreenUserInput == null) {
                 System.exit(0);
-                programRunning = false;
                 break;
             }
 
@@ -289,7 +296,11 @@ public class ByteBazaar {
 
             LinkedList<Object> uniqueWarranty = new LinkedList<>(allProducts.getAllUniqueWarrantyYears());
             for (int i = 0; i < uniqueWarranty.size(); i++) {
-                uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + (i == 0 ? " year" : " years"));
+                if (uniqueWarranty.get(i).equals(1)) {
+                    uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + " year");
+                } else if (!uniqueWarranty.get(i).equals(0)) {
+                    uniqueWarranty.set(i, uniqueWarranty.get(i).toString() + " years");
+                }
             }
             String[] warranty = processDropDownToStringArr(uniqueWarranty);
             JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);

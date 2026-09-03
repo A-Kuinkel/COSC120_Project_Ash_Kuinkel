@@ -1,6 +1,8 @@
 /**
  * @author Ash Kuinkel (akuinke3@myune.edu.au)
  * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ *
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
 import java.util.*;
@@ -128,33 +130,6 @@ public class AllProducts {
     // what if we had 1000 entries we needed to change? Nobody is doing that, it's bad practice, so we must create these
     // dynamic methods. & e.g. if user wants to filter product by brand or anything, everything is very easy with these
     // dynamic methods:
-
-    /**
-     * Method to retrieve all the unique brands associated with our products.
-     *
-     * @return all the unique brands present within the HashMap.
-     */
-    public Set<Brand> getAllUniqueBrands(){
-        Set<Brand> uniqueBrands = new HashSet<>();
-        // all our brand values in dataset are populated with appropriate values, no null, n/a or anything so we don't
-        // really have to do an explicit check here...
-        for (Product product : productMap.values()){
-            uniqueBrands.add(product.getProductSearchableCharacteristics().getBrand());
-        }
-        uniqueBrands = uniqueBrands.isEmpty() ? null : uniqueBrands;
-        return uniqueBrands;
-    }
-
-    //    public Set<Category> getAllUniqueCategories(){
-//        Set<Category> uniqueCategories = new HashSet<>();
-//        // same with categories, our dataset doesn't have like null or anything for categories, so no need for an explicit
-//        // check here.
-//        for (Product product : productMap.values()){
-//            uniqueCategories.add(product.getProductSearchableCharacteristics().getCategory());
-//        }
-//        uniqueCategories = uniqueCategories.isEmpty() ? null : uniqueCategories;
-//        return uniqueCategories;
-//    }
 
     /**
      * Method to retrieve all the unique tags that our products are listed with.
