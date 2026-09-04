@@ -65,7 +65,7 @@ public class ByteBazaar {
                     
                     Please enter an integer, i.e. 1,2,3 etc. reflective of your intended choice.
                     
-                    ""","ByteBazaar",JOptionPane.PLAIN_MESSAGE);
+                    """);
 
             // gracefully handling when user presses the `x` or cancel:
             if (onboardingScreenUserInput == null) {
@@ -116,19 +116,21 @@ public class ByteBazaar {
         } while (programRunning);
     }
 
-    // so the behaviour we want with this is to go through every product within our db file, validate
-    // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
-    // the current product row/line... because I think having one row break the entire flow of the
-    // program may not be so good.
-
     /**
-     * This method is designed to fetch each entry from the file,
-     * @return -> instance of AllProducts class
-     * @throws IOException
+     * This method is designed to fetch each entry from the database file, skipping all invalid product entries
+     * rather than stopping entire execution of program because one product line was unexpected. All the valid products
+     * undergo an assignment of their 'dream' features & will be passed into the data structure from our AllProducts
+     * class. Although the implementation differs, the main architectural idea of this method is sourced from COSC120
+     * Lecture 7 Video 2 SeekAGeek.java loadGeeks() lines (46-47,162-165,181,183-184). Also AI assistance was used for
+     * a small portion of this method; Prompt used: how to split everything by commas, except commas in square
+     * brackets java, model: Google AI overview (so pretty sure Gemini), suggestion provided: (?![^\[\]]*+]).
+     *
+     * @return -> instance of AllProducts class which holds the entire product dataset for the lifecycle of the program.
+     * @throws IOException -> if we are not able to load the file.
      */
     private static AllProducts loadAllProducts() throws IOException {
-        AllProducts currLoadedProducts = new AllProducts();
-        System.out.println("Loading ByteBazaar products...\n");
+        AllProducts currLoadedProducts = new AllProducts(); // this is where we create an instantiate our AllProducts
+        // class
         Path productsFile = Path.of(productsFilePath);
 
         List<String> lines = Files.readAllLines(productsFile);
@@ -139,9 +141,10 @@ public class ByteBazaar {
                 // originally was doing just line.split(",") and was wondering why when testing I was only getting singular
                 // values for the tags etc. & I think it's splitting up the tags inside the brackets as well... so I had to
                 // search up regex that makes sure to split the commas, but avoids doing so if the commas are within square
-                // brackets.... & gemini provided me with this regex:
-                String[] productInfo = line.split(",(?![^\\[\\]]*+\\])");
+                // brackets.... & Google AI overview suggested this:
+                String[] productInfo = line.split(",(?![^\\[\\]]*+])");
 
+                // we have 14 specified columns, so if this entry doesn't have it, it should be invalid:
                 if (productInfo.length != 14){
                     String msg = "Invalid row in database file...skipping:\n " + line;
                     JOptionPane.showMessageDialog(null, msg);
@@ -150,7 +153,7 @@ public class ByteBazaar {
                 String productId = productInfo[0].trim();
                 String productName = productInfo[1].trim();
                 // our dataset contains valid categories, but if we ever get an entry that say doesn't contain an
-                // appropriate category, we add the check just in case:
+                // appropriate category/brand etc., we add the check just in case:
                 Category productCategory;
                 try {
                     productCategory = Category.valueOf(productInfo[2].trim().toUpperCase());
@@ -172,9 +175,9 @@ public class ByteBazaar {
                 }
 
                 // need to add try catch statements for these parse statements to handle NFEs:
-                double productPrice = 0;
-                int productQuantity = 0;
-                float productRating = 0;
+                double productPrice;
+                int productQuantity;
+                float productRating;
                 try {
                     productPrice = Double.parseDouble(productInfo[4].trim());
                     productQuantity = Integer.parseInt(productInfo[5].trim());
@@ -208,6 +211,7 @@ public class ByteBazaar {
                 }
 
                 String wireless = productInfo[7].trim();
+                // validation check to make sure wireless only contains values yes & no:
                 if (!wireless.equalsIgnoreCase("yes") && !wireless.equalsIgnoreCase("no")) {
                     String msg = "Product with invalid wireless value detected: " + wireless + "... skipping.";
                     JOptionPane.showMessageDialog(null,msg);
@@ -216,6 +220,7 @@ public class ByteBazaar {
                 boolean productIsWireless = wireless.equalsIgnoreCase("yes");
 
                 String productSaleValue = productInfo[8].trim();
+                // validation check to make sure on Sale only contains values yes & no:
                 if (!productSaleValue.equalsIgnoreCase("yes") &&
                         !productSaleValue.equalsIgnoreCase("no")) {
                     String msg = "Product with invalid sale value detected: " + productSaleValue + "... skipping.";
@@ -224,7 +229,7 @@ public class ByteBazaar {
                 }
                 boolean productOnSale = productInfo[8].trim().equalsIgnoreCase("yes");
 
-                // some of the warranty values are null... so, ADD VALIDATION CHECK HERE:
+                // some of the warranty values are null... so we need the validation check here:
                 Integer productWarrantyYears = null;
                 String productWarranty = productInfo[9].trim();
 
@@ -262,6 +267,10 @@ public class ByteBazaar {
                 String productDescription = productInfo[12].trim();
                 String productDisplayImage = productInfo[13].trim();
 
+                // these following steps are crucial. We are assigning each product from the db file their 'dream'
+                // features that they will be assigned to using the constructor from DreamProduct which has the values
+                // of like minPrice as null. This ensures that we are able to match these products features & return
+                // them if they match when a user searches for their dream product.
                 Map<ProductAttributes, Object> existingProductAttributes = new LinkedHashMap<>();
 
                 existingProductAttributes.put(ProductAttributes.CATEGORY, productCategory);
@@ -280,6 +289,9 @@ public class ByteBazaar {
                 // in AllProducts class, as that is what holds the dataset for the entire lifecycle of the program:
                 currLoadedProducts.addProductsToDataStructure(productInstance);
             } catch (Exception e) {
+                // I guess we can make the argument that this exception is too broad, but we've already caught a wide
+                // range of errors in this method, this will help us pin down an unexpected error that may occur during
+                // the process of loading the products from db file to our AllProducts class to hold.
                 JOptionPane.showMessageDialog(null,
                         "Error whilst attempting to load products: " + e);
             }
@@ -657,10 +669,6 @@ public class ByteBazaar {
                     " Please enter an integer from the following options provided!");
         }
     }
-
-    // I spent quite a bit of time, but I don't see any way we can just feed custom request to this method...
-    // so if the user enters a custom request, my thought is to just have another method which handles the
-    // writing of custom requests to the file...
 
     /**
      * Method to save the user's order to a txt file as required by the task rubric.
