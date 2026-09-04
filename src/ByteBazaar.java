@@ -12,8 +12,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 
-// TODO: WRITE ABOUT AI ASSISTANCE FOR DATASET FILE CREATION in the main class jdoc. also should probably handle
-// the rating not able to be skipped yet.
+// TODO: WRITE ABOUT AI ASSISTANCE FOR DATASET FILE CREATION in the main class jdoc.
 /**
  * The main class of ByteBazaar application. Like conductor in an orchestra, it conducts what functionality of the
  * program the end-user sees based on their actions. It mustn't however, implement the specific functionalities i.e.
@@ -123,7 +122,7 @@ public class ByteBazaar {
      * rather than stopping entire execution of program because one product line was unexpected. All the valid products
      * undergo an assignment of their 'dream' features & will be passed into the data structure from our AllProducts
      * class. Although the implementation differs, the main architectural idea of this method is sourced from COSC120
-     * Lecture 7 Video 2 SeekAGeek.java loadGeeks() lines (46-47,162-165,181,183-184). Also AI assistance was used for
+     * Lecture 7 Video 2 SeekAGeek.java loadGeeks() lines (46-47,162-165,181,183-184). Also, AI assistance was used for
      * a small portion of this method; Prompt used: how to split everything by commas, except commas in square
      * brackets java, model: Google AI overview (so pretty sure Gemini), suggestion provided: (?![^\[\]]*+]).
      *
@@ -301,16 +300,27 @@ public class ByteBazaar {
         return currLoadedProducts;
     }
 
-    // How I'm envisioning this right now is that we will have the user press option '1' on the main screen to go into
-    // the search for a product section & then this is where the user will be presented with the search options - where
-    // they are able to search for their dream product. Ideally I'd want like a search bar looking field, include some
-    // checkboxes, drop down menus etc. all within the one page, that way it just looks much better than having one
-    // input in one box etc... & of course, I think having a separate method to process these search results & call our
+    /**
+     * Method which displays the search menu screen to the user, which is where they search for a product. It validates
+     * all their input & contains the final filtered search criteria + search term. Although the implementation is
+     * greatly different, the fundamental idea of having a search function to collect the users input as well as
+     * validating this etc. is adapted from COSC120 Lecture 7 Video 2 SeekAGeek.java lines (245-255,272,274). More
+     * importantly, a discussion on stack overflow:
+     * <a href="https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog">...</a>
+     * was referenced. The lectures displayed the search menu asking end user questions one at a time. Although I found
+     * out later that the solution to this was also shown in Week 11 content, I thought it would be better UX to just
+     * ask all of these questions in one window. Furthermore, AI Assistance was also used here during the development
+     * process, for lines (414-417) Prompt: Add a debugging print statement to catch the warranty bad value being passed.
+     * Model: Google AI, response: System.out.println("FAILED VALUE: [" + userSelectedWarranty + "]");
+     *
+     * @return -> HashMap containing the user's complete search, i.e. search term + their selected criteria, ready to
+     *            be passed as args to processMatchResults() method.
+     */
+    // I think having a separate method to process these search results & call our
     // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
-    // Used this as a reference for having multiple input fields in one sort of window:
-    // https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
     private static Map<String, Object> searchMenu() {
         while (true) {
+            // screen display elements:
             JTextField mainSearchBar = new JTextField();
 
             JComboBox<Object> categoriesDropDown = new JComboBox<>();
@@ -328,6 +338,7 @@ public class ByteBazaar {
             JTextField minPrice = new JTextField();
             JTextField maxPrice = new JTextField();
 
+            // default the slider initial value to 1:
             JSlider minRating = new JSlider(0, 5, 1);
             minRating.setMajorTickSpacing(1);
             minRating.setPaintLabels(true);
@@ -342,6 +353,7 @@ public class ByteBazaar {
             }
             String[] warranty = processDropDownToStringArr(uniqueWarranty);
             JComboBox<String> warrantyDropDown = new JComboBox<>(warranty);
+            JCheckBox skipMinRating = new JCheckBox("Skip Rating Selection");
 
             LinkedList<Object> uniqueColours = new LinkedList<>(allProducts.getAllUniqueColours());
             String[] colours = processDropDownToStringArr(uniqueColours);
@@ -357,10 +369,9 @@ public class ByteBazaar {
             Object[] componentsOnScreen = {
                     "Search for a product by name:\n", mainSearchBar,
                     "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
-                    "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating,
-                    "\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:", warrantyDropDown,
-                    "\n", onSaleCheckBox, "\n", wirelessCheckBox
-
+                    "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating, "\n",
+                    skipMinRating,"\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:",
+                    warrantyDropDown, "\n", onSaleCheckBox, "\n", wirelessCheckBox
             };
 
             int option = JOptionPane.showConfirmDialog(null, componentsOnScreen,
@@ -390,7 +401,7 @@ public class ByteBazaar {
 
             String userSelectedWarranty = (String) warrantyDropDown.getSelectedItem();
             Integer userSelectedMinWarrantyYears = null;
-
+            // warranty validation/processing logic:
             if (userSelectedWarranty != null && !("I don't mind".equals(userSelectedWarranty))) {
                 try {
                     // so here we remove the year/years that we previously added for the user to see...
@@ -403,12 +414,13 @@ public class ByteBazaar {
                     userSelectedMinWarrantyYears = Integer.parseInt(userSelectedWarranty);
 
                 } catch (NumberFormatException e) {
-                    System.out.println("FAILED VALUE: [" + userSelectedWarranty + "]");
                     JOptionPane.showMessageDialog(null,
                             "Oops... Invalid Warranty Period Detected!");
                 }
             }
 
+            // remember everything that is null means the user doesn't care about that criteria. Meaning, our
+            // I don't mind options should also translate to null as the user doesn't care about those.
             String userSelectedColour = (String) colourDropDown.getSelectedItem();
             if ("I don't mind".equals(userSelectedColour)) {
                 userSelectedColour = null;
@@ -465,13 +477,17 @@ public class ByteBazaar {
                 continue;
             }
 
-            // user is only able to slide the slider to whole numbers from 0-5...
-            int userSelectedMinRating = minRating.getValue();
+            // user is only able to slide the slider to whole numbers from 0-5... or skip the rating entirely.
+            Float userSelectedMinRating = null;
+            if (!skipMinRating.isSelected()) {
+                userSelectedMinRating = (float) minRating.getValue();
+            }
 
             Boolean userSelectedOnSale = onSaleCheckBox.isSelected() ? Boolean.TRUE : null;
             Boolean userSelectedWireless = wirelessCheckBox.isSelected() ? Boolean.TRUE : null;
 
             Map<ProductAttributes, Object> userChosenProductAttributes = new LinkedHashMap<>();
+            // only add the criteria/attributes the user cares about.
             if (category != null) {
                 userChosenProductAttributes.put(ProductAttributes.CATEGORY, category);
             }
@@ -490,9 +506,12 @@ public class ByteBazaar {
             }
             if (userSelectedWireless != null) {
                 userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
-
             }
 
+            // map to store our complete search. The reason this is a HashMap unlike the lectures which just returns
+            // an instance of our dream product is because here we have the additional element of search term too.
+            // We must always try to match the user's search text + criteria... not just criteria & not just search text
+            // independently.
             Map<String, Object> userCompleteSearch = new HashMap<>();
             DreamProduct userDreamProductFeatures = new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
                     userSelectedMinRating, userSelectedMinWarrantyYears, userChosenProductAttributes);
@@ -502,12 +521,11 @@ public class ByteBazaar {
         }
     }
 
-    // I actually now think we should return like a map from the searchMenu() method.. like a hashmap that
-    // contains like:
-    //    Key:                      Value:
-    // searchTerm -> Stores the search term that must match.
-    // userCriteria -> Stores instance of dream product class (representing users wish for like minPrice etc.)
-
+    /**
+     *
+     * @param userSearchByName -> The text user has searched by in the search bar field.
+     * @param userCriteria -> All the criteria user has selected for their
+     */
     private static void processMatchResults(String userSearchByName, DreamProduct userCriteria) {
         // if user's product name search doesn't match any products, I guess we can just like say there wasn't
         // a specific match with the name that you searched for, but here are products that match your other

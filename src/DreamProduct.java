@@ -31,7 +31,7 @@ public class DreamProduct {
      * @param productAttributesMap -> Map containing the additional attributes that user may search by including, e.g.
      *                                colour, brand, category etc.
      */
-    public DreamProduct(Double minPrice, Double maxPrice, float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
+    public DreamProduct(Double minPrice, Double maxPrice, Float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
@@ -225,6 +225,10 @@ public class DreamProduct {
         if (getMinWarrantyYears() != null) {
             String minWarranty = "\nMin Warranty: " + getMinWarrantyYears().toString();
             allDreamProductFeatures.append(minWarranty);
+        }
+        if (getMinRating() != null) {
+            String minRating = "\nMin Rating: " + getMinRating().toString();
+            allDreamProductFeatures.append(minRating);
         }
 
         return allDreamProductFeatures.toString();
