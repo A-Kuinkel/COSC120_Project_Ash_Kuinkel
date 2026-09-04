@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 
+// TODO: WRITE ABOUT AI ASSISTANCE FOR DATASET FILE CREATION in the main class jdoc. also should probably handle
+// the rating not able to be skipped yet.
 /**
  * The main class of ByteBazaar application. Like conductor in an orchestra, it conducts what functionality of the
  * program the end-user sees based on their actions. It mustn't however, implement the specific functionalities i.e.

@@ -5,6 +5,10 @@
  * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
+/**
+ * The Category enum which contains the different categories available for our products. Note that the idea of this
+ * is adapted from the COSC120 Lecture 7 Video 2 Religion.java lines (10-25).
+ */
 public enum Category {
     // categories, i.e. laptop, mouse, keyboards etc
     LAPTOPS, MOUSE, KEYBOARD, MONITOR, DESKTOP, GPU, CPU, RAM, PSU, CASE, COOLING;

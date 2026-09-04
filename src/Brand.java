@@ -5,6 +5,10 @@
  * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
+/**
+ * The Brand enum which contains the different brands available for our products. Note that the idea of this
+ * is adapted from the COSC120 Lecture 7 Video 2 Gender.java lines (6-15).
+ */
 public enum Brand {
     // our list of brands:
     AMD, ASUS, APPLE, COOLERMASTER, DELL, HP, INTEL, LENOVO, LG, LOGITECH, MSI, NVIDIA, SAMSUNG;
