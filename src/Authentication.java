@@ -7,32 +7,49 @@
 
 import javax.swing.*;
 
+/**
+ * The Authentication class which reflects the permissions the user has for the program, i.e. whether they are able to
+ * place orders, send custom requests etc. Note that the authentication of this program is session-based. Every time
+ * you run the program you must sign up & login. This class is the middleman for accessing the functionality of our
+ * order/cart classes, as both of these i.e. order/cart is associated with the one user.
+ */
 public class Authentication {
     private boolean loggedIn = false; // switch to track if user is logged in or not
     // gets updated on signup/login/logout etc.
     private String userStoredPass; // only one .txt file allowed, so the password will float around
     // as a variable
-    private User tempUserAccountInfoHolder;
+    private User tempUserAccountInfoHolder; // temporarily stores the user account info after signup & before login
     private User signedInUser;
-    private Cart cart;
-    private Order order;
+    private Cart cart; // not final as this is subject to change
+    private Order order; // not final as this is subject to change
 
+    /**
+     * Method which tracks the login status of the current user.
+     * @return -> true if the user is logged in else return false if the user is not logged in.
+     */
     public boolean isLoggedIn() {return loggedIn;}
+
+    /**
+     *
+     * @return ->
+     */
     public User getSignedInUser() {return signedInUser;}
+
+    /**
+     *
+     * @return
+     */
     public Cart getCart() {return cart;}
+
+    /**
+     *
+     * @return
+     */
     public Order getOrder() {return order;}
 
-
-    // with these methods (i.e, signup, login, logout),how im thinking it would work is that we can just save the tempUserAccountInfoHolder
-// credentials to a data structure... on signup (& yes that includes a password) & then have the tempUserAccountInfoHolder login whilst
-// validating that the password/username they entered is correct, if correct we can just flip a boolean variable
-// called like loggedIn to true & that will remain true for the entire length of the program until the tempUserAccountInfoHolder closes
-// the program, or decides to log out manually (in which case the loggedIn value will be set to false).
-
-// Try & see if we can have these methods work like forms, i.e. all inputs in one page rather than one window
-// for every input... just looks much nicer that way. I will have to see if this is possible first.
-// Use this as reference: https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog
-
+    /**
+     *
+     */
     public void signup() {
         // get the tempUserAccountInfoHolder to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
         // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
@@ -155,6 +172,9 @@ public class Authentication {
         }
     }
 
+    /**
+     *
+     */
     public void login() {
         // im thinking  call the tempUserAccountInfoHolder record save info to it for a data structure to hold...
 
@@ -227,6 +247,9 @@ public class Authentication {
         }
     }
 
+    /**
+     *
+     */
     public void logout() {
         if (signedInUser == null) {
             JOptionPane.showMessageDialog(null, """
@@ -242,6 +265,12 @@ public class Authentication {
     }
 
     // helper methods:
+
+    /**
+     *
+     * @param userInput
+     * @return
+     */
     private static boolean checkIfLettersOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
             if (!Character.isLetter(userInput.charAt(i))) {
@@ -251,6 +280,11 @@ public class Authentication {
         return true;
     }
 
+    /**
+     *
+     * @param userInput
+     * @return
+     */
     private static boolean checkIfDigitsOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
             if (!Character.isDigit(userInput.charAt(i))) {
@@ -260,6 +294,11 @@ public class Authentication {
         return true;
     }
 
+    /**
+     *
+     * @param userInput
+     * @return
+     */
     private boolean comparePasswords(String userInput) {
         String storedPass = userStoredPass;
         return storedPass.equals(userInput);
