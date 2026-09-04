@@ -50,15 +50,14 @@ public class Authentication {
     public Order getOrder() {return order;}
 
     /**
-     *
+     * Method which handles the core sign-up logic. It provides a screen for form input as well as all validation
+     * logic before creating an instance of the user class to hold the tempUserAccountInfo. Note this discussion
+     * from stack overflow:
+     * <a href="https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog">...</a>
+     * was referenced to ensure a better UX by replicating like a signup form with the fields in one screen rather than
+     * having a question/input per window.
      */
     public void signup() {
-        // get the tempUserAccountInfoHolder to enter some basic details.... maybe we can somehow incorporate passwords onto here as well but
-        // how the passwords would work is that it would just be kept in a data structure & be held temporarily for the
-        // current session. This is the only way we are able to enable passwords whilst only keeping the one product txt
-        // file... If we were allowed to have another txt file, we could make one called like allUsers & possibly
-        // save just plain-text passwords to it... but we can't with just one txt... no way passwords can be stored
-        // in a product db:
         while (true) {
             JTextField fNameInput = new JTextField();
             JTextField lNameInput = new JTextField();
@@ -74,13 +73,14 @@ public class Authentication {
                       Please fill out the form on the next page appropriately.
                     """;
 
-            Object[] options = {introText, "\n", " First Name:\n", fNameInput, "\n", "Last Name:\n", lNameInput, "\n", "Email:\n", eMailInput,
-                    "\n", "Password (Must be 8-30 chars long):\n", passInput, "\n",
+            Object[] options = {introText, "\n", " First Name:\n", fNameInput, "\n", "Last Name:\n", lNameInput, "\n",
+                    "Email:\n", eMailInput, "\n", "Password (Must be 8-30 chars long):\n", passInput, "\n",
                     "Phone Number (Must be 7-15 digits long):\n", pNumInput, "\n", "Shipping Address:\n", sAddrInput};
 
             int option = JOptionPane.showConfirmDialog(null, options, "Signup",
                     JOptionPane.OK_CANCEL_OPTION);
 
+            // return user back to home screen if they do not wish to proceed with the signup:
             if (option != JOptionPane.OK_OPTION) {
                 return;
             }
@@ -92,7 +92,7 @@ public class Authentication {
             String phoneNumber = pNumInput.getText().trim();
             String shippingAddress = sAddrInput.getText().trim();
 
-            // validation logic to make sure we don't get bad input from user:
+            // validation logic for name fields to prevent bad input:
             if (firstName.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid first name.");
                 continue;
@@ -113,6 +113,7 @@ public class Authentication {
                 continue;
             }
 
+            // email validation logic, albeit very basic:
             if (email.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid email.");
                 continue;
@@ -123,6 +124,7 @@ public class Authentication {
                 continue;
             }
 
+            // password validation logic:
             if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Please enter a valid password for your account.");
@@ -140,6 +142,7 @@ public class Authentication {
             // storing our password:
             userStoredPass = password;
 
+            // phone number validation logic:
             if (phoneNumber.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
                         "Invalid phone number, please enter a valid phone number.");
@@ -167,6 +170,10 @@ public class Authentication {
                 continue;
             }
 
+            // we need this temporary account info holder for an easy hand off to the signed-in user variable if the
+            // login is successful. That is the only time we should update the signed-in user, if login is successful
+            // (well of course, we set it to null during logout but other than that). It also allows us to compare the
+            // email & password when user is trying to log in to see if there is a match.
             tempUserAccountInfoHolder = new User(firstName, lastName, email, userStoredPass,
                     phoneNumber, shippingAddress);
             JOptionPane.showMessageDialog(null, "Successfully signed up!");
@@ -175,15 +182,17 @@ public class Authentication {
     }
 
     /**
-     *
+     * The method which implements the core login logic. Similar to the signup method, it will provide just one screen
+     * for both the email & password inputs. Provided the user's input matches what they signed up with they will be
+     * logged in, else they won't. Upon login, loggedIn will be updated to true, the signedInUser will be updated &
+     * an instance of the cart/order will be created for the current session. The idea to feature the one screen with
+     * multiple input fields was sourced from the following stack overflow discussion:
+     * <a href="https://stackoverflow.com/questions/6555040/multiple-input-in-joptionpane-showinputdialog">...</a>
      */
     public void login() {
-        // im thinking  call the tempUserAccountInfoHolder record save info to it for a data structure to hold...
-
         // note that a validation to check for like @ or . in the email isn't really needed for login
-        // method, as this is validated during the signin & for login, we can just check if email exists
-        // only:
-        // Also I need to guard against people trying to log in before signing up; because right
+        // method, as this is validated during the signin.
+        // Also, I need to guard against people trying to log in before signing up; because right
         // now it will just throw an error saying like Cannot invoke User.email() because
         // ByteBazaar.tempUserAccountInfoHolder is null....
         if (tempUserAccountInfoHolder == null) {
@@ -230,14 +239,14 @@ public class Authentication {
                 continue;
             }
 
-            // checking the password & email... note this is also a security concept, here... we shouldn't inform the
+            // checking the password & email... note this is also a security concept here... we shouldn't inform the
             // user if the password was incorrect or the email was incorrect, else an attacker's life will be much
-            // easier.... really not so necessary here, but good to add:
+            // easier. Really not so necessary here, but good to add:
             if (email.equals(tempUserAccountInfoHolder.email()) &&
                     comparePasswords(password)) {
                 loggedIn = true;
                 signedInUser = tempUserAccountInfoHolder;
-                // creating a cart/order for the session:
+                // creating a cart/order for that user for this session:
                 cart = new Cart(signedInUser);
                 order = new Order(signedInUser);
                 JOptionPane.showMessageDialog(null, "Successfully logged in!");
@@ -250,7 +259,9 @@ public class Authentication {
     }
 
     /**
-     *
+     * Method to log the user out, if/when they select to do so. Updates the loggedIn variable to false & signedInUser/
+     * cart/order variables to null to ensure that these functionalities (cart/order) are only available to signed-in
+     * users.
      */
     public void logout() {
         if (signedInUser == null) {
