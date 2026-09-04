@@ -1,18 +1,30 @@
+/**
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ *
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ */
+
 import javax.swing.*;
 
 /**
- *
+ * This class contains the check-out screen functionality. It exists independently of the main program class ByteBazaar
+ * to ensure that the main program is what controls the overall flow of program & calls other methods rather than
+ * implementing specific functionality itself.
  */
 public class CheckoutScreen {
     private final Authentication authentication;
 
     public CheckoutScreen(Authentication authentication) {
-        this.authentication = authentication; // because we declared our Authentication as static, IntelliJ
-        // recommends that we
+        this.authentication = authentication;
     }
 
     /**
-     *
+     * Method which displays the options for the user in the check-out screen as well as responds with the appropriate
+     * output. The implementation of this is quite similar to the main method in program class. However, the difference
+     * with this class is that the functionality of what is to be done for each selected option is something this method
+     * should know/do. Besides this, there aren't many comments for this class as I feel like the code in every line is
+     * very clear especially because of the naming of methods.
      */
     public void cartAndOrderScreen() {
         if (authentication.getSignedInUser() == null) {
@@ -53,6 +65,7 @@ public class CheckoutScreen {
                     int orderInput = JOptionPane.showConfirmDialog(null, cartOverview, "Cart",
                             JOptionPane.YES_NO_OPTION);
                     if (JOptionPane.YES_OPTION == orderInput) {
+                        // if yes -> user does want to place the order -> delegate responsibility to order class:
                         for (Product product : authentication.getCart().getProducts()) {
                             authentication.getOrder().addItemsToOrder(product);
                         }
@@ -61,6 +74,8 @@ public class CheckoutScreen {
                                 Order successfully placed! Items will be dispatched & you will be notified.
                                 We deeply thank you for choosing us, ByteBazaar.
                                 """, "Order Confirmed", JOptionPane.INFORMATION_MESSAGE);
+                        // clearing cart after order placed... we don't want user to accidentally double pay for these
+                        // items by accident or something, if they want, they can add the same products to cart again:
                         authentication.getCart().clearCart();
                     }
                     break;

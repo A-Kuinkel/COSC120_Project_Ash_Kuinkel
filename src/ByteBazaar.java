@@ -1,8 +1,8 @@
 /**
- * @author redacted
- * created for redacted
+ * @author Ash Kuinkel (akuinke3@myune.edu.au)
+ * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
  *
- * Git repository Link: redacted
+ * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
 import javax.swing.*;
@@ -12,12 +12,14 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 
-// TODO: WRITE ABOUT AI ASSISTANCE FOR DATASET FILE CREATION in the main class jdoc.
 /**
  * The main class of ByteBazaar application. Like conductor in an orchestra, it conducts what functionality of the
  * program the end-user sees based on their actions. It mustn't however, implement the specific functionalities i.e.
  * authentication functionality, as those jobs will be delegated to the other classes. Adheres to the principle of
- * 'methods/classes' should be specialists in OO Design.
+ * 'methods/classes' should be specialists in OO Design. Furthermore, as required by the task AI assistance was used
+ * to help create the database file for this project; Prompt: Generate a list of like 40-50 products that would be
+ * suitable for a computer store selling like accessories, computer parts etc. Make sure you generate dummy id's, name,
+ * category,brand etc... in a similar format to this. Model: ChatGPT, Response: product entreis for db file.
  */
 public class ByteBazaar {
 
@@ -479,7 +481,7 @@ public class ByteBazaar {
                 continue;
             }
 
-            // user is only able to slide the slider to whole numbers from 0-5... or skip the rating entirely.
+            // user is only able to slide the slider from 0-5... or skip the rating entirely.
             Float userSelectedMinRating = null;
             if (!skipMinRating.isSelected()) {
                 userSelectedMinRating = (float) minRating.getValue();
