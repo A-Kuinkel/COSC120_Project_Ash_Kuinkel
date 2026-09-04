@@ -30,20 +30,22 @@ public class Authentication {
     public boolean isLoggedIn() {return loggedIn;}
 
     /**
-     *
-     * @return ->
+     * Method to retrieve the information of the logged-in user.
+     * @return -> the instance of the User class with the User's info if signed in, else returns null.
      */
     public User getSignedInUser() {return signedInUser;}
 
     /**
-     *
-     * @return
+     * Method to access the cart of the current logged-in user.
+     * @return -> the logged-in users cart including the products that are within the cart currently. If there are no
+     * products in the cart, then an empty list is handed back & this scenario is handled in CheckOutScreen class.
      */
     public Cart getCart() {return cart;}
 
     /**
-     *
-     * @return
+     * Method which fetches the user's order.
+     * @return -> the order which the user has placed. If no order has been place yet, like the cart, an empty list is
+     * handed back & this scenario has also been handled in the CheckoutScreen class.
      */
     public Order getOrder() {return order;}
 
@@ -267,12 +269,13 @@ public class Authentication {
     // helper methods:
 
     /**
-     *
-     * @param userInput
-     * @return
+     * Method which checks if the passed in string param features only letters.
+     * @param userInput -> user string input which is to be checked.
+     * @return true if the string contains letters only, else return false.
      */
     private static boolean checkIfLettersOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
+            // it turns out that java has a method Character.isLetter() which works out pretty well here:
             if (!Character.isLetter(userInput.charAt(i))) {
                 return false;
             }
@@ -281,12 +284,13 @@ public class Authentication {
     }
 
     /**
-     *
-     * @param userInput
-     * @return
+     * Method which checks if the passed in string param features only digits:
+     * @param userInput -> user string input which is to be checked.
+     * @return true if the string contains digits only, else return false.
      */
     private static boolean checkIfDigitsOnly(String userInput) {
         for (int i = 0; i < userInput.length(); i++) {
+            // like the Character.isLetter(), java also has the .isDigit() method, so we use this to check:
             if (!Character.isDigit(userInput.charAt(i))) {
                 return false;
             }
@@ -295,9 +299,9 @@ public class Authentication {
     }
 
     /**
-     *
-     * @param userInput
-     * @return
+     * Method which compares the password the user has set for their account against the current guess.
+     * @param userInput -> the user's current guess attempt at the password.
+     * @return -> true if the user has entered the correct matching password, else return false.
      */
     private boolean comparePasswords(String userInput) {
         String storedPass = userStoredPass;

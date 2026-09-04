@@ -15,6 +15,12 @@ import javax.swing.*;
 public class CheckoutScreen {
     private final Authentication authentication;
 
+    /**
+     * Builds the checkout screen using the authentication object which is passed in from the program class. Note
+     * that we do not create a new instance of authentication here, simply just use the one passed in.
+     * @param authentication -> which is the authentication object we use to be able to access the cart/order of the
+     *                       user.
+     */
     public CheckoutScreen(Authentication authentication) {
         this.authentication = authentication;
     }
