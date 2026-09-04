@@ -7,25 +7,45 @@
 
 import javax.swing.*;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * The main class of ByteBazaar application. Like conductor in an orchestra, it conducts what functionality of the
+ * program the end-user sees based on their actions. It mustn't however, implement the specific functionalities i.e.
+ * authentication functionality, as those jobs will be delegated to the other classes. Adheres to the principle of
+ * 'methods/classes' should be specialists in OO Design.
+ */
 public class ByteBazaar {
 
     private static final String productsFilePath = "src/allProducts.txt";
-    private static AllProducts allProducts;
+    private static AllProducts allProducts; // note that this is not final, because we are directly assigning the value
+    // of this in the main method. Declaring a variable as `final` tells java that we do not want to change/modify the
+    // variable, so declaring allProducts as final & assigning it to a value later on will cause problems.
     private static final Authentication authentication = new Authentication();
 
+    /**
+     * The main method of our program, which is what the user interacts with. It provides the initial entry point
+     * dialog as well as the different options available & delegates further domain-specific jobs to the other classes.
+     *
+     * @param args - this is a param that java takes, if we wish to pass arguments through the CLI to our program
+     * whilst it runs.
+     * @throws IOException - Since we are trying to load info from our database file, there is the possibility that
+     * the database file is missing/contains errors etc. our main method will catch that error & throw it out notifying
+     * the developer/user the database file is corrupt/malformed in some way.
+     */
     public static void main(String[] args) throws IOException {
-        allProducts = loadAllProducts();
+        allProducts = loadAllProducts(); // allProducts is assigned to the return value of the loadAllProductsfunction()
+        // which will return an instance of our AllProducts class & more importantly will fetch all products from our db
+        // file.
 
-        // boolean to track if tempUserAccountInfoHolder logged in or not throughout the entire program:
         int userSelectedOption;
         boolean programRunning = true;
 
+        // this page will be displayed until programRunning is false; of course the user will be able to redirect to
+        // other pages, but they will always end up at this main screen again. This is the INTENDED program behaviour.
         do {
             String onboardingScreenUserInput = JOptionPane.showInputDialog(null,"""
                     Welcome to ByteBazaar!
@@ -47,6 +67,7 @@ public class ByteBazaar {
                     
                     ""","ByteBazaar",JOptionPane.PLAIN_MESSAGE);
 
+            // gracefully handling when user presses the `x` or cancel:
             if (onboardingScreenUserInput == null) {
                 System.exit(0);
                 break;
@@ -57,7 +78,8 @@ public class ByteBazaar {
 
                 switch (userSelectedOption) {
                     case 1:
-                        // take to first page
+                        // prompt user to enter their search with searchMenu(), treating the typed search differently to
+                        // the drop-downs etc. & then process that search & return results with process results function.
                         Map<String, Object> userSearchFilters = searchMenu();
                         if (userSearchFilters != null) {
                             DreamProduct userCriteria = (DreamProduct) userSearchFilters.get("userCriteria");
@@ -67,22 +89,18 @@ public class ByteBazaar {
                         }
                         break;
                     case 2:
-                        // take to second page
                         authentication.signup();
                         break;
                     case 3:
-                        // take to third page
                         authentication.login();
                         break;
                     case 4:
-                        // take to fourth page
                         authentication.logout();
                         break;
                     case 5:
                         cartAndOrderScreen();
                         break;
                     case 6:
-                        // take to fifth page
                         JOptionPane.showMessageDialog(null, "Thank you for using ByteBazaar!");
                         programRunning = false;
                         break;
@@ -102,13 +120,19 @@ public class ByteBazaar {
     // the product; i.e. make sure it has non-negative price etc. if it is not valid, just skip over
     // the current product row/line... because I think having one row break the entire flow of the
     // program may not be so good.
+
+    /**
+     * This method is designed to fetch each entry from the file,
+     * @return -> instance of AllProducts class
+     * @throws IOException
+     */
     private static AllProducts loadAllProducts() throws IOException {
         AllProducts currLoadedProducts = new AllProducts();
         System.out.println("Loading ByteBazaar products...\n");
         Path productsFile = Path.of(productsFilePath);
 
         List<String> lines = Files.readAllLines(productsFile);
-        lines.removeFirst();
+        lines.removeFirst(); // the first line isn't a product entry so we are able to discard it for our purposes here.
 
         for (String line : lines) {
             try {
@@ -637,6 +661,16 @@ public class ByteBazaar {
     // I spent quite a bit of time, but I don't see any way we can just feed custom request to this method...
     // so if the user enters a custom request, my thought is to just have another method which handles the
     // writing of custom requests to the file...
+
+    /**
+     * Method to save the user's order to a txt file as required by the task rubric.
+     * Note that this method is adapted from the Exemplarsample code MenuSearcher.java
+     * submitOrder() lines (177-178,185-189).
+     *
+     * @param order -> because this method will be called as soon as order is placed, we pass the specific order
+     *              as a param & our order's toString() method will help in the formatting of the order being written
+     *              to the txt file.
+     */
     public static void saveOrderToFile(Order order) {
         // let's append the exact time/date now to the fileName, once again... not that it matters here, but
         // I would classify it as good practice... because it makes sure we avoid duplicates.
@@ -657,9 +691,23 @@ public class ByteBazaar {
         }
     }
 
+    /**
+     * Method to save the logged-in user's custom request to a txt file. This method is also adapted from the Exemplar-
+     * sample code MenuSearcher.java submitOrder() lines (177-178,185-189).
+     *
+     * @param requestedProduct -> the user's search criteria they wanted a product to match when searching for their
+     *                         dream product.
+     * @param search -> the user's search term when searching for a specific product.
+     */
+    // Originally I attempted to figure out a way in which we could feed the custom request to our saveOrderToFile()
+    // method. However, after some thoughts & troubles, I realised it will be much easier to create a separate
+    // specialist method to fulfill this task of saving custom requests to a file.
     public static void saveCustomProductRequestsToFile(DreamProduct requestedProduct,String search) {
         System.out.println("User requested features:\n" + requestedProduct.getAllDreamProductFeatures());
 
+        // if the user skipped all criteria in the search screen then we'd expect the values of the user's DreamProduct
+        // to be null. It also means that the requested product values will be empty here. Hence, in a real world scena-
+        // rio we would just inform the people @ the store that the user hasn't selected any criteria:
         String userRequests = requestedProduct.getAllDreamProductFeatures().trim().isEmpty()
                 ? ("User skipped all selections! Contacting them may help clarify any ambiguity.")
                 : requestedProduct.getAllDreamProductFeatures();
@@ -686,10 +734,17 @@ public class ByteBazaar {
     }
 
     // helper methods:
+
+    /**
+     * A helper method which helps add the 'I don't mind' option to our drop-down lists easily. Extracted as a method
+     * because we do use these for multiple drop-downs.
+     *
+     * @param dropDownItems -> the raw selection items which belong to the
+     * @return a string arr containing the entire drop-down list in its proper format, ready to be displayed.
+     */
     private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {
-        // linked list has O(1) insertion im fairly sure at the beginning, not that it matters much here, but I
-        // just thought we could like add this "I don't mind" option at the beginning easily.
-        dropDownItems.addFirst("I don't mind"); // turns out java has an addFirst method, even better!
+        // Easily + Efficiently add the 'I don't mind method' using java's addFirst method for linked list:
+        dropDownItems.addFirst("I don't mind");
         // conversion into String[] in format combo box drop-down likes:
         String[] stringArr = new String[dropDownItems.size()];
 
