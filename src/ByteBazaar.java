@@ -1,8 +1,8 @@
 /**
- * @author Ash Kuinkel (akuinke3@myune.edu.au)
- * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
+ * @author redacted
+ * created for redacted
  *
- * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ * Git repository Link: redacted
  */
 
 import javax.swing.*;
@@ -99,7 +99,9 @@ public class ByteBazaar {
                         authentication.logout();
                         break;
                     case 5:
-                        cartAndOrderScreen();
+                        // call the CheckoutScreen with this authentication state, CheckOutScreen whilst using
+                        // authentication mustn't create its own new authentication instance:
+                        new CheckoutScreen(authentication).cartAndOrderScreen();
                         break;
                     case 6:
                         JOptionPane.showMessageDialog(null, "Thank you for using ByteBazaar!");
@@ -522,16 +524,18 @@ public class ByteBazaar {
     }
 
     /**
+     * Method which accepts the users search as params (both the searchbar text + criteria) & handles all cases when
+     * matches are found, when matches are not found & when the user closes the dialog, displaying the appropriate
+     * response/message to the user. Note that the idea to have this as a separate function for this as well as the
+     * purpose of this function has been adapted from COSC120 Lecture 7 Video 2 SeekAGeek.java lines (380-399). Also,
+     * the logic which sets the matching product to the ones shared by both the search text & the criteria is something
+     * which I derived. However, the thought came to me only after being exposed to 'retainAll' method throughout the
+     * whole COSC120 Lectures, as a proper reference COSC120 Lecture 7 Video 2 DreamGeek.java lines (87-88).
      *
      * @param userSearchByName -> The text user has searched by in the search bar field.
-     * @param userCriteria -> All the criteria user has selected for their
+     * @param userCriteria -> All the criteria user has selected for their product to contain, i.e. category, brand etc.
      */
     private static void processMatchResults(String userSearchByName, DreamProduct userCriteria) {
-        // if user's product name search doesn't match any products, I guess we can just like say there wasn't
-        // a specific match with the name that you searched for, but here are products that match your other
-        // criteria & if other criteria isn't selected as well then maybe just say like "we couldn't find anything
-        // with that specified name or criteria combination, please search again with different terms."
-
         // holds matches:
         Set<Product> matchingProducts = new HashSet<>();
 
@@ -547,6 +551,8 @@ public class ByteBazaar {
         }
 
         if (matchingProducts.isEmpty()) {
+            // this is the case to handle when no matches are found and also shows different outputs based on if the
+            // user is logged in or not.
             if (authentication.isLoggedIn()) {
                 int requestItem = JOptionPane.showConfirmDialog(null, """
                         Oops! We couldn't find anything that matches your search criteria exactly ˙◠˙
@@ -576,13 +582,14 @@ public class ByteBazaar {
                         """);
             }
         } else {
+            // this is the case to handle when matching products are found.
             System.out.println(matchingProducts.size() + " matching products found!");
             String msg = " We found " + matchingProducts.size() + " products matching your search criteria!\n"
                     + " You will be shown each product in a new window.\n To exit the view, please press the 'X' cancel" +
                     " button on the top right of the window.\n";
             int option = JOptionPane.showConfirmDialog(null, msg, "ByteBazaar",
                     JOptionPane.OK_CANCEL_OPTION);
-            if (option != JOptionPane.OK_OPTION) {return;}
+            if (option != JOptionPane.OK_OPTION) {return;} // case to handle when user closes dialog
 
             for (Product product : matchingProducts) {
                 String productInfo = product.getProductInfo() + "\n **Please Click the 'X' if you would like to exit**"
@@ -590,7 +597,7 @@ public class ByteBazaar {
                 int userSelectedOption = JOptionPane.showConfirmDialog(null, productInfo,
                         "ByteBazaar", JOptionPane.YES_NO_OPTION);
                 if (userSelectedOption == JOptionPane.CLOSED_OPTION) {
-                    break;
+                    break; // case to handle when user closes dialog
                 }
                 if (userSelectedOption == JOptionPane.YES_OPTION) {
                     if (authentication.isLoggedIn()) {
@@ -605,88 +612,6 @@ public class ByteBazaar {
                     }
                 }
             }
-        }
-    }
-
-    private static void cartAndOrderScreen() {
-        if (authentication.getSignedInUser() == null) {
-            JOptionPane.showMessageDialog(null, """
-                    Please ensure that you are logged in first, before attempting to view cart & orders!
-                    """);
-            return;
-        }
-
-        int cartScreenSelectedOption;
-        String mainScreen = JOptionPane.showInputDialog(null, """
-                This is where you are able to access your cart & place orders!
-                
-                Please select one of the following options:
-                1. View my Cart
-                2. Clear my Cart
-                3. View my Orders
-                
-                Please enter an integer, i.e. 1,2,3 reflective of your intended choice:
-                
-                """);
-        if (mainScreen == null) {
-            return;
-        }
-        try {
-            cartScreenSelectedOption = Integer.parseInt(mainScreen);
-            switch (cartScreenSelectedOption) {
-                case 1:
-                    if (authentication.getCart().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, """
-                                Nothing to see here, please add some products to cart & come back.
-                                """);
-                        return;
-                    }
-                    String cartOverview = authentication.getCart().toString() + "\n TOTAL: $" + authentication.getCart().getTotalPrice() +
-                            "\n Would you like to checkout & place an order?\n";
-                    int orderInput = JOptionPane.showConfirmDialog(null, cartOverview, "Cart",
-                            JOptionPane.YES_NO_OPTION);
-                    if (JOptionPane.YES_OPTION == orderInput) {
-                        for (Product product : authentication.getCart().getProducts()) {
-                            authentication.getOrder().addItemsToOrder(product);
-                        }
-                        saveOrderToFile(authentication.getOrder());
-                        JOptionPane.showMessageDialog(null, """
-                                Order successfully placed! Items will be dispatched & you will be notified.
-                                We deeply thank you for choosing us, ByteBazaar.
-                                """, "Order Confirmed", JOptionPane.INFORMATION_MESSAGE);
-                        authentication.getCart().clearCart();
-                    }
-                    break;
-                case 2:
-                    if (authentication.getCart().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, """
-                                You cannot clear an empty cart, please ensure that you have products in your cart,
-                                before attempting to clear the cart
-                                """);
-                        return;
-                    }
-                    int clearCartOption = JOptionPane.showConfirmDialog(null, """
-                            Are you sure you want to clear your cart?
-                            """, "Clear Cart", JOptionPane.YES_NO_OPTION);
-                    if (JOptionPane.YES_OPTION == clearCartOption) {
-                        authentication.getCart().clearCart();
-                        JOptionPane.showMessageDialog(null, "Cart successfully cleared!");
-                    }
-                    break;
-                case 3:
-                    if (authentication.getOrder().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, """
-                                Nothing to see here, please confirm an order & come back.
-                                """);
-                        return;
-                    }
-                    JOptionPane.showMessageDialog(null, authentication.getOrder().toString(), "My Orders",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    break;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Oops..., we didn't recognise that." +
-                    " Please enter an integer from the following options provided!");
         }
     }
 
@@ -761,7 +686,7 @@ public class ByteBazaar {
 
     }
 
-    // helper methods:
+    // helper method
 
     /**
      * A helper method which helps add the 'I don't mind' option to our drop-down lists easily. Extracted as a method

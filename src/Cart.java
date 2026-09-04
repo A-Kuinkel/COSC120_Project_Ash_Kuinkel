@@ -54,7 +54,7 @@ public class Cart {
         for (Product  product : products) {
             String productName =  product.getName();
             double productPrice = product.getPrice();
-            String msg = " Product: " + productName + "\n Cost: " + productPrice
+            String msg = "\n Product: " + productName + "\n Cost: " + productPrice
                     + "\n =======================================================";
             stringBuilder.append(msg);
         }
