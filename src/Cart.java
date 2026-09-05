@@ -15,10 +15,9 @@ import java.util.List;
  */
 public class Cart {
 
-    // fields
-    private final List<Product> products = new ArrayList<>();// the cart will always contain the same products, hence why
-    // list is final... The products list itself can of course take on more products to hold/remove products, but the
-    // user isn't able to assign new values to products, like products = null; <- not allowed.
+    private final List<Product> products = new ArrayList<>();// the cart will always contain the same products, hence
+    // why list is final... The products list itself can of course take on more products to hold/remove products, but
+    // the user isn't able to assign new values to products, like products = null; <- not allowed.
 
     private final User user; // declared as final because this is session based. So the cart is just associated with the
     // one user for the entire duration of the program (from the moment the user logs in of course).

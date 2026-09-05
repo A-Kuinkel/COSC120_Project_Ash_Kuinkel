@@ -5,7 +5,8 @@
  * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
-public record User (String firstName, String lastName, String email, String password, String phoneNumber, String shippingAddress){
+public record User (String firstName, String lastName, String email, String password, String phoneNumber,
+                    String shippingAddress){
 
     public String fullName() {
         return firstName + " " + lastName;
