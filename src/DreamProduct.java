@@ -1,7 +1,7 @@
 /**
  * @author Ash Kuinkel (akuinke3@myune.edu.au)
  * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
- *
+ * <p>
  * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
  */
 
@@ -11,7 +11,9 @@ import java.util.*;
  * The class (blueprint) for our DreamProduct, which informs users/developers of the information
  * that the user is able to search for a product with & also provides two important helper methods
  * one to output the dream features of a product & one to see whether a product matches the user
- * dream product...
+ * dream product... Similar to the Product class, the architectural idea of this class along with
+ * some of the methods have been adapted from the COSC120 Lectures (starting from) Lecture 5 video 1.
+ * Specific references are featured within the Javadoc for the specific methods.
  */
 public class DreamProduct {
 
@@ -22,7 +24,8 @@ public class DreamProduct {
     private final Map<ProductAttributes, Object> productAttributesMap;
 
     /**
-     * A constructor which will be used when a user is selecting/creating their dream product.
+     * A constructor which will be used when a user is selecting/creating their dream product. This method is
+     * adapted from the COSC120 Lecture 7 Video 2 DreamGeek.java lines (20-25).
      * These are all fields the user is able to search by.
      * @param minPrice -> The user's selection of the minPrice their potential dream product should have.
      * @param maxPrice -> The user's selection of the maxPrice their potential dream product should have.
@@ -31,7 +34,8 @@ public class DreamProduct {
      * @param productAttributesMap -> Map containing the additional attributes that user may search by including, e.g.
      *                                colour, brand, category etc.
      */
-    public DreamProduct(Double minPrice, Double maxPrice, Float minRating, Integer minWarrantyYears, Map<ProductAttributes, Object> productAttributesMap) {
+    public DreamProduct(Double minPrice, Double maxPrice, Float minRating, Integer minWarrantyYears,
+                        Map<ProductAttributes, Object> productAttributesMap) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minRating = minRating;
@@ -41,7 +45,10 @@ public class DreamProduct {
 
     /**
      * A constructor which will be used when assigning existing products, with their own set of dream attributes which
-     * are able to be compared...
+     * are able to be compared... Note that for this constructor, the minPrice, maxPrice, minRating values are set to
+     * null. An existing product, won't choose a minPrice, maxPrice etc. those are for the user to select only when
+     * searching for their dream product. This constructor has been adapted from the COSC120 Lectures, Lecture 7 Video
+     * 2 DreamGeek.java lines (31-35).
      *
      * @param productAttributesMap -> A map of the product's comparable attributes, e.g. brand, category etc.
      */
@@ -85,10 +92,13 @@ public class DreamProduct {
      *
      * @return the minimum warranty period.
      */
-    public Integer getMinWarrantyYears() {return minWarrantyYears;}
+    public Integer getMinWarrantyYears() {
+        return minWarrantyYears;
+    }
 
     /**
-     * The other product Attributes that the user may've searched by for their potential dream product.
+     * The other product Attributes that the user may've searched by for their potential dream product. This method
+     * has been adapted from the COSC120 Lectures, Lecture 7 Video 2 DreamGeek.java getAllCriteria() lines (56).
      *
      * @return the linked hashmap of productAttributes
      */
@@ -97,12 +107,16 @@ public class DreamProduct {
     }
 
     /**
+     * Method to get the specific product attribute value from the products attributes. This method is adapted from
+     * the COSC120 Lectures, Lecture 7 Video 2 DreamGeek.java getCriteria() lines (64).
      *
      * @param productAttribute -> a specific searchable attribute of product, e.g. brand, category etc.
      *
-     * @return the  searchable product attribute.
+     * @return the value of a searchable product attribute.
      */
-    public Object getProductAttribute(ProductAttributes productAttribute) { return getAllProductAttributes().get(productAttribute); }
+    public Object getProductAttribute(ProductAttributes productAttribute) {
+        return getAllProductAttributes().get(productAttribute);
+    }
 
     /**
      * Convenient method to check if product is onSale or not. Convenient because we define this only once
@@ -111,14 +125,14 @@ public class DreamProduct {
      * @return true if the product is on sale else, return false.
      */
     public boolean isOnSale() {
-        // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or any other value somehow....
-        // if we get a null/other value here then that's no good as it'll throw an error, so I think this is enough to guard against
-        // it:
+        // When creating an instance of this class, somebody could set/ or somehow this value may end up being null or
+        // any other value somehow.... if we get a null/other value here then that's no good as it'll throw an error,
+        // so I think this is enough to guard against it:
         Object isOnSaleValue = this.getAllProductAttributes().get(ProductAttributes.ON_SALE);
         boolean onSale = false;
         if (isOnSaleValue instanceof Boolean) {
-            // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
-            // so to convert it back to a primitive we must cast it to a boolean, like this:
+            // we have the additional (boolean) in front of our statement because remember we store it inside
+            // our map as an Object, so to convert it back to a primitive we must cast it to a boolean, like this:
             onSale = (boolean) isOnSaleValue;
         }
         return onSale;
@@ -200,7 +214,8 @@ public class DreamProduct {
 
     /**
      * Allows for a well formatted and easily readable string containing a dream product's features/attributes.
-     * Lists all features/attributes of the product on their own separate lines. This method is particularly
+     * Lists all features/attributes of the product on their own separate lines. This method is adapted from
+     * the COSC120 Lectures, Lecture 7 Video 2 getDescription() method lines (69-72) & is particularly
      * helpful when writing a product that doesn't exist as a request to txt file.
      *
      * @return the attributes a user is looking for in their dream product.
@@ -240,7 +255,8 @@ public class DreamProduct {
     /**
      * Compares the user's dream product which they searched for to an existing product and it's
      * attributes. If the user's specifications match some product/products exactly then we know
-     * that these are most likely the user's dream products.
+     * that these are most likely the user's dream products. This method is adapted from COSC120
+     * Lectures, Lecture 7 Video 2 matches() method lines (80-100).
      *
      * @param dreamProduct -> the real characteristics/attributes an existing product holds.
      *
@@ -254,24 +270,29 @@ public class DreamProduct {
         // we return false to indicate that the current product does not match....
 
         // first comparing the two product attributes:
-        for (ProductAttributes mapKeys : dreamProduct.getAllProductAttributes().keySet()){
+        for (ProductAttributes mapKeys : dreamProduct.getAllProductAttributes().keySet()) {
             // is this map Key something the user specified in their search? If yes then proceed else just return product matches:
-            if(this.productAttributesMap.containsKey(mapKeys)){
+            if (this.productAttributesMap.containsKey(mapKeys)) {
                 // check if tags/brands etc. match:
                 Object userWantedProduct = getProductAttribute(mapKeys);
                 Object actualProduct = dreamProduct.getProductAttribute(mapKeys);
 
                 // we only ever go to this if block, if we are comparing the tags since that's the only attribute in the
                 // format of Collection:
-                if(userWantedProduct instanceof Collection<?> && actualProduct instanceof Collection<?>){
-                    Set<Object> thingsInCommon = new HashSet<>((Collection<?>) actualProduct);
-                    thingsInCommon.retainAll((Collection<?>) userWantedProduct);
-                    if(thingsInCommon.isEmpty()){return false;}
+                if (userWantedProduct instanceof Collection<?> && actualProduct instanceof Collection<?>) {
+                    Set<Object> thingsInCommon = new HashSet<>((Collection<?>) actualProduct); // note that this is
+                    // creating a copy of the actual product's collection so that we are able to use retainAll() without
+                    // changing the original collection.
+                    thingsInCommon.retainAll((Collection<?>) userWantedProduct); // keep only products that have things
+                    // in common.
+                    if (thingsInCommon.isEmpty()) {
+                        return false;
+                    }
                 }
 
                 // for everything else, besides the tags, if the user says they want, e.g. category laptops,
                 // we must only return the true on the products with category laptops & false for everything else:
-                else if (!userWantedProduct.equals(actualProduct)){
+                else if (!userWantedProduct.equals(actualProduct)) {
                     return false;
                 }
             }
