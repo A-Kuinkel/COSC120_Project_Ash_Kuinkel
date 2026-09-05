@@ -16,12 +16,17 @@ import java.util.List;
 public class Cart {
 
     // fields
-    private final List<Product> products = new ArrayList<>(); //
-    private final User user; // declared as final because
+    private final List<Product> products = new ArrayList<>();// the cart will always contain the same products, hence why
+    // list is final... The products list itself can of course take on more products to hold/remove products, but the
+    // user isn't able to assign new values to products, like products = null; <- not allowed.
+
+    private final User user; // declared as final because this is session based. So the cart is just associated with the
+    // one user for the entire duration of the program (from the moment the user logs in of course).
 
     /**
-     *
-     * @param user
+     * Constructor used to help create the new cart instance for just one specific user & stays with that user until
+     * they either log out, or they close the program.
+     * @param user -> the user who owns the cart.
      */
     Cart (User user) {
         this.user = user;
@@ -30,14 +35,15 @@ public class Cart {
     // getters/setters
 
     /**
-     * Method which
-     * @return
+     * Method which will retrieve all the products within the cart.
+     * @return the list of products within the cart (Note that we return a copy of the products, that way this mutable
+     * list isn't able to be accidentally changed).
      */
     public List<Product> getProducts() {return new ArrayList<>(products);}
 
     /**
-     *
-     * @return
+     * Method which is designed to return the user with whom the cart is associated.
+     * @return the information of the user who this cart belongs to.
      */
     public User getUser() {return user;}
 
@@ -78,8 +84,8 @@ public class Cart {
     }
 
     /**
-     *
-     * @return the well-formatted string containing the user's cart (to be displayed in JOptionPne window).
+     * Method to override the original toString() method for this class to display user's cart in custom format.
+     * @return the well-formatted string containing the user's cart (to be displayed in JOptionPane window).
      */
     @Override
     public String toString() {
