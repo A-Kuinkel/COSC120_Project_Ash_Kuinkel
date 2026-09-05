@@ -328,16 +328,16 @@ public class ByteBazaar {
             JTextField mainSearchBar = new JTextField();
 
             JComboBox<Object> categoriesDropDown = new JComboBox<>();
-            categoriesDropDown.addItem("I don't mind");
             for (Category category : Category.values()) {
                 categoriesDropDown.addItem(category);
             }
+            categoriesDropDown.addItem("I don't mind");
 
             JComboBox<Object> brandDropDown = new JComboBox<>();
-            brandDropDown.addItem("I don't mind");
             for (Brand brand : Brand.values()) {
                 brandDropDown.addItem(brand);
             }
+            brandDropDown.addItem("I don't mind");
 
             JTextField minPrice = new JTextField();
             JTextField maxPrice = new JTextField();
@@ -699,7 +699,7 @@ public class ByteBazaar {
      */
     private static String[] processDropDownToStringArr(LinkedList<Object> dropDownItems) {
         // Easily + Efficiently add the 'I don't mind method' using java's addFirst method for linked list:
-        dropDownItems.addFirst("I don't mind");
+        dropDownItems.addLast("I don't mind");
         // conversion into String[] in format combo box drop-down likes:
         String[] stringArr = new String[dropDownItems.size()];
 
