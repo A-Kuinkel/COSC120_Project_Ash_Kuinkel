@@ -83,12 +83,14 @@ public class ByteBazaar {
                     case 1:
                         // prompt user to enter their search with searchMenu(), treating the typed search differently to
                         // the drop-downs etc. & then process that search & return results with process results function.
-                        Map<String, Object> userSearchFilters = searchMenu();
-                        if (userSearchFilters != null) {
-                            DreamProduct userCriteria = (DreamProduct) userSearchFilters.get("userCriteria");
-                            String searchTerm = (String) userSearchFilters.get("searchTerm");
-
-                            processMatchResults(searchTerm, userCriteria);
+                        String searchTerm = getSearchTerm();
+                        if (searchTerm == null) {
+                            break;
+                        }
+                        System.out.println("User search term: " + searchTerm);
+                        DreamProduct userSearchCriteria = searchMenu();
+                        if (userSearchCriteria != null) {
+                            processMatchResults(searchTerm, userSearchCriteria);
                         }
                         break;
                     case 2:
@@ -305,8 +307,8 @@ public class ByteBazaar {
     }
 
     /**
-     * Method which displays the search menu screen to the user, which is where they search for a product. It validates
-     * all their input & contains the final filtered search criteria + search term. Although the implementation is
+     * Method which displays the search menu screen to the user, which is where they select criteria for their product.
+     * It validates all their input & contains the final filtered search criteria . Although the implementation is
      * greatly different, the fundamental idea of having a search function to collect the users input as well as
      * validating this etc. is adapted from COSC120 Lecture 7 Video 2 SeekAGeek.java lines (245-255,272,274). More
      * importantly, a discussion on stack overflow:
@@ -317,16 +319,14 @@ public class ByteBazaar {
      * process, for lines (414-417) Prompt: Add a debugging print statement to catch the warranty bad value being passed.
      * Model: Google AI, response: System.out.println("FAILED VALUE: [" + userSelectedWarranty + "]");
      *
-     * @return -> HashMap containing the user's complete search, i.e. search term + their selected criteria, ready to
+     * @return -> instance of our DreamProduct class containing the user's complete criteria search ready to
      *            be passed as args to processMatchResults() method.
      */
     // I think having a separate method to process these search results & call our
-    // DreamProduct class etc. would be a good idea... according to the "methods should be specialists" philosophy.
-    private static Map<String, Object> searchMenu() {
+    // DreamProduct class & get search term etc. would be a good idea according to the "methods should be
+    // specialists" philosophy.
+    private static DreamProduct searchMenu() {
         while (true) {
-            // screen display elements:
-            JTextField mainSearchBar = new JTextField();
-
             JComboBox<Object> categoriesDropDown = new JComboBox<>();
             for (Category category : Category.values()) {
                 categoriesDropDown.addItem(category);
@@ -371,7 +371,7 @@ public class ByteBazaar {
             JCheckBox wirelessCheckBox = new JCheckBox("Product must be wireless");
 
             Object[] componentsOnScreen = {
-                    "Search for a product by name:\n", mainSearchBar,
+                    "Please enter your preference for these criteria your product should match:",
                     "\nCategory:", categoriesDropDown, "\nBrand:", brandDropDown,
                     "\nMin Price:", minPrice, "\nMax Price:", maxPrice, "\nMinimum Product Rating:", minRating, "\n",
                     skipMinRating,"\nColour:", colourDropDown, "\nTags:", tagDropDown, "\nMinimum Warranty Period:",
@@ -385,8 +385,6 @@ public class ByteBazaar {
             if (option != JOptionPane.OK_OPTION) {
                 return null;
             }
-
-            String searchText = mainSearchBar.getText();
 
             // This is the robustness in action, bad input for these drop-downs are impossible:
             Object category = categoriesDropDown.getSelectedItem();
@@ -512,17 +510,45 @@ public class ByteBazaar {
                 userChosenProductAttributes.put(ProductAttributes.WIRELESS, userSelectedWireless);
             }
 
-            // map to store our complete search. The reason this is a HashMap unlike the lectures which just returns
-            // an instance of our dream product is because here we have the additional element of search term too.
-            // We must always try to match the user's search text + criteria... not just criteria & not just search text
-            // independently.
-            Map<String, Object> userCompleteSearch = new HashMap<>();
-            DreamProduct userDreamProductFeatures = new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
+            // Originally, this would return both the user criteria & the search term using a map, however the rubric
+            // specifies that we need a method requesting user selection of features & returns instance of Search
+            // template class. Therefore, I have decided to split what would all be in one search menu screen to two
+            // windows, one for the criteria (this method) & one for the search term getSearchTerm().
+            return new DreamProduct(userSelectedMinPrice, userSelectedMaxPrice,
                     userSelectedMinRating, userSelectedMinWarrantyYears, userChosenProductAttributes);
-            userCompleteSearch.put("searchTerm", searchText);
-            userCompleteSearch.put("userCriteria", userDreamProductFeatures);
-            return userCompleteSearch;
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static String getSearchTerm() {
+        // display the search element:
+        JTextField mainSearchBar = new JTextField();
+
+        String msg = """
+                Would you like to search for a product by name? You can search for a product's name if you already
+                know what it is called, else you can just skip this & move onto selecting the criteria in the next
+                window.
+                
+                Please enter your search term & press "Yes" to search by name along with criteria.
+                Please press "No" if you don't know the name of the product you are looking for/don't care.
+                If you would like to return back to the main menu; Please click "Cancel" or the "x".
+                """;
+
+        Object[] components = {msg,"\nProduct Name:\n", mainSearchBar};
+
+        int option = JOptionPane.showConfirmDialog(null,components);
+
+        if (option == JOptionPane.NO_OPTION){
+            return ""; // user
+        } else if (option == JOptionPane.CANCEL_OPTION ||  option == JOptionPane.CLOSED_OPTION){
+            return null;
+        }
+
+        String searchText = mainSearchBar.getText();
+        return searchText.trim();
     }
 
     /**

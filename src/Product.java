@@ -131,6 +131,10 @@ public class Product {
         return displayImage;
     }
 
+    /**
+     *
+     * @return
+     */
     public DreamProduct getProductSearchableCharacteristics() {return productSearchableCharacteristics;}
 
     // setters for fields that may be changed after product created, e.g. whether on sale or not, the price maybe,
