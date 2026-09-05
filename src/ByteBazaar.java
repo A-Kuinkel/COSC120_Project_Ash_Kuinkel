@@ -691,7 +691,7 @@ public class ByteBazaar {
     // helper method
 
     /**
-     * A helper method which helps add the 'I don't mind' option to our drop-down lists easily. Extracted as a method
+     * A helper method which helps add the 'I don't mind' option\ to our drop-down lists easily. Extracted as a method
      * because we do use these for multiple drop-downs.
      *
      * @param dropDownItems -> the raw selection items which belong to the
