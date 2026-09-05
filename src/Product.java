@@ -9,13 +9,14 @@ import java.util.List;
 
 /**
  * The class (blueprint) for our product dictating what information a product should contain &
- * provides a convenient way to access our products.
+ * provides a convenient way to access our products. This idea of this class is adapted from the COSC120
+ * Lectures (starting from) Lecture 4 Video 1. However, specific references are contained within the Javadoc
+ * for the methods.
  */
 public class Product {
 
-    // so the ones initialised in dream product, don't need to be duplicated here I think...
-    // instead we should call the DreamProduct class which is like the aggregation here.
-    final private String productId;
+    // so the ones initialised in dream product, don't need to be duplicated here; aggregation in action.
+    private final String productId;
     private final String name;
     private double price;
     private int quantity;
@@ -30,7 +31,8 @@ public class Product {
     /**
      * A constructor which will help us when instantiating the Product Class.
      * Without our constructor declaration, java compiler will just generate a default
-     * constructor w/out any args..... NOT what we want!
+     * constructor w/out any args..... NOT what we want! This constructor is adapted from the COSC120 Lectures,
+     * Lecture 6 Video 2 Geek.java lines (36-45).
      *
      * @param productId     -> a unique string value which is the ID of the product. Each product must have an ID.
      * @param name          -> a String for the name of the product, e.g. Apple MacBook Air 2 2021.
@@ -40,10 +42,12 @@ public class Product {
      * @param warrantyYears -> an int value describing the time period of warranty for the product.
      * @param description   -> a String to simply enter a description of the product.
      * @param displayImage  -> a String value which will store the filepath to the display image of the specific product.
-     * @param productSearchableCharacteristics -> an instance of the DreamProduct class which stores the searchable attributes associated with a product.
+     * @param productSearchableCharacteristics -> an instance of the DreamProduct class which stores the searchable
+     *                                         attributes associated with a product.
      */
     public Product(String productId, String name, double price, int quantity, float rating,
-                   Integer warrantyYears, String description, String displayImage, DreamProduct productSearchableCharacteristics) {
+                   Integer warrantyYears, String description, String displayImage,
+                   DreamProduct productSearchableCharacteristics) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -170,21 +174,19 @@ public class Product {
     }
 
     /**
-     * Product information (for the customer to see) of a specific product.
+     * Product information (for the customer to see) of a specific product. Note that the idea of this method is
+     * adapted from the COSC120 Lectures throughout the entire lifecycle of development; as a proper reference:
+     * COSC120 Lecture 6 Video 2 Geek.java lines (121-124).
      *
      * @return a nicely formatted String with the product information.
      */
     public String getProductInfo() {
-        // we have the additional (boolean) in front of our statement because remember we store it inside our map as an Object,
-        // so to convert it back to a primitive we must cast it to a boolean, like this:
-        // boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
         // instead of doing this everytime we need to access the onSale:
         // boolean onSale = (boolean) this.getProductSearchableCharacteristics().getAllProductAttributes().get(ProductAttributes.ON_SALE);
-        // I'll just create like a method/getter in the DreamProduct.java instead... which will also defend against value mismatch errors
+        // I'll just create like a method/getter in the DreamProduct.java instead... which will also defend against
+        // value mismatch errors:
 
-        /**
-            Using our getter methods we made in DreamProduct now makes this job so much easier:
-         **/
+        // Using our getter methods we made in DreamProduct now makes this job so much easier:
         boolean onSale = this.productSearchableCharacteristics.isOnSale();
         boolean wireless = this.productSearchableCharacteristics.isWireless();
         String colour = this.getProductSearchableCharacteristics().getColour();
