@@ -132,8 +132,11 @@ public class Product {
     }
 
     /**
+     * The searchable characteristics of this product. This includes things like the brand, category, colour etc. as
+     * these are all things we can search for & our product contains.
      *
-     * @return
+     * @return an instance of the DreamProduct class which contains the searchable/part of the matchable features of
+     * this product.
      */
     public DreamProduct getProductSearchableCharacteristics() {return productSearchableCharacteristics;}
 

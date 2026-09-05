@@ -520,8 +520,11 @@ public class ByteBazaar {
     }
 
     /**
+     * Method which displays window to the user & asks for their product name search if they would like to apply a
+     * search term. However, the option to skip this is also provided in the event user does not know the name of the
+     * product that they are searching for.
      *
-     * @return
+     * @return the trimmed search term which the user has decided to search for the product with.
      */
     private static String getSearchTerm() {
         // display the search element:
