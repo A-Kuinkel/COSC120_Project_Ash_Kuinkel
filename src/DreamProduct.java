@@ -1,8 +1,10 @@
 /**
  * @author Ash Kuinkel (akuinke3@myune.edu.au)
  * created for COSC120 Assignment Task 3 (Trimester 2, 2026)
- * <p>
+ *
  * Git repository Link: https://github.com/A-Kuinkel/COSC120_Project_Ash_Kuinkel
+ * Github username: A-Kuinkel
+ * Student No: 220326426
  */
 
 import java.util.*;
