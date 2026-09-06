@@ -25,7 +25,9 @@ import java.util.*;
  */
 public class ByteBazaar {
 
-    private static final String productsFilePath = "src/allProducts.txt";
+    // private static final String productsFilePath = "src/allProducts.txt"; not needed any more as we have our helper
+    // to return the path rather than hard coding it here (this is done to avoid errors if marker is running it from
+    // within....
     private static AllProducts allProducts; // note that this is not final, because we are directly assigning the value
     // of this in the main method. Declaring a variable as `final` tells java that we do not want to change/modify the
     // variable, so declaring allProducts as final & assigning it to a value later on will cause problems.
@@ -140,7 +142,7 @@ public class ByteBazaar {
     private static AllProducts loadAllProducts() throws IOException {
         AllProducts currLoadedProducts = new AllProducts(); // this is where we create an instantiate our AllProducts
         // class
-        Path productsFile = Path.of(productsFilePath);
+        Path productsFile = getCorrectDbFilePath();
 
         List<String> lines = Files.readAllLines(productsFile);
         lines.removeFirst(); // the first line isn't a product entry so we are able to discard it for our purposes here.
@@ -719,7 +721,7 @@ public class ByteBazaar {
 
     }
 
-    // helper method
+    // helper methods:
 
     /**
      * A helper method which helps add the 'I don't mind' option\ to our drop-down lists easily. Extracted as a method
@@ -738,5 +740,24 @@ public class ByteBazaar {
             stringArr[i] = dropDownItems.get(i).toString();
         }
         return stringArr;
+    }
+
+    /**
+     * Helper method which ensures that the marker is able to run the program & there are no issues with loading the
+     * file depending on whether they run from within the src folder or outside.
+     *
+     * @return the path where the db file i.e. allProducts.txt is located
+     * @throws IOException if the file is not able to be located anywhere within these locations.
+     */
+    private static Path getCorrectDbFilePath() throws IOException {
+        String[] pathPossibilities = {"allProducts.txt","src/allProducts.txt"};
+
+        for (String path : pathPossibilities) {
+            Path filePath = Path.of(path);
+            if (Files.exists(filePath)) {
+                return filePath;
+            }
+        }
+        throw new IOException("Unable to locate the db file. Please look into there error!");
     }
 }
